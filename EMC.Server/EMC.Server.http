@@ -1,0 +1,6 @@
+@EMC.Server_HostAddress = http://localhost:5270
+
+GET {{EMC.Server_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

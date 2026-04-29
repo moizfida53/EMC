@@ -1,0 +1,7 @@
+<Solution>
+  <Project Path="emc.client/emc.client.esproj">
+    <Build />
+    <Deploy />
+  </Project>
+  <Project Path="EMC.Server/EMC.Server.csproj" />
+</Solution>
