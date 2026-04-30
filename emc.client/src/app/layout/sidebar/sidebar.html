@@ -1,0 +1,159 @@
+<!-- src/app/shared/components/sidebar/sidebar.component.html -->
+
+<!-- Mobile overlay backdrop -->
+<div
+  class="sidebar-overlay"
+  [ngClass]="overlayClasses()"
+  (click)="closeOverlay()"
+  aria-hidden="true">
+</div>
+
+<!-- Sidebar root -->
+<aside
+  class="sidebar"
+  [ngClass]="sidebarClasses()"
+  role="navigation"
+  aria-label="Main navigation">
+
+  <!-- ── HEADER: Logo ──────────────────────────────────── -->
+  <div class="sidebar__header">
+    <a
+      routerLink="/"
+      class="sidebar__logo"
+      aria-label="BlueLink Customer Portal — home">
+
+      <!-- Light logo (default) -->
+      <img
+        [src]="LOGO_LIGHT"
+        alt="BlueLink Solutions"
+        class="sidebar__logo-img"
+        [width]="logoWidth()"
+        [height]="logoHeight()"
+        [style.width.px]="logoWidth()"
+        [style.height.px]="logoHeight()" />
+
+      <!-- Sub-label hidden on collapsed -->
+      <span
+        class="sidebar__logo-sublabel"
+        [class.sidebar__logo-sublabel--hidden]="isCollapsed()"
+        aria-hidden="true">
+        Customer Portal
+      </span>
+    </a>
+  </div>
+
+  <!-- ── NAV: Main items ───────────────────────────────── -->
+  <nav class="sidebar__nav" aria-label="Workspace navigation">
+
+    <!-- Section label -->
+    <span class="sidebar__nav-label" aria-hidden="true">
+      Workspace
+    </span>
+
+    <!-- Nav items -->
+    <a
+      *ngFor="let item of navItems; trackBy: trackByHref"
+      [routerLink]="item.href"
+      class="sidebar__item"
+      [class.sidebar__item--active]="isActive(item.href)"
+      [attr.aria-current]="isActive(item.href) ? 'page' : null"
+      [attr.aria-label]="item.label + (item.badge ? ' (' + item.badge + ' items)' : '')"
+      (click)="onNavClick()">
+
+      <!-- Icon (inline SVG via CSS mask or ng-icon; shown as placeholder span) -->
+      <!-- In production: replace with <lucide-icon [name]="item.icon"> -->
+      <span
+        class="sidebar__item-icon"
+        [attr.data-icon]="item.icon"
+        aria-hidden="true">
+        <!-- Icon injected here by lucide-angular or custom icon component -->
+        <ng-container [ngSwitch]="item.icon">
+          <svg *ngSwitchCase="'layout-dashboard'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+          <svg *ngSwitchCase="'life-buoy'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="4"/><line x1="4.93" y1="4.93" x2="9.17" y2="9.17"/><line x1="14.83" y1="14.83" x2="19.07" y2="19.07"/><line x1="14.83" y1="9.17" x2="19.07" y2="4.93"/><line x1="4.93" y1="19.07" x2="9.17" y2="14.83"/></svg>
+          <svg *ngSwitchCase="'book-open'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+          <svg *ngSwitchCase="'folder-kanban'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20h16a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.93a2 2 0 0 1-1.66-.9l-.82-1.2A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13c0 1.1.9 2 2 2Z"/><line x1="8" y1="12" x2="8" y2="16"/><line x1="12" y1="10" x2="12" y2="16"/><line x1="16" y1="14" x2="16" y2="16"/></svg>
+          <svg *ngSwitchCase="'file-signature'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M20 19.5v.5a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h8.5L18 5.5"/><path d="M8 18h1l12.5-12.5a1.5 1.5 0 0 0-2-2L7 16v1"/><line x1="15" y1="5" x2="19" y2="9"/></svg>
+          <svg *ngSwitchCase="'rocket'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"/><path d="m12 15-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"/><path d="M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0"/><path d="M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5"/></svg>
+          <svg *ngSwitchDefault viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><circle cx="12" cy="12" r="10"/></svg>
+        </ng-container>
+      </span>
+
+      <!-- Label text -->
+      <span class="sidebar__item-text">{{ item.label }}</span>
+
+      <!-- Badge -->
+      <span
+        *ngIf="item.badge"
+        class="sidebar__item-badge"
+        aria-label="{{ item.badge }} items">
+        {{ item.badge }}
+      </span>
+
+      <!-- Tooltip shown only when collapsed -->
+      <span
+        class="sidebar__item-tooltip"
+        role="tooltip"
+        aria-hidden="true">
+        {{ item.label }}
+        <span *ngIf="item.badge"> · {{ item.badge }}</span>
+      </span>
+    </a>
+  </nav>
+
+  <!-- ── FOOTER: Help card + collapse button ───────────── -->
+  <div class="sidebar__footer">
+
+    <!-- Help card -->
+    <div class="sidebar__help-card" [class.d-none]="isCollapsed()">
+      <div class="sidebar__help-card__label">Need help?</div>
+      <p class="sidebar__help-card__body">
+        Your CSM <strong>Karim Y.</strong> is on call today.
+      </p>
+      <button
+        class="sidebar__help-card__link"
+        type="button"
+        (click)="onCsmBook()"
+        aria-label="Book a 15-minute call with your CSM">
+        Book 15 min →
+      </button>
+    </div>
+
+    <!-- Collapse toggle -->
+    <button
+      class="sidebar__collapse-btn"
+      type="button"
+      (click)="toggleCollapse()"
+      [attr.aria-expanded]="!isCollapsed()"
+      aria-label="{{ isCollapsed() ? 'Expand sidebar' : 'Collapse sidebar' }}">
+
+      <!-- Panel-left-close icon (expanded state) -->
+      <svg
+        *ngIf="!isCollapsed()"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="1.75"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        aria-hidden="true">
+        <rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 3v18"/><path d="m16 15-3-3 3-3"/>
+      </svg>
+
+      <!-- Panel-left-open icon (collapsed state) -->
+      <svg
+        *ngIf="isCollapsed()"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="1.75"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        aria-hidden="true">
+        <rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 3v18"/><path d="m14 9 3 3-3 3"/>
+      </svg>
+
+      <span class="sidebar__collapse-label">Collapse</span>
+    </button>
+
+  </div>
+</aside>

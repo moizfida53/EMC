@@ -1,0 +1,585 @@
+// ============================================================
+// COMPONENTS / _topbar.scss
+// Sticky app bar: 64px height, company logo, breadcrumbs,
+// global search, notifications popover, user dropdown.
+// ============================================================
+
+@use '../../../styles/abstracts/variables.scss' as v;
+@use '../../../styles/abstracts/mixins.scss' as m;
+
+// ─── HOST ────────────────────────────────────────────────────
+
+:host {
+  display: block;
+  position: sticky;
+  top: 0;
+  z-index: v.$z-sticky;
+  flex-shrink: 0;
+}
+
+// ─── ROOT ────────────────────────────────────────────────────
+
+.topbar {
+  display: flex;
+  align-items: center;
+  gap: v.$spacing-4;
+  height: v.$topbar-height;
+  padding-inline: v.$spacing-5;
+  background: var(--color-topbar-bg);
+  border-bottom: v.$border-width solid var(--color-topbar-border);
+  // Prevent content from going under sidebar on mobile
+  position: relative;
+  z-index: v.$z-sticky;
+
+  // Subtle bottom shadow
+  box-shadow: 0 1px 0 var(--color-border), var(--shadow-xs);
+}
+
+// ─── LEFT: Company + Breadcrumbs ─────────────────────────────
+
+.topbar__left {
+  display: flex;
+  align-items: center;
+  gap: v.$spacing-3;
+  min-width: 0;
+  flex: 0 1 auto;
+}
+
+// Hamburger (mobile only)
+.topbar__hamburger {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: v.$radius-md;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  color: var(--color-text-tertiary);
+  flex-shrink: 0;
+  @include m.transition-colors;
+  @include m.focus-ring;
+
+  &:hover {
+    background: var(--color-surface-hover);
+    color: var(--color-text-primary);
+  }
+
+  svg {
+    width: 20px;
+    height: 20px;
+  }
+
+  @include m.respond-to(md) {
+    display: none; // hidden on desktop — sidebar handles its own toggle
+  }
+}
+
+// Company identity block
+.topbar__company {
+  display: flex;
+  align-items: center;
+  gap: v.$spacing-2-5;
+  min-width: 0;
+  flex-shrink: 0;
+}
+
+.topbar__company-logo {
+  width: 32px;
+  height: 32px;
+  border-radius: v.$radius-md;
+  border: v.$border-width solid var(--color-border);
+  object-fit: contain;
+  flex-shrink: 0;
+}
+
+.topbar__company-info {
+  display: none;
+  flex-direction: column;
+  min-width: 0;
+  line-height: 1;
+
+  @include m.respond-to(sm) { display: flex; }
+}
+
+.topbar__company-name {
+  font-size: v.$text-base;
+  font-weight: v.$font-semibold;
+  color: var(--color-text-primary);
+  @include m.truncate;
+}
+
+.topbar__company-industry {
+  font-size: 11px;
+  color: var(--color-text-tertiary);
+  @include m.truncate;
+}
+
+// Separator pipe
+.topbar__sep {
+  width: 1px;
+  height: 24px;
+  background: var(--color-border);
+  flex-shrink: 0;
+  display: none;
+
+  @include m.respond-to(md) { display: block; }
+}
+
+// ─── BREADCRUMBS ─────────────────────────────────────────────
+
+.breadcrumbs {
+  display: none;
+  align-items: center;
+  gap: v.$spacing-1-5;
+  font-size: 12px;
+  color: var(--color-text-muted);
+  flex-shrink: 0;
+
+  @include m.respond-to(md) { display: flex; }
+
+  &__segment {
+    display: flex;
+    align-items: center;
+    gap: v.$spacing-1-5;
+  }
+
+  &__link {
+    color: var(--color-text-muted);
+    text-decoration: none;
+    @include m.transition-colors;
+
+    &:hover { color: var(--color-text-primary); }
+  }
+
+  &__current {
+    font-weight: v.$font-medium;
+    color: var(--color-text-secondary);
+  }
+
+  &__chevron {
+    width: 12px;
+    height: 12px;
+    color: var(--color-text-muted);
+    flex-shrink: 0;
+  }
+}
+
+// ─── RIGHT: Search + Actions + User ──────────────────────────
+
+.topbar__right {
+  display: flex;
+  align-items: center;
+  gap: v.$spacing-2;
+  margin-left: auto;
+  flex: 1;
+  justify-content: flex-end;
+  min-width: 0;
+}
+
+// ─── GLOBAL SEARCH ───────────────────────────────────────────
+
+.topbar__search {
+  display: none;
+  position: relative;
+  flex: 1;
+  max-width: 400px;
+
+  @include m.respond-to(md) { display: block; }
+}
+
+.topbar__search-input {
+  width: 100%;
+  height: 36px;
+  padding: 0 v.$spacing-3 0 v.$spacing-9;
+  border: v.$border-width solid var(--color-input-border);
+  border-radius: v.$radius-md;
+  background: var(--color-bg-secondary);
+  color: var(--color-input-text);
+  font-size: v.$text-sm;
+  font-family: v.$font-sans;
+  @include m.transition-colors;
+  cursor: pointer;
+
+  &::placeholder {
+    color: var(--color-input-placeholder);
+  }
+
+  &:hover {
+    border-color: var(--color-input-border-hover);
+    background: var(--color-surface);
+  }
+
+  &:focus,
+  &:focus-visible {
+    outline: none;
+    border-color: var(--color-input-border-focus);
+    background: var(--color-surface);
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+    cursor: text;
+  }
+}
+
+.topbar__search-icon {
+  position: absolute;
+  left: v.$spacing-3;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 16px;
+  height: 16px;
+  color: var(--color-text-muted);
+  pointer-events: none;
+}
+
+.topbar__search-kbd {
+  position: absolute;
+  right: v.$spacing-2-5;
+  top: 50%;
+  transform: translateY(-50%);
+  display: none;
+  align-items: center;
+  height: 20px;
+  padding: 0 v.$spacing-1-5;
+  border: v.$border-width solid var(--color-border);
+  border-radius: v.$radius-sm;
+  background: var(--color-surface);
+  font-family: v.$font-mono;
+  font-size: 10px;
+  color: var(--color-text-muted);
+  pointer-events: none;
+
+  @include m.respond-to(lg) { display: flex; }
+}
+
+// ─── ICON ACTIONS (notifications, etc.) ──────────────────────
+
+.topbar__action-btn {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: v.$radius-md;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  color: var(--color-text-tertiary);
+  flex-shrink: 0;
+  @include m.transition-colors;
+  @include m.focus-ring;
+
+  &:hover {
+    background: var(--color-surface-hover);
+    color: var(--color-text-primary);
+  }
+
+  svg {
+    width: 18px;
+    height: 18px;
+  }
+}
+
+// Notification badge dot
+.topbar__notif-dot {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  width: 8px;
+  height: 8px;
+  border-radius: v.$radius-full;
+  background: #EF4444;
+  border: 2px solid var(--color-topbar-bg);
+}
+
+// ─── NOTIFICATIONS POPOVER ───────────────────────────────────
+
+.notif-popover {
+  position: absolute;
+  top: calc(100% + v.$spacing-2);
+  right: 0;
+  width: 360px;
+  background: var(--color-surface);
+  border: v.$border-width solid var(--color-border);
+  border-radius: v.$radius-xl;
+  box-shadow: var(--shadow-lg);
+  z-index: v.$z-dropdown;
+  overflow: hidden;
+  animation: popover-in v.$duration-slow v.$ease-bounce;
+
+  &__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: v.$spacing-3-5;
+    border-bottom: v.$border-width solid var(--color-border);
+  }
+
+  &__title {
+    font-size: v.$text-sm;
+    font-weight: v.$font-semibold;
+    color: var(--color-text-primary);
+  }
+
+  &__meta {
+    font-size: 11px;
+    color: var(--color-text-tertiary);
+  }
+
+  &__mark-read {
+    font-size: 11px;
+    font-weight: v.$font-semibold;
+    color: var(--color-text-brand);
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    @include m.focus-ring;
+
+    &:hover { text-decoration: underline; text-underline-offset: 3px; }
+  }
+
+  &__list {
+    max-height: 360px;
+    overflow-y: auto;
+    @include m.scrollbar-thin;
+  }
+
+  &__item {
+    display: flex;
+    align-items: flex-start;
+    gap: v.$spacing-3;
+    padding: v.$spacing-3-5;
+    border-bottom: v.$border-width solid var(--color-border);
+    @include m.transition-colors;
+    cursor: pointer;
+
+    &:last-child { border-bottom: none; }
+
+    &:hover { background: var(--color-surface-hover); }
+  }
+
+  &__dot {
+    width: 8px;
+    height: 8px;
+    border-radius: v.$radius-full;
+    flex-shrink: 0;
+    margin-top: v.$spacing-1;
+
+    &--unread { background: var(--color-brand-600); }
+    &--read   { background: var(--color-border); }
+  }
+
+  &__item-content {
+    flex: 1;
+    min-width: 0;
+  }
+
+  &__item-type {
+    @include m.micro-label;
+    font-size: 11px;
+    color: var(--color-text-muted);
+  }
+
+  &__item-subject {
+    font-size: v.$text-sm;
+    font-weight: v.$font-medium;
+    color: var(--color-text-primary);
+    @include m.truncate;
+    margin-top: 2px;
+  }
+
+  &__item-time {
+    font-size: 11px;
+    color: var(--color-text-muted);
+    margin-top: 2px;
+    @include m.num-tabular;
+  }
+
+  &__footer {
+    padding: v.$spacing-3;
+    text-align: center;
+    border-top: v.$border-width solid var(--color-border);
+  }
+
+  &__footer-link {
+    font-size: 11px;
+    font-weight: v.$font-semibold;
+    color: var(--color-text-tertiary);
+    background: none;
+    border: none;
+    cursor: pointer;
+    @include m.focus-ring;
+
+    &:hover { color: var(--color-text-primary); }
+  }
+}
+
+@keyframes popover-in {
+  from {
+    opacity: 0;
+    transform: translateY(-6px) scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+// ─── USER DROPDOWN ───────────────────────────────────────────
+
+.user-menu {
+  position: relative;
+  flex-shrink: 0;
+}
+
+.user-menu__trigger {
+  display: flex;
+  align-items: center;
+  gap: v.$spacing-2-5;
+  padding: v.$spacing-1-5;
+  border-radius: v.$radius-md;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  @include m.transition-colors;
+  @include m.focus-ring;
+
+  &:hover { background: var(--color-surface-hover); }
+}
+
+.user-menu__avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: v.$radius-full;
+  background: var(--color-brand-600);
+  color: white;
+  font-size: 12px;
+  font-weight: v.$font-semibold;
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  user-select: none;
+}
+
+.user-menu__info {
+  display: none;
+  flex-direction: column;
+  text-align: left;
+  min-width: 0;
+
+  @include m.respond-to(lg) { display: flex; }
+}
+
+.user-menu__name {
+  font-size: v.$text-base;
+  font-weight: v.$font-semibold;
+  color: var(--color-text-primary);
+  line-height: v.$leading-tight;
+  @include m.truncate;
+  max-width: 140px;
+}
+
+.user-menu__role {
+  font-size: 11px;
+  color: var(--color-text-tertiary);
+  line-height: v.$leading-tight;
+  @include m.truncate;
+  max-width: 140px;
+}
+
+.user-menu__chevron {
+  display: none;
+  width: 14px;
+  height: 14px;
+  color: var(--color-text-muted);
+  transition: transform v.$duration-base v.$ease-out;
+
+  @include m.respond-to(lg) { display: block; }
+
+  &--open { transform: rotate(180deg); }
+}
+
+// Dropdown menu
+.user-dropdown {
+  position: absolute;
+  top: calc(100% + v.$spacing-1);
+  right: 0;
+  min-width: 240px;
+  background: var(--color-surface);
+  border: v.$border-width solid var(--color-border);
+  border-radius: v.$radius-xl;
+  box-shadow: var(--shadow-lg);
+  z-index: v.$z-dropdown;
+  overflow: hidden;
+  animation: popover-in v.$duration-slow v.$ease-bounce;
+
+  &__header {
+    padding: v.$spacing-3 v.$spacing-3-5;
+    border-bottom: v.$border-width solid var(--color-border);
+  }
+
+  &__header-name {
+    font-size: v.$text-sm;
+    font-weight: v.$font-semibold;
+    color: var(--color-text-primary);
+  }
+
+  &__header-email {
+    font-size: 11px;
+    color: var(--color-text-tertiary);
+    margin-top: 2px;
+  }
+
+  &__list {
+    padding: v.$spacing-1;
+  }
+
+  &__item {
+    display: flex;
+    align-items: center;
+    gap: v.$spacing-2;
+    width: 100%;
+    padding: v.$spacing-1-5 v.$spacing-2-5;
+    border-radius: v.$radius-md;
+    border: none;
+    background: transparent;
+    font-size: v.$text-sm;
+    font-weight: v.$font-normal;
+    color: var(--color-text-secondary);
+    cursor: pointer;
+    text-align: left;
+    @include m.transition-colors;
+    @include m.focus-ring;
+
+    svg {
+      width: 16px;
+      height: 16px;
+      color: var(--color-text-muted);
+      flex-shrink: 0;
+    }
+
+    &:hover {
+      background: var(--color-surface-hover);
+      color: var(--color-text-primary);
+    }
+
+    &--danger {
+      color: #DC2626;
+      svg { color: #DC2626; }
+
+      &:hover {
+        background: #FEF2F2;
+
+        .dark & { background: rgba(220, 38, 38, 0.12); }
+      }
+    }
+  }
+
+  &__sep {
+    height: 1px;
+    background: var(--color-border);
+    margin: v.$spacing-1;
+  }
+}

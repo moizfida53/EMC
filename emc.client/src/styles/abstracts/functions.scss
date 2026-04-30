@@ -1,0 +1,105 @@
+// ============================================================
+// ABSTRACTS / _functions.scss
+// ============================================================
+
+@use 'variables' as v;
+@use 'sass:math';
+@use 'sass:color';
+@use 'sass:string';
+
+// ─── UNIT CONVERSION ─────────────────────────────────────────
+
+/// px to rem
+@function rem($px) {
+  @return math.div($px, 16px) * 1rem;
+}
+
+/// px to em (relative to parent font-size)
+@function em($px, $base: 16px) {
+  @return math.div($px, $base) * 1em;
+}
+
+// ─── COLOR HELPERS ───────────────────────────────────────────
+
+/// Get brand color by shade key
+/// @param {String} $shade - 50|100|200|300|400|500|600|700|800|900|950
+@function brand($shade) {
+  $map: (
+    50:  v.$brand-50,
+    100: v.$brand-100,
+    200: v.$brand-200,
+    300: v.$brand-300,
+    400: v.$brand-400,
+    500: v.$brand-500,
+    600: v.$brand-600,
+    700: v.$brand-700,
+    800: v.$brand-800,
+    900: v.$brand-900,
+    950: v.$brand-950,
+  );
+  @return map-get($map, $shade);
+}
+
+/// Lighten color by mixing with white
+@function tint($color, $pct) {
+  @return color.mix(white, $color, $pct);
+}
+
+/// Darken color by mixing with black
+@function shade($color, $pct) {
+  @return color.mix(black, $color, $pct);
+}
+
+/// Add alpha transparency
+@function alpha($color, $opacity) {
+  @return rgba($color, $opacity);
+}
+
+// ─── SPACING ─────────────────────────────────────────────────
+
+/// Multiply base unit (4px) by factor
+@function space($factor) {
+  @return #{$factor * 4}px;
+}
+
+// ─── CLAMP (fluid typography / spacing) ──────────────────────
+
+/// @param {Number} $min-px   - minimum size in px
+/// @param {Number} $max-px   - maximum size in px
+/// @param {Number} $min-vw   - viewport width where min starts (px)
+/// @param {Number} $max-vw   - viewport width where max reached (px)
+@function fluid($min-px, $max-px, $min-vw: 375px, $max-vw: 1440px) {
+  $slope: math.div(($max-px - $min-px), ($max-vw - $min-vw));
+  $intercept: $min-px - ($slope * $min-vw);
+  @return clamp(
+    #{$min-px},
+    #{$intercept} + #{($slope * 100) * 1vw},
+    #{$max-px}
+  );
+}
+
+// ─── Z-INDEX LOOKUP ──────────────────────────────────────────
+
+@function z($layer) {
+  $map: (
+    base:     v.$z-base,
+    raised:   v.$z-raised,
+    dropdown: v.$z-dropdown,
+    sticky:   v.$z-sticky,
+    overlay:  v.$z-overlay,
+    modal:    v.$z-modal,
+    toast:    v.$z-toast,
+    tooltip:  v.$z-tooltip,
+  );
+  @if map-has-key($map, $layer) {
+    @return map-get($map, $layer);
+  }
+  @warn "Unknown z-index layer: #{$layer}";
+  @return 0;
+}
+
+// ─── STRIP UNIT ──────────────────────────────────────────────
+
+@function strip-unit($value) {
+  @return math.div($value, ($value * 0 + 1));
+}

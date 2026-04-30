@@ -1,33 +1,14 @@
-import { HttpClient } from '@angular/common/http';
-import { Component, OnInit, signal } from '@angular/core';
-export interface WeatherForecast {
-  TemperatureC: number;
-  TemperatureF: number;
-  Summary: string;
-}
+import { Component  } from '@angular/core';
+import { AppShellComponent } from "./layout/app-shell/app-shell";
+import { RouterOutlet } from "@angular/router";
+
 
 @Component({
     selector: 'app-root',
     templateUrl: './app.html',
-    styleUrl: './app.css'
+    styleUrl: './app.scss',
+    imports: [AppShellComponent, RouterOutlet]
 })
-export class App implements OnInit {
-  public forecasts: WeatherForecast[] = [];
+export class App {
 
-  constructor(private http: HttpClient) {}
-
-  ngOnInit() {
-    this.getForecasts();
-  }
-
-  getForecasts() {
-    this.http.get<WeatherForecast[]>('/weatherforecast')
-      .pipe()
-      .subscribe({
-        next: (result) => this.forecasts = result,
-        error: (err) => console.error(err)
-      });
-  }
-
-  protected readonly title = signal('emc.client');
 }

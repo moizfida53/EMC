@@ -28,4 +28,10 @@
     </ProjectReference>
   </ItemGroup>
 
+  <ItemGroup>
+    <Reference Include="D365 Shared Library">
+      <HintPath>Libs\D365 Shared Library.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
 </Project>

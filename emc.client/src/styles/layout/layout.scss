@@ -1,0 +1,258 @@
+// ============================================================
+// LAYOUT / _layout.scss
+// App shell layout: sidebar + topbar + content area.
+// Container, grid, spacing utilities.
+// ============================================================
+
+@use '../abstracts/variables' as v;
+@use '../abstracts/mixins' as m;
+
+// ─── APP SHELL ───────────────────────────────────────────────
+
+.app-shell {
+  display: flex;
+  height: 100vh;
+  width: 100vw;
+  overflow: hidden;
+  background-color: var(--color-bg);
+}
+
+// Main column (right of sidebar)
+.app-main {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-width: 0;           // prevent flex overflow
+  height: 100%;
+  transition: margin-left v.$duration-slow v.$ease-out;
+}
+
+// Content scroll area
+.app-content {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  background-color: var(--color-bg);
+  @include m.scrollbar-thin;
+
+  &__inner {
+    max-width: v.$content-max-width;
+    width: 100%;
+    margin-inline: auto;
+    padding: v.$spacing-6 v.$spacing-6;
+
+    @include m.respond-to(lg) {
+      padding: v.$spacing-8 v.$spacing-10;
+    }
+  }
+}
+
+// ─── CONTAINER ───────────────────────────────────────────────
+
+.container {
+  width: 100%;
+  margin-inline: auto;
+  padding-inline: v.$spacing-4;
+
+  @include m.respond-to(sm) { padding-inline: v.$spacing-6; }
+  @include m.respond-to(lg) { padding-inline: v.$spacing-8; max-width: v.$content-max-width; }
+}
+
+.container-fluid {
+  width: 100%;
+  padding-inline: v.$spacing-4;
+
+  @include m.respond-to(sm) { padding-inline: v.$spacing-6; }
+  @include m.respond-to(lg) { padding-inline: v.$spacing-8; }
+}
+
+// ─── SECTION HEADER ──────────────────────────────────────────
+
+.section-header {
+  display: flex;
+  flex-direction: column;
+  gap: v.$spacing-3;
+
+  @include m.respond-to(md) {
+    flex-direction: row;
+    align-items: flex-end;
+    justify-content: space-between;
+  }
+
+  &__content {
+    display: flex;
+    flex-direction: column;
+    gap: v.$spacing-1-5;
+  }
+
+  &__eyebrow {
+    @include m.micro-label;
+    color: var(--color-brand-700);
+  }
+
+  &__title {
+    font-family: v.$font-display;
+    font-size: v.$text-5xl;
+    font-weight: v.$font-bold;
+    letter-spacing: v.$tracking-tight;
+    color: var(--color-text-primary);
+    line-height: v.$leading-tight;
+  }
+
+  &__description {
+    font-size: v.$text-sm;
+    color: var(--color-text-tertiary);
+    line-height: v.$leading-relaxed;
+    max-width: 640px;
+  }
+
+  &__actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: v.$spacing-2;
+    flex-shrink: 0;
+  }
+}
+
+// ─── CSS GRID UTILITIES ──────────────────────────────────────
+
+.grid {
+  display: grid;
+}
+
+// Responsive column grids
+.grid-cols-1  { grid-template-columns: repeat(1,  1fr); }
+.grid-cols-2  { grid-template-columns: repeat(2,  1fr); }
+.grid-cols-3  { grid-template-columns: repeat(3,  1fr); }
+.grid-cols-4  { grid-template-columns: repeat(4,  1fr); }
+.grid-cols-6  { grid-template-columns: repeat(6,  1fr); }
+.grid-cols-12 { grid-template-columns: repeat(12, 1fr); }
+
+// KPI row: 2 cols on mobile → 4 on desktop
+.kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: v.$spacing-4;
+
+  @include m.respond-to(lg) {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+// 2-col split: content left, rail right
+.split-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: v.$spacing-6;
+
+  @include m.respond-to(lg) {
+    grid-template-columns: 1.4fr 1fr;
+  }
+}
+
+// Card grid (auto-fit)
+.card-grid {
+  @include m.grid-auto-fit(280px, v.$spacing-4);
+}
+
+// ─── GAP UTILITIES ───────────────────────────────────────────
+
+.gap-1  { gap: v.$spacing-1; }
+.gap-2  { gap: v.$spacing-2; }
+.gap-3  { gap: v.$spacing-3; }
+.gap-4  { gap: v.$spacing-4; }
+.gap-5  { gap: v.$spacing-5; }
+.gap-6  { gap: v.$spacing-6; }
+.gap-8  { gap: v.$spacing-8; }
+.gap-10 { gap: v.$spacing-10; }
+
+// ─── FLEX UTILITIES ──────────────────────────────────────────
+
+.flex         { display: flex; }
+.flex-col     { flex-direction: column; }
+.flex-wrap    { flex-wrap: wrap; }
+.items-start  { align-items: flex-start; }
+.items-center { align-items: center; }
+.items-end    { align-items: flex-end; }
+.justify-start   { justify-content: flex-start; }
+.justify-center  { justify-content: center; }
+.justify-between { justify-content: space-between; }
+.justify-end     { justify-content: flex-end; }
+.flex-1       { flex: 1; }
+.flex-shrink-0{ flex-shrink: 0; }
+.min-w-0      { min-width: 0; }
+
+// ─── SPACING UTILITIES ───────────────────────────────────────
+
+// Margin / Padding scale (4px base)
+$space-scale: (0: 0, 1: v.$spacing-1, 2: v.$spacing-2, 3: v.$spacing-3,
+               4: v.$spacing-4, 5: v.$spacing-5, 6: v.$spacing-6,
+               8: v.$spacing-8, 10: v.$spacing-10, 12: v.$spacing-12,
+               16: v.$spacing-16);
+
+@each $key, $val in $space-scale {
+  .mt-#{$key} { margin-top:     $val; }
+  .mb-#{$key} { margin-bottom:  $val; }
+  .ml-#{$key} { margin-left:    $val; }
+  .mr-#{$key} { margin-right:   $val; }
+  .mx-#{$key} { margin-inline:  $val; }
+  .my-#{$key} { margin-block:   $val; }
+  .m-#{$key}  { margin:         $val; }
+
+  .pt-#{$key} { padding-top:    $val; }
+  .pb-#{$key} { padding-bottom: $val; }
+  .pl-#{$key} { padding-left:   $val; }
+  .pr-#{$key} { padding-right:  $val; }
+  .px-#{$key} { padding-inline: $val; }
+  .py-#{$key} { padding-block:  $val; }
+  .p-#{$key}  { padding:        $val; }
+}
+
+// ─── DIVIDERS ────────────────────────────────────────────────
+
+.divider {
+  height: 1px;
+  width: 100%;
+  background: var(--color-border);
+  flex-shrink: 0;
+
+  &--vertical {
+    width: 1px;
+    height: auto;
+    align-self: stretch;
+  }
+}
+
+// ─── PAGE FOOTER ─────────────────────────────────────────────
+
+.page-footer {
+  padding: v.$spacing-3 v.$spacing-6;
+  text-align: center;
+  font-size: v.$text-xs;
+  color: var(--color-text-muted);
+
+  @include m.respond-to(lg) {
+    padding-inline: v.$spacing-10;
+  }
+}
+
+// ─── BRAND GRADIENT (login page panel) ───────────────────────
+
+.brand-panel {
+  background: radial-gradient(
+    120% 80% at 0% 0%,
+    #1e5fcb 0%,
+    #16327a 55%,
+    #0c1f4d 100%
+  );
+  position: relative;
+  overflow: hidden;
+  color: white;
+
+  &__overlay {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+  }
+}

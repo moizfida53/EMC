@@ -1,0 +1,148 @@
+// ============================================================
+// THEMES / _light.scss
+// Light mode — CSS custom properties bound to SCSS tokens.
+// Applied on :root and body (default).
+// ============================================================
+
+@use '../abstracts/variables' as v;
+
+:root,
+.theme-light {
+  color-scheme: light;
+
+  // ── BRAND ────────────────────────────────────────────────
+  --color-brand-50:  #{v.$brand-50};
+  --color-brand-100: #{v.$brand-100};
+  --color-brand-200: #{v.$brand-200};
+  --color-brand-300: #{v.$brand-300};
+  --color-brand-400: #{v.$brand-400};
+  --color-brand-500: #{v.$brand-500};
+  --color-brand-600: #{v.$brand-600};   // primary
+  --color-brand-700: #{v.$brand-700};   // hover / accent
+  --color-brand-800: #{v.$brand-800};
+  --color-brand-900: #{v.$brand-900};
+  --color-brand-950: #{v.$brand-950};
+
+  // ── SEMANTIC ─────────────────────────────────────────────
+  --color-success-50:  #{v.$success-50};
+  --color-success-100: #{v.$success-100};
+  --color-success-600: #{v.$success-600};
+  --color-success-700: #{v.$success-700};
+
+  --color-warning-50:  #{v.$warning-50};
+  --color-warning-100: #{v.$warning-100};
+  --color-warning-600: #{v.$warning-600};
+  --color-warning-700: #{v.$warning-700};
+
+  --color-danger-50:  #{v.$danger-50};
+  --color-danger-100: #{v.$danger-100};
+  --color-danger-600: #{v.$danger-600};
+  --color-danger-700: #{v.$danger-700};
+
+  // ── BACKGROUND ───────────────────────────────────────────
+  --color-bg:            #{v.$slate-50};       // page background
+  --color-bg-secondary:  #{v.$slate-100};
+  --color-surface:       #{v.$white};          // card / panel
+  --color-surface-raised:#{v.$white};          // elevated surface
+  --color-surface-hover: #{v.$slate-50};
+  --color-overlay:       rgba(15, 23, 42, 0.4);
+
+  // ── SIDEBAR ──────────────────────────────────────────────
+  --color-sidebar-bg:        #{v.$white};
+  --color-sidebar-border:    #{v.$slate-200};
+  --color-sidebar-item-hover:#{v.$slate-50};
+  --color-sidebar-item-active-bg: rgba(37, 99, 235, 0.08);
+  --color-sidebar-item-active-text: #{v.$brand-700};
+  --color-sidebar-icon:      #{v.$slate-400};
+  --color-sidebar-icon-active: #{v.$brand-600};
+  --color-sidebar-text:      #{v.$slate-600};
+  --color-sidebar-label:     #{v.$slate-400};
+
+  // ── TOPBAR ───────────────────────────────────────────────
+  --color-topbar-bg:     #{v.$white};
+  --color-topbar-border: #{v.$slate-200};
+
+  // ── TEXT ─────────────────────────────────────────────────
+  --color-text-primary:   #{v.$slate-900};
+  --color-text-secondary: #{v.$slate-700};
+  --color-text-tertiary:  #{v.$slate-500};
+  --color-text-muted:     #{v.$slate-400};
+  --color-text-inverse:   #{v.$white};
+  --color-text-brand:     #{v.$brand-700};
+
+  // ── BORDER ───────────────────────────────────────────────
+  --color-border:       #{v.$slate-200};
+  --color-border-focus: #{v.$brand-600};
+  --color-border-brand: #{v.$brand-200};
+
+  // ── INPUT ────────────────────────────────────────────────
+  --color-input-bg:          #{v.$white};
+  --color-input-border:      #{v.$slate-200};
+  --color-input-border-hover:#{v.$slate-300};
+  --color-input-border-focus:#{v.$brand-500};
+  --color-input-placeholder: #{v.$slate-400};
+  --color-input-text:        #{v.$slate-900};
+  --color-input-label:       #{v.$slate-500};
+
+  // ── BUTTON ───────────────────────────────────────────────
+  --color-btn-primary-bg:      #{v.$brand-600};
+  --color-btn-primary-hover:   #{v.$brand-700};
+  --color-btn-primary-text:    #{v.$white};
+  --color-btn-secondary-bg:    #{v.$white};
+  --color-btn-secondary-border:#{v.$slate-200};
+  --color-btn-secondary-text:  #{v.$slate-700};
+  --color-btn-ghost-hover:     #{v.$slate-100};
+
+  // ── KPI CARD ─────────────────────────────────────────────
+  --color-kpi-active-ring:  #{v.$brand-200};
+  --color-kpi-active-bar:   #{v.$brand-600};
+
+  // ── PILL / BADGE ─────────────────────────────────────────
+  --color-pill-brand-bg:      #{v.$brand-50};
+  --color-pill-brand-text:    #{v.$brand-700};
+  --color-pill-brand-ring:    #{v.$brand-100};
+  --color-pill-success-bg:    #{v.$success-50};
+  --color-pill-success-text:  #{v.$success-700};
+  --color-pill-warning-bg:    #{v.$warning-50};
+  --color-pill-warning-text:  #{v.$warning-700};
+  --color-pill-danger-bg:     #{v.$danger-50};
+  --color-pill-danger-text:   #{v.$danger-700};
+  --color-pill-muted-bg:      #{v.$slate-100};
+  --color-pill-muted-text:    #{v.$slate-500};
+
+  // ── CHART ────────────────────────────────────────────────
+  --color-chart-1: #{v.$brand-600};
+  --color-chart-2: #{v.$brand-400};
+  --color-chart-3: #{v.$brand-800};
+  --color-chart-4: #{v.$success-500};
+  --color-chart-5: #{v.$warning-500};
+
+  // ── SHADOW ───────────────────────────────────────────────
+  --shadow-xs:  #{v.$shadow-xs};
+  --shadow-sm:  #{v.$shadow-sm};
+  --shadow-md:  #{v.$shadow-md};
+  --shadow-lg:  #{v.$shadow-lg};
+  --shadow-xl:  #{v.$shadow-xl};
+  --shadow-focus: #{v.$shadow-focus};
+
+  // ── RADIUS ───────────────────────────────────────────────
+  --radius-sm:   #{v.$radius-sm};
+  --radius-md:   #{v.$radius-md};
+  --radius-lg:   #{v.$radius-lg};
+  --radius-xl:   #{v.$radius-xl};
+  --radius-full: #{v.$radius-full};
+
+  // ── SIDEBAR DIMENSIONS ───────────────────────────────────
+  --sidebar-width:           #{v.$sidebar-width-expanded};
+  --sidebar-width-collapsed: #{v.$sidebar-width-collapsed};
+  --topbar-height:           #{v.$topbar-height};
+
+  // ── TRANSITION ───────────────────────────────────────────
+  --duration-fast:   #{v.$duration-fast};
+  --duration-base:   #{v.$duration-base};
+  --duration-slow:   #{v.$duration-slow};
+  --duration-slower: #{v.$duration-slower};
+  --ease-out:        #{v.$ease-out};
+  --ease-in-out:     #{v.$ease-in-out};
+  --ease-bounce:     #{v.$ease-bounce};
+}
