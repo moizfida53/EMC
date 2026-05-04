@@ -1,1 +1,58 @@
-<p>article-detail works!</p>
+<!-- src/app/features/knowledge/components/article-detail/article-detail.html -->
+<div class="article-detail">
+
+  <!-- Back link -->
+  <button class="article-detail__back" type="button" (click)="back.emit()">
+    ← Back to knowledge base
+  </button>
+
+  <!-- Article body -->
+  <article class="article-detail__card surface-elev">
+
+    <!-- Header -->
+    <div class="article-detail__header">
+      <div class="article-detail__meta">
+        <app-pill tone="brand">{{ subjectTitle(article().subjectId) }}</app-pill>
+        <span class="article-detail__date num-tabular">
+          Published {{ article().publishOn | formatDate }}
+        </span>
+      </div>
+
+      <h1 class="article-detail__title">{{ article().title }}</h1>
+
+      <div class="article-detail__stats">
+        <span class="article-detail__stat">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+          {{ article().views.toLocaleString() }} views
+        </span>
+        <span class="article-detail__stat">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3z"/></svg>
+          {{ article().helpful }}% found this helpful
+        </span>
+      </div>
+    </div>
+
+    <div class="article-detail__divider"></div>
+
+    <!-- Content (HTML from mock — sanitised in production via DomSanitizer) -->
+    <div
+      class="article-detail__content"
+      [innerHTML]="article().contentHtml">
+    </div>
+
+    <!-- Helpful CTA -->
+    <div class="article-detail__feedback">
+      <p class="micro-label">Was this article helpful?</p>
+      <div class="article-detail__feedback-btns">
+        <button class="article-detail__feedback-btn article-detail__feedback-btn--yes" type="button">
+          Yes, it solved my issue
+        </button>
+        <button class="article-detail__feedback-btn article-detail__feedback-btn--no" type="button">
+          Not quite — open a ticket
+        </button>
+      </div>
+    </div>
+
+  </article>
+
+</div>

@@ -1,0 +1,84 @@
+// src/app/features/support/support.scss
+@use '../../../styles/abstracts/variables' as v;
+@use '../../../styles/abstracts/mixins' as m;
+
+:host { display: block; }
+
+.support {
+  display: flex;
+  flex-direction: column;
+  gap: v.$spacing-6;
+}
+
+// ── Toolbar ───────────────────────────────────────────────────
+
+.support__toolbar {
+  display: flex;
+  flex-direction: column;
+  gap: v.$spacing-3;
+  padding: v.$spacing-3-5;
+
+  @include m.respond-to(md) {
+    flex-direction: row;
+    align-items: center;
+  }
+}
+
+.support__search-wrap {
+  position: relative;
+  flex: 1;
+}
+
+.support__search-icon {
+  position: absolute;
+  left: v.$spacing-3;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 16px;
+  height: 16px;
+  color: var(--color-text-muted);
+  pointer-events: none;
+}
+
+.support__search-input {
+  width: 100%;
+  height: 36px;
+  padding: 0 v.$spacing-3 0 v.$spacing-9;
+  border: 1px solid var(--color-input-border);
+  border-radius: v.$radius-md;
+  background: var(--color-bg-secondary);
+  color: var(--color-input-text);
+  font-size: v.$text-sm;
+  font-family: v.$font-sans;
+  @include m.transition-colors;
+
+  &::placeholder { color: var(--color-input-placeholder); }
+
+  &:focus {
+    outline: none;
+    background: var(--color-surface);
+    border-color: var(--color-input-border-focus);
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+  }
+}
+
+.support__filters {
+  display: flex;
+  gap: v.$spacing-2;
+}
+
+.support__filter-select {
+  height: 36px;
+  padding: 0 v.$spacing-3;
+  border: 1px solid var(--color-input-border);
+  border-radius: v.$radius-md;
+  background: var(--color-surface);
+  color: var(--color-input-text);
+  font-size: v.$text-sm;
+  font-family: v.$font-sans;
+  cursor: pointer;
+  @include m.transition-colors;
+  @include m.focus-ring;
+
+  &:hover { border-color: var(--color-input-border-hover); }
+}

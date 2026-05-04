@@ -1,0 +1,74 @@
+// src/app/features/dashboard/components/welcome-banner/welcome-banner.scss
+@use '../../../../../styles/abstracts/variables' as v;
+@use '../../../../../styles/abstracts/mixins' as m;
+
+:host { display: block; }
+
+.welcome-banner {
+  position: relative;
+  overflow: hidden;
+  padding: v.$spacing-6 v.$spacing-7;
+
+  @include m.respond-to(md) { padding: v.$spacing-8 v.$spacing-10; }
+
+  // ── Decorative dot-grid on the right ──────────────────────
+&__pattern {
+  position: absolute;
+  inset: 0;
+
+  background:
+    radial-gradient(
+      circle at 80% 30%,
+      rgba(59, 130, 246, 0.15),
+      transparent 40%
+    ),
+    radial-gradient(
+      circle at 70% 70%,
+      rgba(37, 99, 235, 0.10),
+      transparent 50%
+    );
+
+  filter: blur(20px);
+}
+
+  &__body { position: relative; z-index: 1; }
+
+  &__content {
+    max-width: 640px;
+    display: flex;
+    flex-direction: column;
+    gap: v.$spacing-3;
+  }
+
+  &__title {
+    font-family: v.$font-display;
+    font-size: v.$text-4xl;
+    font-weight: v.$font-bold;
+    letter-spacing: v.$tracking-tight;
+    color: var(--color-text-primary);
+    line-height: v.$leading-tight;
+    margin: 0;
+
+    @include m.respond-to(md) { font-size: v.$text-5xl; }
+  }
+
+  &__sub {
+    font-size: v.$text-sm;
+    color: var(--color-text-tertiary);
+    line-height: v.$leading-relaxed;
+    margin: 0;
+
+    strong       { color: var(--color-text-primary); font-weight: v.$font-semibold; }
+    .text-success { color: var(--color-success-600); }
+    .text-warning { color: var(--color-warning-600); }
+  }
+
+  &__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: v.$spacing-2;
+    margin-top: v.$spacing-1;
+
+    a { text-decoration: none; }
+  }
+}

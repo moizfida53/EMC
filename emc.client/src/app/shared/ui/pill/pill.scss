@@ -1,0 +1,63 @@
+// emc.client/src/app/shared/ui/pill/pill.scss
+@use '../../../../styles/abstracts/variables' as v;
+@use '../../../../styles/abstracts/mixins' as m;
+
+:host {
+  display: inline-flex; // so the host doesn't break inline layout
+}
+
+.pill {
+  @include m.pill-base;
+  border: 1px solid transparent;
+
+  // ── Dot indicator ──────────────────────────────────────────
+  &__dot {
+    width: 6px;
+    height: 6px;
+    border-radius: v.$radius-full;
+    flex-shrink: 0;
+  }
+
+  // ── Tones ──────────────────────────────────────────────────
+  &--brand {
+    background: var(--color-pill-brand-bg);
+    color: var(--color-pill-brand-text);
+    border-color: var(--color-pill-brand-ring);
+    .pill__dot { background: var(--color-brand-600); }
+  }
+
+  &--success {
+    background: var(--color-pill-success-bg);
+    color: var(--color-pill-success-text);
+    border-color: rgba(16, 185, 129, 0.15);
+    .pill__dot { background: var(--color-success-600); }
+  }
+
+  &--warning {
+    background: var(--color-pill-warning-bg);
+    color: var(--color-pill-warning-text);
+    border-color: rgba(245, 158, 11, 0.15);
+    .pill__dot { background: var(--color-warning-600); }
+  }
+
+  &--danger {
+    background: var(--color-pill-danger-bg);
+    color: var(--color-pill-danger-text);
+    border-color: rgba(239, 68, 68, 0.15);
+    .pill__dot { background: var(--color-danger-600); }
+  }
+
+  &--muted {
+    background: var(--color-pill-muted-bg);
+    color: var(--color-pill-muted-text);
+    border-color: var(--color-border);
+    .pill__dot { background: var(--color-text-muted); }
+  }
+
+  &--neutral {
+    background: var(--color-surface-hover);
+    color: var(--color-text-secondary);
+    border-color: var(--color-border);
+    .pill__dot { background: var(--color-text-tertiary); }
+  }
+}

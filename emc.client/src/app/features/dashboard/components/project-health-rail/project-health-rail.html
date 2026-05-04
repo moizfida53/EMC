@@ -1,1 +1,31 @@
-<p>project-health-rail works!</p>
+<!-- src/app/features/dashboard/components/project-health-rail/project-health-rail.html -->
+<div class="health-rail surface-elev">
+
+  <div class="health-rail__header">
+    <div>
+      <p class="micro-label">Engagement Health</p>
+      <h3 class="health-rail__title">Projects at a glance</h3>
+    </div>
+    <a routerLink="/projects" class="health-rail__link">Open portfolio</a>
+  </div>
+
+  <div class="health-rail__list">
+    <div *ngFor="let p of projects" class="health-rail__item">
+      <div class="health-rail__item-top">
+        <div class="health-rail__item-name truncate">{{ p.name }}</div>
+        <app-status-badge [value]="p.health" />
+      </div>
+      <div class="health-rail__item-dates">
+        {{ p.startDate | formatDate }} → {{ p.endDate | formatDate }}
+      </div>
+      <div class="health-rail__item-bar">
+        <app-mini-bar
+          [value]="p.percentCompleted"
+          [max]="100"
+          [tone]="tone(p.health)" />
+        <span class="health-rail__item-pct num-tabular">{{ p.percentCompleted }}%</span>
+      </div>
+    </div>
+  </div>
+
+</div>

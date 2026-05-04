@@ -1,1 +1,40 @@
-<p>activity-feed works!</p>
+<!-- src/app/features/dashboard/components/activity-feed/activity-feed.html -->
+<div class="activity-feed surface-elev">
+
+  <div class="activity-feed__header">
+    <div>
+      <p class="micro-label">Recent Activity</p>
+      <h3 class="activity-feed__title">What's been happening</h3>
+    </div>
+    <button class="activity-feed__all-link" type="button">View all</button>
+  </div>
+
+  <div class="activity-feed__list">
+    <div
+      *ngFor="let a of activities; let last = last"
+      class="activity-feed__item">
+
+      <!-- Timeline dot + vertical connector -->
+      <div class="activity-feed__track">
+        <div class="activity-feed__dot"></div>
+        <div *ngIf="!last" class="activity-feed__line"></div>
+      </div>
+
+      <!-- Content -->
+      <div class="activity-feed__content" [class.activity-feed__content--pb]="!last">
+        <div class="activity-feed__meta">
+          <app-pill [tone]="tone(a.type)" [dot]="!a.read">{{ a.type }}</app-pill>
+          <span class="activity-feed__time num-tabular">
+            {{ a.scheduledStart | relativeTime }}
+          </span>
+        </div>
+        <p class="activity-feed__subject">{{ a.subject }}</p>
+        <p class="activity-feed__date num-tabular">
+          {{ a.scheduledStart | formatDate:'datetime' }}
+        </p>
+      </div>
+
+    </div>
+  </div>
+
+</div>

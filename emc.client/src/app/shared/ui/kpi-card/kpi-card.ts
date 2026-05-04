@@ -1,55 +1,51 @@
-import { ChangeDetectionStrategy, Component, computed, input } from '@angular/core';
-import { NgClass } from '@angular/common';
+// emc.client/src/app/shared/ui/kpi-card/kpi-card.ts
+import {
+  Component,
+  ChangeDetectionStrategy,
+  input,
+  computed,
+} from '@angular/core';
+import { CommonModule } from '@angular/common';
+
+export type TrendDir = 'up' | 'down' | 'flat';
+
+export interface Trend {
+  dir:  TrendDir;
+  text: string;
+}
+
+export type MiniBarTone = 'brand' | 'success' | 'warning' | 'danger';
 
 @Component({
   selector: 'app-kpi-card',
   standalone: true,
-  imports: [NgClass],
+  imports: [CommonModule],
+  templateUrl: './kpi-card.html',
+  styleUrl: './kpi-card.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  template: `
-    <div class="surface-elev relative overflow-hidden p-5 transition-shadow hover:shadow-md"
-         [class.ring-1]="active()"
-         [class.ring-brand-200]="active()">
-      @if (active()) {
-        <div class="absolute inset-y-3 left-0 w-[3px] rounded-r-md bg-brand-600"></div>
-      }
-      <div class="flex items-start justify-between gap-3">
-        <div class="micro-label">{{ label() }}</div>
-        @if (trend()) {
-          <span class="text-[11px] font-semibold" [ngClass]="trendClass()">
-            {{ trend()!.text }}
-          </span>
-        }
-      </div>
-      <div class="mt-2 flex items-baseline gap-1.5">
-        <div class="font-display text-3xl font-bold tracking-tight text-slate-900 num-tabular">
-          {{ value() }}
-        </div>
-        @if (unit()) {
-          <div class="text-sm text-slate-500">{{ unit() }}</div>
-        }
-      </div>
-      @if (hint()) {
-        <div class="mt-1 text-xs text-slate-500">{{ hint() }}</div>
-      }
-      <ng-content />
-    </div>
-  `
 })
-export class KpiCardComponent {
-  label = input.required<string>();
-  value = input.required<string | number>();
-  unit = input<string>();
-  hint = input<string>();
+export class KpiCard {
+  // ── Inputs ────────────────────────────────────────────────
+  label  = input.required<string>();
+  value  = input.required<string | number>();
+  unit   = input<string | null>(null);
+  hint   = input<string | null>(null);
   active = input<boolean>(false);
-  trend = input<{ dir: 'up' | 'down' | 'flat'; text: string }>();
+  trend  = input<Trend | null>(null);
 
-  trendClass = computed(() => {
+  // ── Computed ──────────────────────────────────────────────
+  protected readonly hostClasses = computed(() => ({
+    'kpi-card':         true,
+    'kpi-card--active': this.active(),
+  }));
+
+  protected readonly trendClasses = computed(() => {
     const dir = this.trend()?.dir;
     return {
-      'text-emerald-600': dir === 'up',
-      'text-rose-600': dir === 'down',
-      'text-slate-500': dir === 'flat',
+      'kpi-card__trend':        true,
+      'kpi-card__trend--up':    dir === 'up',
+      'kpi-card__trend--down':  dir === 'down',
+      'kpi-card__trend--flat':  dir === 'flat',
     };
   });
 }

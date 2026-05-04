@@ -1,0 +1,57 @@
+// emc.client/src/app/shared/ui/section-header/section-header.scss
+@use '../../../../styles/abstracts/variables' as v;
+@use '../../../../styles/abstracts/mixins' as m;
+
+:host {
+  display: block;
+}
+
+.section-header {
+  display: flex;
+  flex-direction: column;
+  gap: v.$spacing-3;
+
+  @include m.respond-to(md) {
+    flex-direction: row;
+    align-items: flex-end;
+    justify-content: space-between;
+  }
+
+  &__content {
+    display: flex;
+    flex-direction: column;
+    gap: v.$spacing-1-5;
+    min-width: 0;
+  }
+
+  &__eyebrow {
+    @include m.micro-label;
+    color: var(--color-brand-700);
+  }
+
+  &__title {
+    font-family: v.$font-display;
+    font-size: v.$text-5xl;
+    font-weight: v.$font-bold;
+    letter-spacing: v.$tracking-tight;
+    color: var(--color-text-primary);
+    line-height: v.$leading-tight;
+    margin: 0; // reset browser heading margin
+  }
+
+  &__description {
+    font-size: v.$text-sm;
+    color: var(--color-text-tertiary);
+    line-height: v.$leading-relaxed;
+    max-width: 640px;
+    margin: 0;
+  }
+
+  &__actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: v.$spacing-2;
+    flex-shrink: 0;
+  }
+}

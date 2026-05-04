@@ -1,0 +1,25 @@
+// emc.client/src/app/shared/ui/mini-bar/mini-bar.scss
+@use '../../../../styles/abstracts/variables' as v;
+
+:host {
+  display: block;
+}
+
+.mini-bar {
+  height: 6px;
+  width: 100%;
+  overflow: hidden;
+  border-radius: v.$radius-full;
+  background: var(--color-border);
+
+  &__fill {
+    height: 100%;
+    border-radius: v.$radius-full;
+    transition: width v.$duration-slower v.$ease-bounce;
+
+    &--brand   { background: var(--color-brand-600); }
+    &--success { background: var(--color-success-600); }
+    &--warning { background: var(--color-warning-600); }
+    &--danger  { background: var(--color-danger-600); }
+  }
+}

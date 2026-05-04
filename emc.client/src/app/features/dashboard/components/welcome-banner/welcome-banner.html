@@ -1,1 +1,40 @@
-<p>welcome-banner works!</p>
+<!-- src/app/features/dashboard/components/welcome-banner/welcome-banner.html -->
+<section class="welcome-banner surface-elev">
+
+  <!-- Decorative pattern (CSS background) -->
+  <div class="welcome-banner__pattern" aria-hidden="true"></div>
+
+  <div class="welcome-banner__body">
+    <div class="welcome-banner__content">
+      <p class="micro-label" style="color: var(--color-brand-700)">
+        Welcome back · {{ today }}
+      </p>
+      <h1 class="welcome-banner__title">
+        Welcome back, {{ firstname() }}.
+      </h1>
+      <p class="welcome-banner__sub">
+        Your engagement is
+        <strong class="text-success">healthy</strong> overall.
+        You have
+        <strong>{{ activeTickets() }} active tickets</strong>
+        and
+        <strong class="text-warning">{{ expiringLicenses() }} licences</strong>
+        approaching renewal in the next 30 days.
+      </p>
+
+      <div class="welcome-banner__actions">
+        <a routerLink="/support">
+          <app-button variant="primary">
+            Open new ticket
+          </app-button>
+        </a>
+        <a routerLink="/projects">
+          <app-button variant="secondary">
+            View project portfolio
+          </app-button>
+        </a>
+      </div>
+    </div>
+  </div>
+
+</section>

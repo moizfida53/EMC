@@ -1,0 +1,153 @@
+// src/app/features/knowledge/components/article-detail/article-detail.scss
+@use '../../../../../styles/abstracts/variables' as v;
+@use '../../../../../styles/abstracts/mixins' as m;
+
+:host { display: block; }
+
+.article-detail {
+  display: flex;
+  flex-direction: column;
+  gap: v.$spacing-6;
+
+  &__back {
+    display: inline-flex;
+    align-items: center;
+    gap: v.$spacing-1-5;
+    font-size: 12.5px;
+    font-weight: v.$font-medium;
+    color: var(--color-text-brand);
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    @include m.focus-ring;
+    &:hover { text-decoration: underline; text-underline-offset: 3px; }
+  }
+
+  &__card {
+    padding: v.$spacing-8;
+    display: flex;
+    flex-direction: column;
+    gap: v.$spacing-6;
+  }
+
+  &__header { display: flex; flex-direction: column; gap: v.$spacing-3; }
+
+  &__meta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: v.$spacing-2;
+  }
+
+  &__date {
+    font-size: v.$text-xs;
+    color: var(--color-text-muted);
+  }
+
+  &__title {
+    font-family: v.$font-display;
+    font-size: v.$text-5xl;
+    font-weight: v.$font-bold;
+    letter-spacing: v.$tracking-tight;
+    line-height: v.$leading-tight;
+    color: var(--color-text-primary);
+    margin: 0;
+    max-width: 760px;
+  }
+
+  &__stats {
+    display: flex;
+    flex-wrap: wrap;
+    gap: v.$spacing-4;
+  }
+
+  &__stat {
+    display: inline-flex;
+    align-items: center;
+    gap: v.$spacing-1-5;
+    font-size: v.$text-xs;
+    color: var(--color-text-muted);
+
+    svg { width: 14px; height: 14px; }
+  }
+
+  // ── Editorial divider ─────────────────────────────────────
+  &__divider {
+    @include m.editorial-divider;
+  }
+
+  // ── Article prose ─────────────────────────────────────────
+  &__content {
+    font-size: 14.5px;
+    line-height: v.$leading-loose;
+    color: var(--color-text-secondary);
+    max-width: 760px;
+
+    h3 {
+      font-family: v.$font-display;
+      font-size: v.$text-xl;
+      font-weight: v.$font-semibold;
+      color: var(--color-text-primary);
+      margin: v.$spacing-6 0 v.$spacing-2;
+    }
+
+    p  { margin: 0 0 v.$spacing-4; }
+    ul, ol { padding-left: v.$spacing-6; margin: 0 0 v.$spacing-4; }
+    li { margin-bottom: v.$spacing-1; }
+
+    strong { font-weight: v.$font-semibold; color: var(--color-text-primary); }
+
+    code {
+      background: var(--color-surface-hover);
+      border-radius: v.$radius-sm;
+      padding: 2px v.$spacing-1-5;
+      font-size: 12.5px;
+      font-family: v.$font-mono;
+      color: var(--color-brand-700);
+    }
+  }
+
+  // ── Feedback CTA ─────────────────────────────────────────
+  &__feedback {
+    padding: v.$spacing-4;
+    border-radius: v.$radius-lg;
+    border: 1px solid var(--color-border);
+    background: var(--color-surface-hover);
+    display: flex;
+    flex-direction: column;
+    gap: v.$spacing-2-5;
+  }
+
+  &__feedback-btns {
+    display: flex;
+    flex-wrap: wrap;
+    gap: v.$spacing-2;
+  }
+
+  &__feedback-btn {
+    padding: v.$spacing-1-5 v.$spacing-3;
+    border-radius: v.$radius-md;
+    border: 1px solid var(--color-border);
+    background: var(--color-surface);
+    font-size: v.$text-sm;
+    font-weight: v.$font-medium;
+    font-family: v.$font-sans;
+    color: var(--color-text-secondary);
+    cursor: pointer;
+    @include m.transition-colors;
+    @include m.focus-ring;
+
+    &--yes:hover {
+      border-color: var(--color-success-600);
+      background: var(--color-success-50);
+      color: var(--color-success-700);
+    }
+
+    &--no:hover {
+      border-color: var(--color-danger-600);
+      background: var(--color-danger-50);
+      color: var(--color-danger-700);
+    }
+  }
+}

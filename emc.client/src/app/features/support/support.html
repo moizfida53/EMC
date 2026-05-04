@@ -1,1 +1,84 @@
-<p>support works!</p>
+<!-- src/app/features/support/support.html -->
+<div class="support">
+
+  <!-- Dialog overlay -->
+  <app-create-ticket-dialog
+    *ngIf="creating()"
+    (created)="onCreated($event)"
+    (closed)="creating.set(false)" />
+
+  <!-- Section header -->
+  <app-section-header
+    eyebrow="Support center"
+    title="Tickets & conversations"
+    description="A real-time view of every support engagement. Open tickets, follow conversations and track SLA windows.">
+    <app-button variant="primary" (clicked)="creating.set(true)">
+      + Open new ticket
+    </app-button>
+  </app-section-header>
+
+  <!-- KPI strip -->
+  <div class="kpi-grid">
+    <app-kpi-card
+      label="Active tickets"
+      [value]="store.activeCount()"
+      hint="All severities"
+      [active]="true" />
+    <app-kpi-card
+      label="On you"
+      [value]="store.onCustomer()"
+      hint="Awaiting your response"
+      [trend]="{ dir: 'flat', text: 'Action' }" />
+    <app-kpi-card
+      label="Breaching &lt; 12h"
+      [value]="store.breachingSoon()"
+      hint="SLA window closing soon"
+      [trend]="{ dir: 'down', text: '−1' }" />
+    <app-kpi-card
+      label="Resolved · last 14d"
+      [value]="store.resolvedRecent()"
+      hint="Avg time to resolve 1d 6h"
+      [trend]="{ dir: 'up', text: '+3' }" />
+  </div>
+
+  <!-- Toolbar: search + filters -->
+  <div class="support__toolbar surface-elev">
+    <div class="support__search-wrap">
+      <svg class="support__search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75">
+        <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+      </svg>
+      <input
+        class="support__search-input"
+        type="search"
+        placeholder="Search by ticket #, title or keyword…"
+        [value]="store.search()"
+        (input)="store.setSearch($any($event.target).value)" />
+    </div>
+
+    <div class="support__filters">
+      <select class="support__filter-select"
+        [value]="store.statusFilter()"
+        (change)="store.setStatusFilter($any($event.target).value)">
+        <option value="all">All statuses</option>
+        <option value="Active">Active</option>
+        <option value="Resolved">Resolved</option>
+        <option value="Closed">Closed</option>
+      </select>
+      <select class="support__filter-select"
+        [value]="store.priorityFilter()"
+        (change)="store.setPriorityFilter($any($event.target).value)">
+        <option value="all">All priorities</option>
+        <option value="High">High</option>
+        <option value="Medium">Medium</option>
+        <option value="Low">Low</option>
+      </select>
+    </div>
+  </div>
+
+  <!-- Ticket detail panel -->
+  <app-ticket-detail *ngIf="store.openCase()" />
+
+  <!-- Ticket table -->
+  <app-ticket-table />
+
+</div>

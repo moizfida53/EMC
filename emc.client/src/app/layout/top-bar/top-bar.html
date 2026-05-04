@@ -1,22 +1,27 @@
 <!-- src/app/shared/components/topbar/topbar.component.html -->
 
 <header class="topbar" role="banner">
-
   <!-- ── LEFT: hamburger + company + breadcrumbs ──────── -->
   <div class="topbar__left">
-
     <!-- Mobile hamburger -->
     <button
       class="topbar__hamburger"
       type="button"
       (click)="toggleMobileSidebar()"
       aria-label="Toggle navigation menu"
-      aria-haspopup="true">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
-           stroke-width="1.75" stroke-linecap="round" aria-hidden="true">
-        <line x1="3" y1="6"  x2="21" y2="6"/>
-        <line x1="3" y1="12" x2="21" y2="12"/>
-        <line x1="3" y1="18" x2="21" y2="18"/>
+      aria-haspopup="true"
+    >
+      <svg
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="1.75"
+        stroke-linecap="round"
+        aria-hidden="true"
+      >
+        <line x1="3" y1="6" x2="21" y2="6" />
+        <line x1="3" y1="12" x2="21" y2="12" />
+        <line x1="3" y1="18" x2="21" y2="18" />
       </svg>
     </button>
 
@@ -28,7 +33,8 @@
         class="topbar__company-logo"
         width="32"
         height="32"
-        loading="eager" />
+        loading="eager"
+      />
       <div class="topbar__company-info">
         <span class="topbar__company-name">{{ company.name }}</span>
         <span class="topbar__company-industry">{{ company.industry }}</span>
@@ -39,12 +45,8 @@
     <div class="topbar__sep" aria-hidden="true"></div>
 
     <!-- Breadcrumbs -->
-    <nav
-      class="breadcrumbs"
-      aria-label="Breadcrumb">
-      <ng-container
-        *ngFor="let crumb of breadcrumbs(); let i = index; let last = last">
-
+    <nav class="breadcrumbs" aria-label="Breadcrumb">
+      <ng-container *ngFor="let crumb of breadcrumbs(); let i = index; let last = last">
         <span class="breadcrumbs__segment">
           <!-- Chevron separator (not before first) -->
           <svg
@@ -55,15 +57,17 @@
             stroke="currentColor"
             stroke-width="2"
             stroke-linecap="round"
-            aria-hidden="true">
-            <polyline points="9 18 15 12 9 6"/>
+            aria-hidden="true"
+          >
+            <polyline points="9 18 15 12 9 6" />
           </svg>
 
           <!-- Current page: not a link -->
           <span
             *ngIf="last && i > 0; else breadcrumbLink"
             class="breadcrumbs__current"
-            aria-current="page">
+            aria-current="page"
+          >
             {{ crumb.label }}
           </span>
 
@@ -71,26 +75,30 @@
             <a
               [routerLink]="crumb.href"
               class="breadcrumbs__link"
-              [attr.aria-current]="last ? 'page' : null">
+              [attr.aria-current]="last ? 'page' : null"
+            >
               {{ crumb.label }}
             </a>
           </ng-template>
         </span>
-
       </ng-container>
     </nav>
-
   </div>
 
   <!-- ── RIGHT: search + notifications + user ─────────── -->
   <div class="topbar__right">
-
     <!-- Global search -->
     <div class="topbar__search">
-      <svg class="topbar__search-icon" viewBox="0 0 24 24" fill="none"
-           stroke="currentColor" stroke-width="1.75" aria-hidden="true">
-        <circle cx="11" cy="11" r="8"/>
-        <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+      <svg
+        class="topbar__search-icon"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="1.75"
+        aria-hidden="true"
+      >
+        <circle cx="11" cy="11" r="8" />
+        <line x1="21" y1="21" x2="16.65" y2="16.65" />
       </svg>
 
       <input
@@ -102,32 +110,35 @@
         (keydown)="onSearchKey($event)"
         readonly
         aria-label="Open global search (Ctrl+K or ⌘K)"
-        role="button" />
+        role="button"
+      />
 
       <kbd class="topbar__search-kbd" aria-hidden="true">⌘ K</kbd>
     </div>
 
     <!-- ── Notifications ─────────────────────────────── -->
-    <div style="position: relative;">
+    <div style="position: relative">
       <button
         class="topbar__action-btn"
         type="button"
         (click)="toggleNotif()"
         [attr.aria-expanded]="notifOpen()"
         aria-haspopup="dialog"
-        aria-label="Notifications{{ unreadCount() > 0 ? ' (' + unreadCount() + ' unread)' : '' }}">
-
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
-             stroke-width="1.75" stroke-linecap="round" aria-hidden="true">
-          <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
-          <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+        aria-label="Notifications{{ unreadCount() > 0 ? ' (' + unreadCount() + ' unread)' : '' }}"
+      >
+        <svg
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.75"
+          stroke-linecap="round"
+          aria-hidden="true"
+        >
+          <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />
+          <path d="M13.73 21a2 2 0 0 1-3.46 0" />
         </svg>
 
-        <span
-          *ngIf="unreadCount() > 0"
-          class="topbar__notif-dot"
-          aria-hidden="true">
-        </span>
+        <span *ngIf="unreadCount() > 0" class="topbar__notif-dot" aria-hidden="true"> </span>
       </button>
 
       <!-- Notifications popover -->
@@ -136,34 +147,26 @@
         class="notif-popover"
         role="dialog"
         aria-label="Notifications"
-        aria-modal="false">
-
+        aria-modal="false"
+      >
         <div class="notif-popover__header">
           <div>
             <div class="notif-popover__title">Notifications</div>
-            <div class="notif-popover__meta">
-              {{ unreadCount() }} unread · synced just now
-            </div>
+            <div class="notif-popover__meta">{{ unreadCount() }} unread · synced just now</div>
           </div>
-          <button
-            class="notif-popover__mark-read"
-            type="button"
-            (click)="markAllRead()">
+          <button class="notif-popover__mark-read" type="button" (click)="markAllRead()">
             Mark all as read
           </button>
         </div>
 
         <div class="notif-popover__list">
-          <div
-            *ngFor="let a of activities.slice(0, 6)"
-            class="notif-popover__item"
-            role="listitem">
-
+          <div *ngFor="let a of activities.slice(0, 6)" class="notif-popover__item" role="listitem">
             <span
               class="notif-popover__dot"
               [class.notif-popover__dot--unread]="!a.read"
               [class.notif-popover__dot--read]="a.read"
-              aria-hidden="true">
+              aria-hidden="true"
+            >
             </span>
 
             <div class="notif-popover__item-content">
@@ -177,11 +180,7 @@
         </div>
 
         <div class="notif-popover__footer">
-          <button
-            class="notif-popover__footer-link"
-            type="button">
-            View activity history
-          </button>
+          <button class="notif-popover__footer-link" type="button">View activity history</button>
         </div>
       </div>
     </div>
@@ -191,23 +190,20 @@
 
     <!-- ── User menu ──────────────────────────────────── -->
     <div class="user-menu">
-
       <button
         class="user-menu__trigger"
         type="button"
         (click)="toggleUser()"
         [attr.aria-expanded]="userOpen()"
         aria-haspopup="menu"
-        aria-label="User menu for {{ user.firstname }} {{ user.lastname }}">
-
+        aria-label="User menu for {{ user.firstname }} {{ user.lastname }}"
+      >
         <div class="user-menu__avatar" aria-hidden="true">
           {{ user.initials }}
         </div>
 
         <div class="user-menu__info">
-          <span class="user-menu__name">
-            {{ user.firstname }} {{ user.lastname }}
-          </span>
+          <span class="user-menu__name"> {{ user.firstname }} {{ user.lastname }} </span>
           <span class="user-menu__role">{{ user.jobtitle }}</span>
         </div>
 
@@ -219,52 +215,79 @@
           stroke="currentColor"
           stroke-width="2"
           stroke-linecap="round"
-          aria-hidden="true">
-          <polyline points="6 9 12 15 18 9"/>
+          aria-hidden="true"
+        >
+          <polyline points="6 9 12 15 18 9" />
         </svg>
       </button>
 
       <!-- Dropdown -->
-      <div
-        *ngIf="userOpen()"
-        class="user-dropdown"
-        role="menu"
-        aria-label="User options">
-
+      <div *ngIf="userOpen()" class="user-dropdown" role="menu" aria-label="User options">
         <!-- Header -->
         <div class="user-dropdown__header" role="none">
-          <div class="user-dropdown__header-name">
-            {{ user.firstname }} {{ user.lastname }}
-          </div>
+          <div class="user-dropdown__header-name">{{ user.firstname }} {{ user.lastname }}</div>
           <div class="user-dropdown__header-email">{{ user.email }}</div>
         </div>
 
         <div class="user-dropdown__list" role="none">
           <!-- Profile -->
-          <button
-            class="user-dropdown__item"
-            type="button"
-            role="menuitem"
-            (click)="openProfile()">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                 stroke-width="1.75" stroke-linecap="round" aria-hidden="true">
-              <circle cx="12" cy="8" r="4"/>
-              <path d="M20 21a8 8 0 1 0-16 0"/>
+          <button class="user-dropdown__item" type="button" role="menuitem" (click)="openProfile()">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.75"
+              stroke-linecap="round"
+              aria-hidden="true"
+            >
+              <circle cx="12" cy="8" r="4" />
+              <path d="M20 21a8 8 0 1 0-16 0" />
             </svg>
             Profile &amp; preferences
           </button>
 
+          <!-- Theme Toggle -->
+          <button class="user-dropdown__item" type="button" role="menuitem" (click)="toggleTheme()">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.75"
+              stroke-linecap="round"
+              aria-hidden="true"
+            >
+              <!-- Sun/Moon icon based on current theme -->
+              @if (themeService.isDarkMode()) {
+                <!-- Sun icon for light mode -->
+                <circle cx="12" cy="12" r="5" />
+                <line x1="12" y1="1" x2="12" y2="3" />
+                <line x1="12" y1="21" x2="12" y2="23" />
+                <line x1="4.22" y1="4.22" x2="5.64" y2="5.64" />
+                <line x1="18.36" y1="18.36" x2="19.78" y2="19.78" />
+                <line x1="1" y1="12" x2="3" y2="12" />
+                <line x1="21" y1="12" x2="23" y2="12" />
+                <line x1="4.22" y1="19.78" x2="5.64" y2="18.36" />
+                <line x1="18.36" y1="5.64" x2="19.78" y2="4.22" />
+              } @else {
+                <!-- Moon icon for dark mode -->
+                <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
+              }
+            </svg>
+            {{ themeService.isDarkMode() ? 'Light mode' : 'Dark mode' }}
+          </button>
           <!-- Help -->
-          <button
-            class="user-dropdown__item"
-            type="button"
-            role="menuitem"
-            (click)="openHelp()">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                 stroke-width="1.75" stroke-linecap="round" aria-hidden="true">
-              <circle cx="12" cy="12" r="10"/>
-              <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/>
-              <line x1="12" y1="17" x2="12.01" y2="17"/>
+          <button class="user-dropdown__item" type="button" role="menuitem" (click)="openHelp()">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.75"
+              stroke-linecap="round"
+              aria-hidden="true"
+            >
+              <circle cx="12" cy="12" r="10" />
+              <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3" />
+              <line x1="12" y1="17" x2="12.01" y2="17" />
             </svg>
             Help &amp; contact
           </button>
@@ -276,18 +299,24 @@
             class="user-dropdown__item user-dropdown__item--danger"
             type="button"
             role="menuitem"
-            (click)="signOut()">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                 stroke-width="1.75" stroke-linecap="round" aria-hidden="true">
-              <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
-              <polyline points="16 17 21 12 16 7"/>
-              <line x1="21" y1="12" x2="9" y2="12"/>
+            (click)="signOut()"
+          >
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.75"
+              stroke-linecap="round"
+              aria-hidden="true"
+            >
+              <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+              <polyline points="16 17 21 12 16 7" />
+              <line x1="21" y1="12" x2="9" y2="12" />
             </svg>
             Sign out
           </button>
         </div>
       </div>
     </div>
-
   </div>
 </header>

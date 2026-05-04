@@ -145,4 +145,10 @@
   --ease-out:        #{v.$ease-out};
   --ease-in-out:     #{v.$ease-in-out};
   --ease-bounce:     #{v.$ease-bounce};
+
+  // ── DASHBOARD BANNER ───────────────────────────────────────────
+  --banner-overlay-start: rgba(255, 255, 255, 0.95);
+  --banner-overlay-mid:   rgba(255, 255, 255, 0.75);
+  --banner-overlay-end:   rgba(255, 255, 255, 0);
+  --banner-image-opacity: 0.9;
 }

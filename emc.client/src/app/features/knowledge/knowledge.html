@@ -1,1 +1,111 @@
-<p>knowledge works!</p>
+<!-- src/app/features/knowledge/knowledge.html -->
+
+<!-- Article detail view -->
+<app-article-detail
+  *ngIf="openArticle()"
+  [article]="openArticle()!"
+  (back)="openArticleId.set(null)" />
+
+<!-- List view -->
+<div *ngIf="!openArticle()" class="knowledge">
+
+  <!-- Hero search -->
+  <section class="knowledge__hero surface-elev">
+    <div class="knowledge__hero-body">
+      <p class="micro-label" style="color: var(--color-brand-700)">
+        Self-help · Knowledge base
+      </p>
+      <h1 class="knowledge__hero-title">How can we help you today?</h1>
+      <p class="knowledge__hero-sub">
+        Search across {{ visibleCount() }} live articles covering the BlueLink
+        platform, integrations and operational playbooks.
+      </p>
+
+      <!-- Search input -->
+      <div class="knowledge__search-wrap">
+        <svg class="knowledge__search-icon" viewBox="0 0 24 24" fill="none"
+             stroke="currentColor" stroke-width="1.75">
+          <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+        </svg>
+        <input
+          class="knowledge__search-input"
+          type="search"
+          autofocus
+          placeholder='Try "settlement run", "NTP drift", "SCIM provisioning"…'
+          [value]="search()"
+          (input)="search.set($any($event.target).value)" />
+      </div>
+
+      <!-- Quick searches -->
+      <div class="knowledge__quick">
+        <button
+          *ngFor="let q of quickSearches"
+          class="knowledge__quick-btn"
+          type="button"
+          (click)="search.set(q)">
+          {{ q }}
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Two-column layout: sidebar + list -->
+  <div class="knowledge__layout">
+
+    <!-- Category sidebar -->
+    <aside class="knowledge__sidebar surface-elev">
+      <p class="micro-label" style="margin-bottom: 10px;">Browse by category</p>
+
+      <!-- All articles -->
+      <button
+        class="knowledge__cat-btn"
+        type="button"
+        [class.knowledge__cat-btn--active]="activeSubject() === 'all'"
+        (click)="activeSubject.set('all')">
+        <span>All articles</span>
+        <span class="knowledge__cat-count num-tabular">{{ visibleCount() }}</span>
+      </button>
+
+      <!-- Per-subject -->
+      <button
+        *ngFor="let s of subjects"
+        class="knowledge__cat-btn"
+        type="button"
+        [class.knowledge__cat-btn--active]="activeSubject() === s.id"
+        (click)="activeSubject.set(s.id)">
+        <div class="knowledge__cat-label">
+          <span>{{ s.title }}</span>
+          <span
+            *ngIf="activeSubject() === s.id"
+            class="knowledge__cat-desc">
+            {{ s.description }}
+          </span>
+        </div>
+        <span class="knowledge__cat-count num-tabular">{{ countBySubject(s.id) }}</span>
+      </button>
+
+      <!-- CTA card -->
+      <div class="knowledge__cta">
+        <p class="knowledge__cta-title">Can't find an answer?</p>
+        <p class="knowledge__cta-sub">
+          Open a ticket and we'll get back to you within 2 business hours.
+        </p>
+      </div>
+    </aside>
+
+    <!-- Article list -->
+    <div class="knowledge__content">
+      <app-section-header
+        [title]="activeSubject() === 'all'
+          ? filtered().length + ' articles'
+          : subjects.find(s => s.id === activeSubject())?.title"
+        description="Most recently published first." />
+
+      <app-article-list
+        [articles]="filtered()"
+        (articleOpen)="openArticleId.set($event)" />
+    </div>
+
+  </div>
+
+</div>

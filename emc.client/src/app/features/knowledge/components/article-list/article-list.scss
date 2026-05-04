@@ -1,0 +1,110 @@
+// src/app/features/knowledge/components/article-list/article-list.scss
+@use '../../../../../styles/abstracts/variables' as v;
+@use '../../../../../styles/abstracts/mixins' as m;
+
+:host { display: block; }
+
+.article-list {
+  &__empty {
+    padding: v.$spacing-8;
+    text-align: center;
+    color: var(--color-text-tertiary);
+    font-size: v.$text-sm;
+  }
+
+  &__grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: v.$spacing-3;
+
+    @include m.respond-to(md) {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+}
+
+// ── Article card ──────────────────────────────────────────────
+
+.article-card {
+  display: flex;
+  flex-direction: column;
+  gap: v.$spacing-2-5;
+  padding: v.$spacing-5;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: v.$radius-lg;
+  box-shadow: var(--shadow-sm);
+  text-align: left;
+  cursor: pointer;
+  transition:
+    border-color v.$duration-base v.$ease-out,
+    box-shadow   v.$duration-base v.$ease-out,
+    transform    v.$duration-base v.$ease-out;
+
+  &:hover {
+    border-color: var(--color-brand-300);
+    box-shadow: var(--shadow-md);
+    transform: translateY(-1px);
+
+    .article-card__title  { color: var(--color-brand-700); }
+    .article-card__read-more { opacity: 1; }
+  }
+
+  @include m.focus-ring;
+
+  &__meta {
+    display: flex;
+    align-items: center;
+    gap: v.$spacing-2;
+  }
+
+  &__date {
+    font-size: v.$text-xs;
+    color: var(--color-text-muted);
+  }
+
+  &__title {
+    font-family: v.$font-display;
+    font-size: v.$text-xl;
+    font-weight: v.$font-semibold;
+    color: var(--color-text-primary);
+    line-height: v.$leading-snug;
+    margin: 0;
+    transition: color v.$duration-base v.$ease-out;
+  }
+
+  &__snippet {
+    font-size: 13px;
+    color: var(--color-text-tertiary);
+    line-height: v.$leading-relaxed;
+    margin: 0;
+    @include m.line-clamp(2);
+  }
+
+  &__footer {
+    margin-top: auto;
+    display: flex;
+    align-items: center;
+    gap: v.$spacing-4;
+  }
+
+  &__stat {
+    display: inline-flex;
+    align-items: center;
+    gap: v.$spacing-1;
+    font-size: v.$text-xs;
+    color: var(--color-text-muted);
+    @include m.num-tabular;
+
+    svg { width: 12px; height: 12px; }
+  }
+
+  &__read-more {
+    margin-left: auto;
+    font-size: v.$text-xs;
+    font-weight: v.$font-semibold;
+    color: var(--color-brand-700);
+    opacity: 0;
+    transition: opacity v.$duration-base v.$ease-out;
+  }
+}

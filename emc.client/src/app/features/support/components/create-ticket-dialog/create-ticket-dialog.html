@@ -1,1 +1,82 @@
-<p>create-ticket-dialog works!</p>
+<!-- src/app/features/support/components/create-ticket-dialog/create-ticket-dialog.html -->
+
+<!-- Backdrop -->
+<div class="dialog-backdrop" (click)="close()"></div>
+
+<!-- Panel -->
+<div class="dialog" role="dialog" aria-modal="true" aria-labelledby="dialog-title">
+
+  <div class="dialog__header">
+    <h2 class="dialog__title" id="dialog-title">Open a new ticket</h2>
+    <p class="dialog__subtitle">
+      Our duty team typically responds in under 2 hours during business hours.
+    </p>
+  </div>
+
+  <div class="dialog__body">
+
+    <!-- Error -->
+    <div *ngIf="error()" class="dialog__error" role="alert">{{ error() }}</div>
+
+    <!-- Title -->
+    <div class="dialog__field">
+      <label class="dialog__label" for="t-title">Title</label>
+      <input
+        id="t-title"
+        class="dialog__input"
+        type="text"
+        placeholder="e.g. Settlement run BL-04 stalled at 92%"
+        [value]="title()"
+        (input)="title.set($any($event.target).value)" />
+    </div>
+
+    <!-- Priority + Subject row -->
+    <div class="dialog__row">
+      <div class="dialog__field">
+        <label class="dialog__label" for="t-priority">Priority</label>
+        <select
+          id="t-priority"
+          class="dialog__select"
+          [value]="priority()"
+          (change)="priority.set($any($event.target).value)">
+          <option *ngFor="let p of priorities" [value]="p">{{ p }}</option>
+        </select>
+      </div>
+      <div class="dialog__field">
+        <label class="dialog__label" for="t-subject">Subject</label>
+        <select
+          id="t-subject"
+          class="dialog__select"
+          [value]="subjectId()"
+          (change)="subjectId.set($any($event.target).value)">
+          <option *ngFor="let s of data.subjects" [value]="s.id">{{ s.title }}</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Description -->
+    <div class="dialog__field">
+      <label class="dialog__label" for="t-desc">Description</label>
+      <textarea
+        id="t-desc"
+        class="dialog__textarea"
+        rows="5"
+        placeholder="Describe the issue, when it started, and anything you've already tried…"
+        [value]="description()"
+        (input)="description.set($any($event.target).value)">
+      </textarea>
+    </div>
+
+  </div>
+
+  <div class="dialog__footer">
+    <app-button variant="secondary" (clicked)="close()">Cancel</app-button>
+    <app-button
+      variant="primary"
+      [loading]="submitting()"
+      (clicked)="submit()">
+      Submit ticket
+    </app-button>
+  </div>
+
+</div>

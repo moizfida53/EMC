@@ -1,1 +1,56 @@
-<p>input works!</p>
+<!-- emc.client/src/app/shared/ui/input/input.html -->
+
+<div class="input-field">
+
+  <!-- Label -->
+  <label
+    *ngIf="label()"
+    class="input-field__label"
+    [for]="id()"
+    [class.input-field__label--required]="required()">
+    {{ label() }}
+  </label>
+
+  <!-- Input wrapper (handles icons) -->
+  <div [ngClass]="wrapperClasses()">
+
+    <!-- Leading icon slot -->
+    <span *ngIf="leadingIcon()" class="input-wrapper__icon input-wrapper__icon--lead">
+      <ng-content select="[slot='leading']" />
+    </span>
+
+    <!-- Native input -->
+    <input
+      #inputRef
+      class="input-wrapper__control"
+      [id]="id()"
+      [type]="type()"
+      [placeholder]="placeholder()"
+      [value]="_value()"
+      [disabled]="_disabled()"
+      [readonly]="readonly()"
+      [required]="required()"
+      [attr.aria-invalid]="hasError() || null"
+      [attr.aria-describedby]="(hint() || errorMessage()) ? id() + '-hint' : null"
+      (input)="onInput($event)"
+      (blur)="onBlur()"
+      (focus)="onFocus()" />
+
+    <!-- Trailing icon slot -->
+    <span *ngIf="trailingIcon()" class="input-wrapper__icon input-wrapper__icon--trail">
+      <ng-content select="[slot='trailing']" />
+    </span>
+  </div>
+
+  <!-- Hint / error text -->
+  <div
+    *ngIf="errorMessage() && _touched() || hint()"
+    class="input-field__hint"
+    [class.input-field__hint--error]="hasError()"
+    [id]="id() + '-hint'"
+    role="alert"
+    [attr.aria-live]="hasError() ? 'polite' : null">
+    {{ hasError() ? errorMessage() : hint() }}
+  </div>
+
+</div>

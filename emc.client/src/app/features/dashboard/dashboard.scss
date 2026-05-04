@@ -1,0 +1,17 @@
+// src/app/features/dashboard/dashboard.scss
+@use '../../../styles/abstracts/variables.scss' as v;
+@use '../../../styles/abstracts/mixins.scss' as m;
+
+:host { display: block; }
+
+.dashboard {
+  display: flex;
+  flex-direction: column;
+  gap: v.$spacing-6;
+}
+
+.dashboard__rail {
+  display: flex;
+  flex-direction: column;
+  gap: v.$spacing-4;
+}

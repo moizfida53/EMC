@@ -1,1 +1,10 @@
-<p>card works!</p>
+<!-- emc.client/src/app/shared/ui/card/card.html -->
+<div
+  [ngClass]="classes()"
+  [attr.role]="clickable() ? 'button' : null"
+  [attr.tabindex]="clickable() ? '0' : null"
+  (click)="onClick($event)"
+  (keydown.enter)="onClick($event)"
+  (keydown.space)="onClick($event)">
+  <ng-content />
+</div>

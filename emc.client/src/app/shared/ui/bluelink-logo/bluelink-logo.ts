@@ -1,37 +1,42 @@
-import { Component, computed, input } from '@angular/core';
+// emc.client/src/app/shared/ui/bluelink-logo/bluelink-logo.ts
+import {
+  Component,
+  ChangeDetectionStrategy,
+  input,
+  computed,
+} from '@angular/core';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-bluelink-logo',
-  imports: [],
-  template: ` 
-  <div class="flex items-center gap-2.5">
-    <img
-      [src]="logoSrc()"
-      alt="BlueLink Solutions"
-      [style.width.px]="width()"
-      [style.height.px]="height()"
-    />
-    @if (sublabel()) {
-      <div
-        class="hidden border-l pl-2.5 text-[10px] font-semibold uppercase
-                    tracking-[0.18em] sm:block"
-        [style.borderColor]="variant() === 'dark' ? 'rgba(255,255,255,0.25)' : '#dbe3f1'"
-        [style.color]="variant() === 'dark' ? 'rgba(255,255,255,0.7)' : '#5a6477'"
-      >
-        {{ sublabel() }}
-      </div>
-    }
-  </div>`,
+  standalone: true,
+  imports: [CommonModule],
+  templateUrl: './bluelink-logo.html',
+  styleUrl: './bluelink-logo.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class BluelinkLogo {
-  variant = input<'light' | 'dark'>('light');
-  height = input<number>(28);
+  /** 'light' = blue logo on light backgrounds (default)
+   *  'dark'  = white logo for dark/brand panels             */
+  variant  = input<'light' | 'dark'>('light');
+  /** Render height in px; width derived from official aspect ratio 1600:351 */
+  height   = input<number>(28);
+  /** Sub-label text. Pass null to hide entirely */
   sublabel = input<string | null>('Customer Portal');
 
-  width = computed(() => Math.round(this.height() * (1600 / 351)));
-  logoSrc = computed(() =>
+  protected readonly width = computed(() =>
+    Math.round(this.height() * (1600 / 351))
+  );
+
+  protected readonly logoSrc = computed(() =>
     this.variant() === 'dark'
-      ? '/assets/logos/bluelink-logo-white.png'
-      : '/assets/logos/bluelink-logo.png',
+      ? '/bluelink.png'
+      : 'bluelink-white.png'
+  );
+
+  protected readonly sublabelStyle = computed(() =>
+    this.variant() === 'dark'
+      ? { borderColor: 'rgba(255,255,255,0.25)', color: 'rgba(255,255,255,0.7)' }
+      : { borderColor: 'rgba(255,255,255,0.25)',                color: 'rgba(255, 255, 255, 0.7)'}
   );
 }

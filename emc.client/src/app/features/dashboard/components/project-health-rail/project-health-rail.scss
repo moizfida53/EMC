@@ -1,0 +1,88 @@
+// src/app/features/dashboard/components/project-health-rail/project-health-rail.scss
+@use '../../../../../styles/abstracts/variables' as v;
+@use '../../../../../styles/abstracts/mixins' as m;
+
+:host { display: block; }
+
+.health-rail {
+  padding: v.$spacing-5;
+
+  &__header {
+    @include m.flex-between;
+    margin-bottom: v.$spacing-4;
+  }
+
+  &__title {
+    font-family: v.$font-display;
+    font-size: v.$text-xl;
+    font-weight: v.$font-semibold;
+    color: var(--color-text-primary);
+    margin: v.$spacing-1 0 0;
+  }
+
+  &__link {
+    font-size: v.$text-xs;
+    font-weight: v.$font-semibold;
+    color: var(--color-text-brand);
+    text-decoration: none;
+    white-space: nowrap;
+
+    &:hover { text-decoration: underline; text-underline-offset: 3px; }
+  }
+
+  &__list {
+    display: flex;
+    flex-direction: column;
+    gap: v.$spacing-3;
+  }
+
+  &__item {
+    padding: v.$spacing-3;
+    border-radius: v.$radius-md;
+    border: 1px solid var(--color-border);
+    background: var(--color-surface);
+    display: flex;
+    flex-direction: column;
+    gap: v.$spacing-1-5;
+    transition: background v.$duration-base v.$ease-out;
+
+    &:hover { background: var(--color-surface-hover); }
+  }
+
+  &__item-top {
+    @include m.flex-between;
+    gap: v.$spacing-3;
+    min-width: 0;
+  }
+
+  &__item-name {
+    font-size: v.$text-base;
+    font-weight: v.$font-semibold;
+    color: var(--color-text-primary);
+    flex: 1;
+    min-width: 0;
+  }
+
+  &__item-dates {
+    font-size: v.$text-xs;
+    color: var(--color-text-muted);
+    @include m.num-tabular;
+  }
+
+  &__item-bar {
+    display: flex;
+    align-items: center;
+    gap: v.$spacing-3;
+
+    app-mini-bar { flex: 1; }
+  }
+
+  &__item-pct {
+    font-family: v.$font-display;
+    font-size: v.$text-base;
+    font-weight: v.$font-bold;
+    color: var(--color-text-primary);
+    min-width: 36px;
+    text-align: right;
+  }
+}

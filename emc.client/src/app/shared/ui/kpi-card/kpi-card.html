@@ -1,0 +1,29 @@
+<!-- emc.client/src/app/shared/ui/kpi-card/kpi-card.html -->
+<div [ngClass]="hostClasses()">
+
+  <!-- Active accent bar -->
+  <div *ngIf="active()" class="kpi-card__bar" aria-hidden="true"></div>
+
+  <!-- Header row: label + trend -->
+  <div class="kpi-card__header">
+    <div class="kpi-card__label">{{ label() }}</div>
+    <span *ngIf="trend()" [ngClass]="trendClasses()">
+      {{ trend()!.text }}
+    </span>
+  </div>
+
+  <!-- Main value -->
+  <div class="kpi-card__value">
+    {{ value() }}
+    <span *ngIf="unit()" class="kpi-card__unit">{{ unit() }}</span>
+  </div>
+
+  <!-- Hint text -->
+  <div *ngIf="hint()" class="kpi-card__hint">{{ hint() }}</div>
+
+  <!-- Optional slotted content (chart, mini-bar, etc.) -->
+  <div class="kpi-card__content">
+    <ng-content />
+  </div>
+
+</div>

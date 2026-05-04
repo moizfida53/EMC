@@ -1,0 +1,127 @@
+// emc.client/src/app/shared/ui/input/input.scss
+@use '../../../../styles/abstracts/variables' as v;
+@use '../../../../styles/abstracts/mixins' as m;
+
+:host {
+  display: block;
+}
+
+// ─── FIELD WRAPPER ───────────────────────────────────────────
+
+.input-field {
+  display: flex;
+  flex-direction: column;
+  gap: v.$spacing-1-5;
+
+  &__label {
+    font-size: v.$text-xs;
+    font-weight: v.$font-semibold;
+    letter-spacing: v.$tracking-wider;
+    text-transform: uppercase;
+    color: var(--color-input-label);
+
+    &--required::after {
+      content: ' *';
+      color: var(--color-danger-600);
+    }
+  }
+
+  &__hint {
+    font-size: v.$text-xs;
+    color: var(--color-text-tertiary);
+    line-height: v.$leading-relaxed;
+
+    &--error {
+      color: var(--color-danger-600);
+      font-weight: v.$font-medium;
+    }
+  }
+}
+
+// ─── INPUT WRAPPER ───────────────────────────────────────────
+
+.input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+
+  &__control {
+    width: 100%;
+    height: 36px;
+    padding: 0 v.$spacing-3;
+    border: v.$border-width solid var(--color-input-border);
+    border-radius: v.$radius-md;
+    background: var(--color-input-bg);
+    color: var(--color-input-text);
+    font-size: v.$text-sm;
+    font-family: v.$font-sans;
+    transition:
+      border-color v.$duration-base v.$ease-out,
+      box-shadow   v.$duration-base v.$ease-out,
+      background   v.$duration-base v.$ease-out;
+
+    &::placeholder {
+      color: var(--color-input-placeholder);
+    }
+
+    &:hover:not(:disabled):not([readonly]) {
+      border-color: var(--color-input-border-hover);
+    }
+
+    &:focus,
+    &:focus-visible {
+      outline: none;
+      border-color: var(--color-input-border-focus);
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+    }
+
+    &:disabled {
+      cursor: not-allowed;
+      opacity: 0.5;
+      background: var(--color-surface-hover);
+    }
+
+    &[readonly] {
+      cursor: default;
+      background: var(--color-surface-hover);
+    }
+
+    &[aria-invalid="true"] {
+      border-color: var(--color-danger-600);
+      &:focus { box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.15); }
+    }
+  }
+
+  // ── Icon slots ────────────────────────────────────────────
+
+  &--leading &__control  { padding-left:  v.$spacing-9; }
+  &--trailing &__control { padding-right: v.$spacing-9; }
+
+  &__icon {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: v.$spacing-5;
+    height: v.$spacing-5;
+    color: var(--color-text-muted);
+    pointer-events: none;
+
+    &--lead  { left:  v.$spacing-3; }
+    &--trail { right: v.$spacing-3; }
+
+    svg { width: 16px; height: 16px; }
+  }
+
+  // ── Error state ───────────────────────────────────────────
+
+  &--error &__control {
+    border-color: var(--color-danger-600);
+
+    &:focus {
+      box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.15);
+    }
+  }
+}

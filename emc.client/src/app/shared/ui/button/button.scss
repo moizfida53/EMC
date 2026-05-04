@@ -1,12 +1,12 @@
-// ============================================================
-// COMPONENTS / _buttons.scss
-// Button component — all variants, states, sizes.
-// ============================================================
+// emc.client/src/app/shared/ui/button/button.scss
+@use '../../../../styles/abstracts/variables' as v;
+@use '../../../../styles/abstracts/mixins' as m;
 
-@use '../../../../styles/abstracts/variables.scss' as v;
-@use '../../../../styles/abstracts/mixins.scss' as m;
+:host {
+  display: inline-flex; // so host doesn't break layout flow
+}
 
-// ─── BASE BUTTON ─────────────────────────────────────────────
+// ─── BASE ────────────────────────────────────────────────────
 
 .btn {
   display: inline-flex;
@@ -23,34 +23,47 @@
   border: v.$border-width solid transparent;
   border-radius: v.$radius-md;
   cursor: pointer;
-  transition:
-    color v.$duration-base v.$ease-out,
-    background-color v.$duration-base v.$ease-out,
-    border-color v.$duration-base v.$ease-out,
-    box-shadow v.$duration-base v.$ease-out,
-    transform v.$duration-fast v.$ease-out;
   text-decoration: none;
   user-select: none;
   position: relative;
   overflow: hidden;
+  transition:
+    color             v.$duration-base v.$ease-out,
+    background-color  v.$duration-base v.$ease-out,
+    border-color      v.$duration-base v.$ease-out,
+    box-shadow        v.$duration-base v.$ease-out,
+    transform         v.$duration-fast v.$ease-out;
 
-  // Sizes
+  @include m.focus-ring;
+
+  svg {
+    width: 16px;
+    height: 16px;
+    flex-shrink: 0;
+  }
+
+  // ── Sizes ────────────────────────────────────────────────
+
   &--sm {
     height: 32px;
-    padding: v.$spacing-1-5 v.$spacing-3;
+    padding: 0 v.$spacing-3;
     font-size: v.$text-xs;
-    border-radius: v.$radius-md;
+
+    svg { width: 14px; height: 14px; }
   }
 
   &--md {
     height: 36px;
-    padding: v.$spacing-2 v.$spacing-4;
+    padding: 0 v.$spacing-4;
   }
 
   &--lg {
     height: 44px;
-    padding: v.$spacing-3 v.$spacing-6;
+    padding: 0 v.$spacing-6;
     font-size: v.$text-lg;
+    border-radius: v.$radius-lg;
+
+    svg { width: 18px; height: 18px; }
   }
 
   &--icon {
@@ -63,25 +76,21 @@
     &.btn--lg { width: 44px; height: 44px; }
   }
 
-  // Focus ring
-  @include m.focus-ring;
+  // ── States ───────────────────────────────────────────────
 
-  // Disabled
-  &:disabled,
-  &[aria-disabled="true"] {
+  &--disabled,
+  &:disabled {
     opacity: 0.5;
     cursor: not-allowed;
     pointer-events: none;
   }
 
-  // SVG inside button
-  svg {
-    width: 16px;
-    height: 16px;
-    flex-shrink: 0;
+  &--loading {
+    cursor: wait;
+    pointer-events: none;
   }
 
-  // ── VARIANTS ───────────────────────────────────────────────
+  // ── Variants ─────────────────────────────────────────────
 
   &--primary {
     background: var(--color-btn-primary-bg);
@@ -89,13 +98,12 @@
     border-color: var(--color-btn-primary-bg);
     box-shadow: var(--shadow-xs);
 
-    &:hover:not(:disabled) {
+    &:hover:not(.btn--disabled):not(:disabled) {
       background: var(--color-btn-primary-hover);
       border-color: var(--color-btn-primary-hover);
       box-shadow: var(--shadow-sm);
     }
-
-    &:active:not(:disabled) {
+    &:active:not(.btn--disabled):not(:disabled) {
       transform: translateY(1px);
       box-shadow: none;
     }
@@ -107,7 +115,7 @@
     border-color: var(--color-btn-secondary-border);
     box-shadow: var(--shadow-xs);
 
-    &:hover:not(:disabled) {
+    &:hover:not(.btn--disabled):not(:disabled) {
       border-color: var(--color-border-brand);
       background: var(--color-surface-hover);
     }
@@ -118,7 +126,7 @@
     color: var(--color-text-secondary);
     border-color: transparent;
 
-    &:hover:not(:disabled) {
+    &:hover:not(.btn--disabled):not(:disabled) {
       background: var(--color-btn-ghost-hover);
       color: var(--color-text-primary);
     }
@@ -126,10 +134,10 @@
 
   &--danger {
     background: var(--color-danger-600);
-    color: white;
+    color: #fff;
     border-color: var(--color-danger-600);
 
-    &:hover:not(:disabled) {
+    &:hover:not(.btn--disabled):not(:disabled) {
       background: var(--color-danger-700);
       border-color: var(--color-danger-700);
     }
@@ -140,26 +148,28 @@
     color: var(--color-text-brand);
     border-color: transparent;
     padding-inline: 0;
-    text-decoration: none;
+    height: auto;
 
-    &:hover:not(:disabled) {
+    &:hover:not(.btn--disabled):not(:disabled) {
       text-decoration: underline;
       text-underline-offset: 3px;
     }
   }
 }
 
-// ─── ICON BUTTON ─────────────────────────────────────────────
+// ─── SPINNER ─────────────────────────────────────────────────
 
-.icon-btn {
-  @extend .btn;
-  @extend .btn--ghost;
-  @extend .btn--icon;
-  border-radius: v.$radius-md;
-  color: var(--color-text-tertiary);
+.btn__spinner {
+  display: inline-flex;
+  animation: btn-spin 0.75s linear infinite;
+  flex-shrink: 0;
 
-  &:hover {
-    color: var(--color-text-primary);
-    background: var(--color-surface-hover);
+  svg {
+    width: 14px;
+    height: 14px;
   }
+}
+
+@keyframes btn-spin {
+  to { transform: rotate(360deg); }
 }

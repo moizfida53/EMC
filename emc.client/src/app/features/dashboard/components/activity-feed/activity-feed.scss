@@ -1,0 +1,106 @@
+// src/app/features/dashboard/components/activity-feed/activity-feed.scss
+@use '../../../../../styles/abstracts/variables' as v;
+@use '../../../../../styles/abstracts/mixins' as m;
+
+:host { display: block; }
+
+.activity-feed {
+  padding: v.$spacing-5;
+
+  &__header {
+    @include m.flex-between;
+    margin-bottom: v.$spacing-4;
+  }
+
+  &__title {
+    font-family: v.$font-display;
+    font-size: v.$text-xl;
+    font-weight: v.$font-semibold;
+    color: var(--color-text-primary);
+    margin: v.$spacing-1 0 0;
+  }
+
+  &__all-link {
+    font-size: v.$text-xs;
+    font-weight: v.$font-semibold;
+    color: var(--color-text-brand);
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    &:hover { text-decoration: underline; text-underline-offset: 3px; }
+  }
+
+  &__list { display: flex; flex-direction: column; }
+
+  &__item {
+    display: grid;
+    grid-template-columns: 28px 1fr;
+    gap: v.$spacing-3;
+  }
+
+  // ── Timeline track ────────────────────────────────────────
+  &__track {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  &__dot {
+    z-index: 1;
+    margin-top: 2px;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: var(--color-surface);
+    border: 2px solid var(--color-brand-200);
+    flex-shrink: 0;
+  }
+
+  &__line {
+    flex: 1;
+    width: 2px;
+    background: linear-gradient(
+      to bottom,
+      var(--color-brand-200) 50%,
+      transparent 0
+    );
+    background-size: 2px 8px;
+    background-repeat: repeat-y;
+    margin: v.$spacing-1 0;
+  }
+
+  // ── Content ───────────────────────────────────────────────
+  &__content {
+    padding-top: 2px;
+
+    &--pb { padding-bottom: v.$spacing-5; }
+  }
+
+  &__meta {
+    display: flex;
+    align-items: center;
+    gap: v.$spacing-2;
+    margin-bottom: v.$spacing-1;
+  }
+
+  &__time {
+    font-size: v.$text-xs;
+    color: var(--color-text-muted);
+  }
+
+  &__subject {
+    font-size: v.$text-base;
+    font-weight: v.$font-medium;
+    color: var(--color-text-primary);
+    line-height: v.$leading-snug;
+    margin: 0 0 2px;
+    @include m.truncate;
+  }
+
+  &__date {
+    font-size: v.$text-xs;
+    color: var(--color-text-muted);
+    margin: 0;
+  }
+}

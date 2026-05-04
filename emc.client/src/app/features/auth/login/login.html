@@ -1,1 +1,163 @@
-<p>login works!</p>
+<!-- src/app/features/auth/login/login.html -->
+<div class="login-page">
+
+  <!-- Brand panel (left — desktop only) -->
+  <aside class="login-page__brand" aria-hidden="true">
+    <div class="login-page__brand-inner">
+      <h3 class="co-title">End-to-end services · One workspace</h3>
+      <app-bluelink-logo [height]="36" variant="light" style="position: fixed; top: 50px;left:50px;"/> 
+      <h1 class="login-page__brand-headline">
+        Unlock your business <br/>potential,every day.
+      </h1>
+      <p class="login-page__brand-sub">
+Track support tickets, project delivery, retainer balances and <br> platform releases — all in a single, calm operational view.      </p>
+
+      <!-- Trust indicators -->
+      <div class="login-page__trust">
+        <div class="login-page__trust-item">
+          <span class="login-page__trust-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-shield-check h-4 w-4 text-[#bcd3ff]" data-loc="client/src/pages/Login.tsx:138"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"></path><path d="m9 12 2 2 4-4"></path></svg></span>
+          <div>
+            <strong>SOC 2 Type II</strong>
+            <span>Audited annually by an independent assessor.</span>
+          </div>
+        </div>
+        <div class="login-page__trust-item">
+          <span class="login-page__trust-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-fingerprint h-4 w-4 text-[#bcd3ff]" data-loc="client/src/pages/Login.tsx:138"><path d="M12 10a2 2 0 0 0-2 2c0 1.02-.1 2.51-.26 4"></path><path d="M14 13.12c0 2.38 0 6.38-1 8.88"></path><path d="M17.29 21.02c.12-.6.43-2.3.5-3.02"></path><path d="M2 12a10 10 0 0 1 18-6"></path><path d="M2 16h.01"></path><path d="M21.8 16c.2-2 .131-5.354 0-6"></path><path d="M5 19.5C5.5 18 6 15 6 12a6 6 0 0 1 .34-2"></path><path d="M8.65 22c.21-.66.45-1.32.57-2"></path><path d="M9 6.8a6 6 0 0 1 9 5.2v2"></path></svg></span>
+          <div>
+            <strong>SSO + MFA enforced</strong>
+            <span>Optional SAML, Entra ID, Okta and SCIM provisioning.</span>
+          </div>
+        </div>
+        <div class="login-page__trust-item">
+          <span class="login-page__trust-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-circle-check h-4 w-4 text-[#bcd3ff]" data-loc="client/src/pages/Login.tsx:138"><circle cx="12" cy="12" r="10"></circle><path d="m9 12 2 2 4-4"></path></svg></span>
+          <div>
+            <strong>99.95% uptime SLA</strong>
+            <span>Backed by our Platinum Managed Services Retainer.</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+<!-- Form panel (right) - MATCHING THE IMAGE -->
+  <main class="login-page__form">
+    <div class="login-page__form-inner">
+
+      <div class="login-page__header">
+        <p class="login-page__eyebrow">SIGN IN</p>
+        <h2 class="login-page__title">Welcome back to BlueLink.</h2>
+        <p class="login-page__subtitle">
+          Use your work email to access the customer portal.
+        </p>
+      </div>
+
+      <!-- Error -->
+      <div *ngIf="error()" class="login-page__error" role="alert">
+        {{ error() }}
+      </div>
+
+      <!-- SSO Option -->
+      <button class="login-page__sso-btn" type="button" (click)="onLogin()" [disabled]="loading()">
+        <span class="login-page__sso-icon">🔵</span>
+        Continue with single sign-on
+      </button>
+      
+<!-- Microsoft SSO button -->
+      <button
+        class="login-page__sso-btn my-5"
+        type="button"
+        [disabled]="loading()"
+        (click)="onLogin()">
+
+        <!-- Microsoft logo mark -->
+        <svg class="login-page__ms-icon" viewBox="0 0 21 21" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <rect x="1"  y="1"  width="9" height="9" fill="#f25022"/>
+          <rect x="11" y="1"  width="9" height="9" fill="#00a4ef"/>
+          <rect x="1"  y="11" width="9" height="9" fill="#7fba00"/>
+          <rect x="11" y="11" width="9" height="9" fill="#ffb900"/>
+        </svg>
+
+        <span *ngIf="!loading()">Continue with Microsoft</span>
+        <span *ngIf="loading()" class="login-page__spinner" aria-label="Signing in…">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83
+                    M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/>
+          </svg>
+        </span>
+      </button>
+      <div class="login-page__divider">
+        <span>OR WITH EMAIL</span>
+      </div>
+
+      <!-- Email + Password Form -->
+      <form class="login-page__email-form" (ngSubmit)="onLogin()">
+        <div class="login-page__field">
+            <app-input placeholder="you@company.com" label="WORK EMAIL" id="email" type="email" [required]="true"></app-input>
+        </div>
+
+        <div class="login-page__field">
+          <div class="login-page__field-header">
+            <a href="#" class="login-page__forgot">Forgot password?</a>
+          </div>
+          <div class="login-page__password-wrapper">
+            <app-input placeholder="enter your password" label="PASSWORD" id="password" type="password" [required]="true"></app-input>
+            <button type="button" class="login-page__toggle-password" aria-label="Toggle password visibility">
+              👁
+            </button>
+          </div>
+        </div>
+
+        <label class="login-page__remember">
+          <input type="checkbox" checked>
+          <span>Remember this device for 30 days</span>
+        </label>
+
+        <button 
+          type="submit"
+          class="login-page__submit-btn"
+          [disabled]="loading()">
+          <span *ngIf="!loading()">Sign in to BlueLink</span>
+          <span *ngIf="loading()" class="login-page__spinner">Signing in...</span>
+        </button>
+      </form>
+
+      <!-- Prototype Demo Accounts -->
+      <!-- <div class="login-page__demo">
+        <div class="login-page__demo-header">
+          <span>PROTOTYPE DEMO ACCOUNTS</span>
+          <span class="login-page__demo-pwd">pwd: bluelink</span>
+        </div>
+
+        <div class="login-page__demo-list">
+          <div class="login-page__demo-item">
+            <div class="login-page__demo-avatar">AB</div>
+            <div>
+              <strong>Amelia Brooks</strong>
+              <span>Director of IT Operations</span>
+            </div>
+          </div>
+          <div class="login-page__demo-item">
+            <div class="login-page__demo-avatar">ML</div>
+            <div>
+              <strong>Marc Lefevre</strong>
+              <span>Head of Smart Grid Engineering</span>
+            </div>
+          </div>
+          <div class="login-page__demo-item">
+            <div class="login-page__demo-avatar">PR</div>
+            <div>
+              <strong>Priya Raman</strong>
+              <span>Lead Integrations Architect</span>
+            </div>
+          </div>
+        </div>
+      </div> -->
+
+      <p class="login-page__terms">
+        By signing in you agree to BlueLink's <a href="#">Terms</a> and <a href="#">Privacy notice</a>.
+      </p>
+
+    </div>
+  </main>
+  
+</div>

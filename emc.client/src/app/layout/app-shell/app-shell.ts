@@ -1,15 +1,12 @@
 // src/app/shared/components/app-shell/app-shell.component.ts
 import {
   Component,
-  inject,
-  computed,
   ChangeDetectionStrategy,
 } from '@angular/core';
 import { CommonModule }      from '@angular/common';
 import { RouterModule }      from '@angular/router';
 import { SidebarComponent }  from '../sidebar/sidebar';
 import { TopbarComponent }   from '../top-bar/top-bar';
-import { SidebarService }    from '../../core/services/sidebar.service';
 
 @Component({
   selector: 'app-shell',

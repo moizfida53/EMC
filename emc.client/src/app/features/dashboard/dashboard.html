@@ -1,1 +1,43 @@
-<p>dashboard works!</p>
+<!-- src/app/features/dashboard/dashboard.html -->
+<div class="dashboard">
+
+  <app-welcome-banner />
+
+  <app-section-header
+    eyebrow="Engagement health"
+    title="At a glance"
+    description="Live signals from your retainer, support queue, project portfolio and licence book." />
+
+  <!-- KPI strip -->
+  <div class="kpi-grid">
+    <app-retainer-kpi />
+
+    <app-kpi-card
+      label="Active Tickets"
+      [value]="activeTickets()"
+      hint="Avg. response time 2h 14m · within SLA"
+      [trend]="{ dir: 'down', text: '−2 vs last week' }" />
+
+    <app-kpi-card
+      label="Project Progress"
+      [value]="avgCompletion() + '%'"
+      hint="{{ activeProjects() }} engagements in progress"
+      [trend]="{ dir: 'up', text: '+4 pts WoW' }" />
+
+    <app-kpi-card
+      label="Licence Alerts · 30 d"
+      [value]="expiringLicenses()"
+      hint="Renewal action needed"
+      [trend]="{ dir: 'flat', text: 'Renewal window' }" />
+  </div>
+
+  <!-- Two-column content area -->
+  <div class="split-grid">
+    <app-activity-feed />
+
+    <div class="dashboard__rail">
+      <app-project-health-rail />
+    </div>
+  </div>
+
+</div>

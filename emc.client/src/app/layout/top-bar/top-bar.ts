@@ -15,6 +15,7 @@ import { filter, map, startWith }    from 'rxjs/operators';
 import { toSignal }                   from '@angular/core/rxjs-interop';
 import { SidebarService }             from '../../core/services/sidebar.service';
 import { NAV_ITEMS }                  from '../../core/models/nav-item.model';
+import { ThemeService } from 'src/app/core/services/theme.service';
 
 // ── Mock user type (replace with real AuthService) ───────────
 interface AppUser {
@@ -45,7 +46,7 @@ const MOCK_USER: AppUser = {
 const MOCK_COMPANY = {
   name:     'Northwind Energy Co.',
   industry: 'Utilities & Smart Grid',
-  logo:     'assets/images/northwind-logo.png',
+  logo:     '/northwind-logo.webp',
 };
 
 const MOCK_ACTIVITIES: Activity[] = [
@@ -67,9 +68,14 @@ const MOCK_ACTIVITIES: Activity[] = [
 })
 export class TopbarComponent {
   private readonly sidebarService = inject(SidebarService);
+    public readonly themeService = inject(ThemeService);
   private readonly router         = inject(Router);
   private readonly elRef          = inject(ElementRef<HTMLElement>);
 
+    // Computed classes for inverse theme
+  protected readonly topbarClasses = computed(() => ({
+    'topbar--inverse': this.themeService.isInverseLayout(),
+  }));
   // ── Data ──────────────────────────────────────────────────
   protected readonly user       = MOCK_USER;
   protected readonly company    = MOCK_COMPANY;
@@ -125,6 +131,9 @@ export class TopbarComponent {
 
   protected onSearchKey(event: KeyboardEvent): void {
     if (event.key === 'Escape') (event.target as HTMLInputElement).blur();
+  }
+    protected toggleTheme(): void {
+    this.themeService.toggleTheme();
   }
 
   protected signOut(): void {

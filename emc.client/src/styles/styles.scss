@@ -13,33 +13,33 @@
 
 // 2. BOOTSTRAP — SCSS source (customize via $variables before import)
 // Override Bootstrap variables using our tokens before importing
-$primary:         v.$brand-600;
-$secondary:       v.$slate-200;
-$success:         v.$success-600;
-$warning:         v.$warning-600;
-$danger:          v.$danger-600;
-$info:            v.$brand-500;
-$light:           v.$slate-100;
-$dark:            v.$slate-800;
+// $primary:         v.$brand-600;
+// $secondary:       v.$slate-200;
+// $success:         v.$success-600;
+// $warning:         v.$warning-600;
+// $danger:          v.$danger-600;
+// $info:            v.$brand-500;
+// $light:           v.$slate-100;
+// $dark:            v.$slate-800;
 
-$font-family-sans-serif: v.$font-sans;
-$font-family-monospace:  v.$font-mono;
+// $font-family-sans-serif: v.$font-sans;
+// $font-family-monospace:  v.$font-mono;
 
-$body-bg:         v.$slate-50;
-$body-color:      v.$slate-900;
+// $body-bg:         v.$slate-50;
+// $body-color:      v.$slate-900;
 
-$border-radius:      v.$radius-md;
-$border-radius-sm:   v.$radius-sm;
-$border-radius-lg:   v.$radius-lg;
-$border-radius-xl:   v.$radius-xl;
-$border-radius-pill: v.$radius-full;
+// $border-radius:      v.$radius-md;
+// $border-radius-sm:   v.$radius-sm;
+// $border-radius-lg:   v.$radius-lg;
+// $border-radius-xl:   v.$radius-xl;
+// $border-radius-pill: v.$radius-full;
 
-$spacer:          1rem;  // 16px base
-$grid-gutter-width: 1.5rem;
+// $spacer:          1rem;  // 16px base
+// $grid-gutter-width: 1.5rem;
 
-$enable-smooth-scroll:  true;
-$enable-rfs:            true;
-$enable-negative-margins: true;
+// $enable-smooth-scroll:  true;
+// $enable-rfs:            true;
+// $enable-negative-margins: true;
 
 // 3. BASE — Reset + typography (generates CSS)
 @use 'base/reset';
