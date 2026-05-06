@@ -1,43 +1,116 @@
 <!-- src/app/features/dashboard/dashboard.html -->
-<div class="dashboard">
-
+<div id="dashboard" class="dashboard">
+  <!-- Welcome Banner (Skipped as per requirements) -->
   <app-welcome-banner />
 
-  <app-section-header
-    eyebrow="Engagement health"
-    title="At a glance"
-    description="Live signals from your retainer, support queue, project portfolio and licence book." />
+  <section class="dashboard__section">
+    <div class="dashboard__section-header">
+      <span class="dashboard__section-eyebrow">ENGAGEMENT HEALTH</span>
+      <h2 class="dashboard__section-title">At a glance</h2>
+      <p class="dashboard__section-description">
+        Live signals from your retainer, support queue, project portfolio and licence book — refreshed every 60 seconds.
+      </p>
+    </div>
 
-  <!-- KPI strip -->
-  <div class="kpi-grid">
-    <app-retainer-kpi />
+    <div class="dashboard__kpi-grid">
+      <app-retainer-kpi />
+      
+      <app-kpi-card
+        label="PROJECT PROGRESS · ACTIVE ENGAGEMENTS"
+        meta="WoW"
+        [value]="avgCompletion()"
+        unit="%"
+        [hint]="activeProjectsCount() + ' of 3 on track · 1 need attention'"
+        [trend]="{ dir: 'up', text: '+4 pts' }"
+      >
+        <div class="dashboard__project-mini-list">
+          <div class="dashboard__project-mini-item">
+            <span class="dashboard__project-mini-name">Settlement Module — Phase 2 Rollout</span>
+            <span class="dashboard__project-mini-pct">62%</span>
+          </div>
+          <div class="dashboard__project-mini-item">
+            <span class="dashboard__project-mini-name">Smart Meter Onboarding Wave 3</span>
+            <span class="dashboard__project-mini-pct">41%</span>
+          </div>
+          <div class="dashboard__project-mini-item">
+            <span class="dashboard__project-mini-name">Identity Federation (SSO + SCIM)</span>
+            <span class="dashboard__project-mini-pct">12%</span>
+          </div>
+        </div>
+      </app-kpi-card>
 
-    <app-kpi-card
-      label="Active Tickets"
-      [value]="activeTickets()"
-      hint="Avg. response time 2h 14m · within SLA"
-      [trend]="{ dir: 'down', text: '−2 vs last week' }" />
+      <app-kpi-card
+        label="ACTIVE SUPPORT TICKETS"
+        meta="vs last week"
+        [value]="activeTickets()"
+        [hint]="'Avg. response time 2h 14m · within SLA'"
+        [trend]="{ dir: 'down', text: '-2' }"
+      >
+        <div class="dashboard__ticket-breakdown">
+          <div class="dashboard__ticket-box dashboard__ticket-box--high">
+            <span class="dashboard__ticket-count">3</span>
+            <span class="dashboard__ticket-label">HIGH</span>
+          </div>
+          <div class="dashboard__ticket-box dashboard__ticket-box--medium">
+            <span class="dashboard__ticket-count">2</span>
+            <span class="dashboard__ticket-label">MEDIUM</span>
+          </div>
+          <div class="dashboard__ticket-box dashboard__ticket-box--low">
+            <span class="dashboard__ticket-count">2</span>
+            <span class="dashboard__ticket-label">LOW</span>
+          </div>
+        </div>
+      </app-kpi-card>
 
-    <app-kpi-card
-      label="Project Progress"
-      [value]="avgCompletion() + '%'"
-      hint="{{ activeProjects() }} engagements in progress"
-      [trend]="{ dir: 'up', text: '+4 pts WoW' }" />
+      <app-kpi-card
+        label="LICENSE ALERTS · NEXT 30 DAYS"
+        meta="Renewal window"
+        [value]="expiringLicenses()"
+        hint="Renewal action needed"
+      >
+        <div class="dashboard__license-list">
+          <div class="dashboard__license-item">
+            <div class="dashboard__license-info">
+              <span class="dashboard__license-name">FlowOps Automation — Production</span>
+              <span class="dashboard__license-expiry">Expires in 14 days · 19 May 2026</span>
+            </div>
+            <i class="bi bi-exclamation-circle dashboard__license-icon"></i>
+          </div>
+          <div class="dashboard__license-item">
+            <div class="dashboard__license-info">
+              <span class="dashboard__license-name">GridIQ Sandbox</span>
+              <span class="dashboard__license-expiry">Expires in 7 days · 12 May 2026</span>
+            </div>
+            <i class="bi bi-exclamation-circle dashboard__license-icon"></i>
+          </div>
+          <div class="dashboard__license-item">
+            <div class="dashboard__license-info">
+              <span class="dashboard__license-name">FlowOps Connector Pack</span>
+              <span class="dashboard__license-expiry">Expires in 0 days · 30 Sept 2025</span>
+            </div>
+            <i class="bi bi-exclamation-circle dashboard__license-icon"></i>
+          </div>
+        </div>
+      </app-kpi-card>
+    </div>
+  </section>
 
-    <app-kpi-card
-      label="Licence Alerts · 30 d"
-      [value]="expiringLicenses()"
-      hint="Renewal action needed"
-      [trend]="{ dir: 'flat', text: 'Renewal window' }" />
-  </div>
-
-  <!-- Two-column content area -->
-  <div class="split-grid">
-    <app-activity-feed />
-
-    <div class="dashboard__rail">
+  <div class="dashboard__main-grid">
+    <div class="dashboard__main-content">
+      <app-activity-feed />
+    </div>
+    <div class="dashboard__side-content">
       <app-project-health-rail />
+      
+      <div class="dashboard__quick-links surface-elev">
+        <span class="dashboard__quick-links-title">QUICK LINKS</span>
+        <div class="dashboard__quick-links-grid">
+          <a *ngFor="let link of quickLinks" [routerLink]="link.url" class="dashboard__quick-link-item">
+            <span class="dashboard__quick-link-label">{{ link.label }}</span>
+            <i [ngClass]="link.icon"></i>
+          </a>
+        </div>
+      </div>
     </div>
   </div>
-
 </div>

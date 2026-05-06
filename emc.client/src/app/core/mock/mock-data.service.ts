@@ -58,8 +58,10 @@ export interface KnowledgeArticle {
 
 export interface Release {
   id: string; requestType: 'Release' | 'Hotfix' | 'Feature' | 'Configuration';
-  title: string; description: string; version: string;
-  requestedBy: string; targetCompletionDate: string; productionStatus: ReleaseStatus;
+  title: string; name: string; description: string; version: string;
+  requestedBy: string; platform: 'Cloud' | 'On-Premise' | 'Mobile' | 'API';
+  releaseDate: string; targetCompletionDate: string; productionStatus: ReleaseStatus; status: ReleaseStatus;
+  features: string[];
 }
 
 export interface Activity {
@@ -162,13 +164,13 @@ export class MockDataService {
   ];
 
   readonly releases: Release[] = [
-    { id: 'rel-1', requestType: 'Release',       title: 'GridIQ 4.18.0 — Improved settlement re-drive UX',  description: 'Operator-facing re-drive panel with checkpoint diff.',               version: '4.18.0',     requestedBy: 'BlueLink Product',   targetCompletionDate: '2026-05-04', productionStatus: 'Staged' },
-    { id: 'rel-2', requestType: 'Hotfix',        title: 'FlowOps 4.12.1 — Webhook signature edge case',     description: 'Hotfix for HMAC verification failing with trailing newlines.',     version: '4.12.1',     requestedBy: 'Northwind Energy',   targetCompletionDate: '2026-04-30', productionStatus: 'QA' },
-    { id: 'rel-3', requestType: 'Feature',       title: 'MeterLink — Per-sector NTP drift report',           description: 'Scheduled CSV/PDF report of NTP drift outliers.',                 version: '2.10.0',     requestedBy: 'Northwind Energy',   targetCompletionDate: '2026-06-10', productionStatus: 'In Development' },
-    { id: 'rel-4', requestType: 'Feature',       title: 'AssetNav — Offline tile bundles for Sector 4',     description: 'Allow dispatchers to pre-cache up to 200 MB of map tiles.',       version: '1.7.0',      requestedBy: 'Northwind Energy',   targetCompletionDate: '2026-07-01', productionStatus: 'Planned' },
-    { id: 'rel-5', requestType: 'Configuration', title: 'GridIQ — Tariff TX-22 variance threshold tuning',  description: 'Tighten variance threshold from 0.5% to 0.25%.',                  version: 'cfg-2026.04', requestedBy: 'Northwind Energy',  targetCompletionDate: '2026-05-12', productionStatus: 'Planned' },
-    { id: 'rel-6', requestType: 'Release',       title: 'Settlement Module 3.2.0 GA',                       description: 'General availability release covering Phase 2 scope.',           version: '3.2.0',      requestedBy: 'BlueLink Product',   targetCompletionDate: '2026-08-25', productionStatus: 'In Development' },
-    { id: 'rel-7', requestType: 'Release',       title: 'GridIQ 4.17.3 — Caching fix',                      description: 'Fixes dashboard widget caching reported in BL-10376.',          version: '4.17.3',     requestedBy: 'BlueLink Product',   targetCompletionDate: '2026-04-15', productionStatus: 'Released' },
+    { id: 'rel-1', requestType: 'Release',       title: 'GridIQ 4.18.0 — Improved settlement re-drive UX',  name: 'GridIQ 4.18.0',   description: 'Operator-facing re-drive panel with checkpoint diff.',               version: '4.18.0',     requestedBy: 'BlueLink Product',   platform: 'Cloud',      releaseDate: '2026-05-04', targetCompletionDate: '2026-05-04', productionStatus: 'Staged',       status: 'Staged',       features: ['Checkpoint diff', 'Operator panel improvements'] },
+    { id: 'rel-2', requestType: 'Hotfix',        title: 'FlowOps 4.12.1 — Webhook signature edge case',     name: 'FlowOps 4.12.1',  description: 'Hotfix for HMAC verification failing with trailing newlines.',     version: '4.12.1',     requestedBy: 'Northwind Energy',   platform: 'API',        releaseDate: '2026-04-30', targetCompletionDate: '2026-04-30', productionStatus: 'QA',            status: 'QA',            features: ['HMAC newline fix', 'Ingress validation'] },
+    { id: 'rel-3', requestType: 'Feature',       title: 'MeterLink — Per-sector NTP drift report',           name: 'MeterLink NTP report', description: 'Scheduled CSV/PDF report of NTP drift outliers.',                 version: '2.10.0',     requestedBy: 'Northwind Energy',   platform: 'Mobile',     releaseDate: '2026-06-10', targetCompletionDate: '2026-06-10', productionStatus: 'In Development', status: 'In Development', features: ['NTP drift report', 'PDF export'] },
+    { id: 'rel-4', requestType: 'Feature',       title: 'AssetNav — Offline tile bundles for Sector 4',     name: 'AssetNav offline bundles', description: 'Allow dispatchers to pre-cache up to 200 MB of map tiles.',       version: '1.7.0',      requestedBy: 'Northwind Energy',   platform: 'On-Premise', releaseDate: '2026-07-01', targetCompletionDate: '2026-07-01', productionStatus: 'Planned',       status: 'Planned',       features: ['Tile pre-cache', 'Offline bundle manager'] },
+    { id: 'rel-5', requestType: 'Configuration', title: 'GridIQ — Tariff TX-22 variance threshold tuning',  name: 'GridIQ tariff tuning', description: 'Tighten variance threshold from 0.5% to 0.25%.',                  version: 'cfg-2026.04', requestedBy: 'Northwind Energy',   platform: 'Cloud',      releaseDate: '2026-05-12', targetCompletionDate: '2026-05-12', productionStatus: 'Planned',       status: 'Planned',       features: ['Threshold tuning'] },
+    { id: 'rel-6', requestType: 'Release',       title: 'Settlement Module 3.2.0 GA',                       name: 'Settlement Module 3.2.0', description: 'General availability release covering Phase 2 scope.',           version: '3.2.0',      requestedBy: 'BlueLink Product',   platform: 'On-Premise', releaseDate: '2026-08-25', targetCompletionDate: '2026-08-25', productionStatus: 'In Development', status: 'In Development', features: ['GA release', 'Phase 2 delivery'] },
+    { id: 'rel-7', requestType: 'Release',       title: 'GridIQ 4.17.3 — Caching fix',                      name: 'GridIQ 4.17.3',  description: 'Fixes dashboard widget caching reported in BL-10376.',          version: '4.17.3',     requestedBy: 'BlueLink Product',   platform: 'Cloud',      releaseDate: '2026-04-15', targetCompletionDate: '2026-04-15', productionStatus: 'Released',     status: 'Released',     features: ['Widget cache fix'] },
   ];
 
   readonly systemComponents: SystemComponent[] = [

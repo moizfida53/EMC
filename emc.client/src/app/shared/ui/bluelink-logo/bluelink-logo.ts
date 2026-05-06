@@ -11,17 +11,34 @@ import { CommonModule } from '@angular/common';
   selector: 'app-bluelink-logo',
   standalone: true,
   imports: [CommonModule],
-  templateUrl: './bluelink-logo.html',
+  template:`
+  <div class="bluelink-logo">
+
+  <img
+    [src]="logoSrc()"
+    alt="BlueLink Solutions"
+    [width]="width()"
+    [height]="height()"
+    [style.width.px]="width()"
+    [style.height.px]="height()"
+    class="bluelink-logo__img"
+    draggable="false" />
+
+  <div
+    *ngIf="sublabel()"
+    class="bluelink-logo__sublabel"
+    [ngStyle]="sublabelStyle()"
+    aria-hidden="true">
+    {{ sublabel() }}
+  </div>
+
+</div>`,
   styleUrl: './bluelink-logo.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class BluelinkLogo {
-  /** 'light' = blue logo on light backgrounds (default)
-   *  'dark'  = white logo for dark/brand panels             */
   variant  = input<'light' | 'dark'>('light');
-  /** Render height in px; width derived from official aspect ratio 1600:351 */
   height   = input<number>(28);
-  /** Sub-label text. Pass null to hide entirely */
   sublabel = input<string | null>('Customer Portal');
 
   protected readonly width = computed(() =>

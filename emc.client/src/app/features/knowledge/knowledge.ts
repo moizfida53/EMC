@@ -7,12 +7,12 @@ import { CommonModule }       from '@angular/common';
 import { MockDataService, KnowledgeArticle } from '../../core/mock/mock-data.service';
 import { ArticleList }        from './components/article-list/article-list';
 import { ArticleDetail }      from './components/article-detail/article-detail';
-import { Pill,SectionHeader } from '@shared';
+import {SectionHeader } from '@shared';
 
 @Component({
   selector: 'app-knowledge',
   standalone: true,
-  imports: [CommonModule, ArticleList, ArticleDetail, SectionHeader, Pill],
+  imports: [CommonModule, ArticleList, ArticleDetail, SectionHeader],
   templateUrl: './knowledge.html',
   styleUrl: './knowledge.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

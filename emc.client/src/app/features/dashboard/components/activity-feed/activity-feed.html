@@ -1,40 +1,33 @@
 <!-- src/app/features/dashboard/components/activity-feed/activity-feed.html -->
 <div class="activity-feed surface-elev">
-
   <div class="activity-feed__header">
-    <div>
-      <p class="micro-label">Recent Activity</p>
+    <div class="activity-feed__header-content">
+      <span class="activity-feed__eyebrow">RECENT ACTIVITY</span>
       <h3 class="activity-feed__title">What's been happening</h3>
     </div>
-    <button class="activity-feed__all-link" type="button">View all</button>
+    <button class="activity-feed__view-all">View all</button>
   </div>
 
   <div class="activity-feed__list">
-    <div
-      *ngFor="let a of activities; let last = last"
-      class="activity-feed__item">
-
-      <!-- Timeline dot + vertical connector -->
-      <div class="activity-feed__track">
-        <div class="activity-feed__dot"></div>
+    <div *ngFor="let act of activities(); let last = last" class="activity-feed__item">
+      <div class="activity-feed__timeline">
+        <div class="activity-feed__icon-container">
+          <i [ngClass]="icon(act.type)"></i>
+        </div>
         <div *ngIf="!last" class="activity-feed__line"></div>
       </div>
-
-      <!-- Content -->
-      <div class="activity-feed__content" [class.activity-feed__content--pb]="!last">
-        <div class="activity-feed__meta">
-          <app-pill [tone]="tone(a.type)" [dot]="!a.read">{{ a.type }}</app-pill>
-          <span class="activity-feed__time num-tabular">
-            {{ a.scheduledStart | relativeTime }}
+      
+      <div class="activity-feed__content">
+        <div class="activity-feed__item-header">
+          <span class="activity-feed__type-pill">
+            <span class="activity-feed__type-dot"></span>
+            {{ act.type }}
           </span>
+          <span class="activity-feed__time">{{ formatRelative(act.scheduledStart) }}</span>
         </div>
-        <p class="activity-feed__subject">{{ a.subject }}</p>
-        <p class="activity-feed__date num-tabular">
-          {{ a.scheduledStart | formatDate:'datetime' }}
-        </p>
+        <div class="activity-feed__subject">{{ act.subject }}</div>
+        <div class="activity-feed__date">Scheduled {{ formatDateTime(act.scheduledStart) }}</div>
       </div>
-
     </div>
   </div>
-
 </div>

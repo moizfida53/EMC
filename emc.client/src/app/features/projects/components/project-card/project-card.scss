@@ -1,0 +1,111 @@
+// src/app/features/projects/components/project-card/project-card.scss
+@use '../../../../../styles/abstracts/variables' as v;
+@use '../../../../../styles/abstracts/mixins' as m;
+
+:host { display: block; }
+
+.project-card {
+  display: flex;
+  flex-direction: column;
+  gap: v.$spacing-3;
+  padding: v.$spacing-5;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: v.$radius-lg;
+  box-shadow: var(--shadow-sm);
+  text-align: left;
+  cursor: pointer;
+  transition:
+    border-color v.$duration-base v.$ease-out,
+    box-shadow   v.$duration-base v.$ease-out,
+    transform    v.$duration-base v.$ease-out;
+
+  &:hover {
+    border-color: var(--color-brand-300);
+    box-shadow: var(--shadow-md);
+    transform: translateY(-2px);
+
+    .project-card__title  { color: var(--color-brand-700); }
+    .project-card__cta    { opacity: 1; }
+  }
+
+  @include m.focus-ring;
+}
+
+.project-card__badges {
+  display: flex;
+  gap: v.$spacing-1-5;
+  flex-wrap: wrap;
+}
+
+.project-card__title {
+  font-family: v.$font-display;
+  font-size: v.$text-lg;
+  font-weight: v.$font-semibold;
+  color: var(--color-text-primary);
+  line-height: v.$leading-snug;
+  margin: 0;
+  transition: color v.$duration-base v.$ease-out;
+}
+
+.project-card__desc {
+  font-size: 13px;
+  color: var(--color-text-tertiary);
+  line-height: v.$leading-relaxed;
+  margin: 0;
+  @include m.line-clamp(2);
+}
+
+.project-card__progress {
+  display: flex;
+  align-items: center;
+  gap: v.$spacing-2-5;
+
+  app-mini-bar { flex: 1; }
+}
+
+.project-card__pct {
+  font-family: v.$font-display;
+  font-size: v.$text-base;
+  font-weight: v.$font-bold;
+  color: var(--color-text-primary);
+  min-width: 32px;
+  text-align: right;
+}
+
+.project-card__footer {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: v.$spacing-3;
+  padding-top: v.$spacing-2;
+  border-top: 1px solid var(--color-border);
+}
+
+.project-card__meta-item {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.project-card__meta-val {
+  font-size: 12px;
+  font-weight: v.$font-medium;
+  color: var(--color-text-primary);
+  @include m.truncate;
+}
+
+.project-card__cta {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: flex-end;
+  justify-content: flex-end;
+  padding: v.$spacing-3;
+  font-size: 11px;
+  font-weight: v.$font-semibold;
+  color: var(--color-brand-700);
+  opacity: 0;
+  transition: opacity v.$duration-base v.$ease-out;
+  pointer-events: none;
+}

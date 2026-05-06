@@ -1,27 +1,38 @@
-// src/app/shared/core/services/theme.service.ts
-import { Injectable, signal, computed, effect } from '@angular/core';
+// src/app/core/services/theme.service.ts
+//
+// With Bootstrap 5.3+, dark mode is driven by  data-bs-theme="dark"
+// on the <html> element — Bootstrap's CSS variables switch automatically.
+// ThemeService is still needed to manage the signal state, persist the
+// preference, and react to the OS preference change event.
+//
+// What is REMOVED compared to the previous version:
+//   - applyTheme: classList add/remove 'dark', setAttribute on body
+//   - isInverseLayout() computed  (Bootstrap handles theming itself)
+//   - body class toggling          (no longer needed)
+//
+// What is KEPT:
+//   - Signal-based API (currentTheme, isDarkMode)
+//   - localStorage persistence
+//   - OS prefers-color-scheme listener
+
+import { Injectable, signal, computed } from '@angular/core';
 
 export type Theme = 'light' | 'dark';
 
 @Injectable({ providedIn: 'root' })
 export class ThemeService {
-  private readonly STORAGE_KEY = 'theme';
-  private readonly prefersDark = window.matchMedia('(prefers-color-scheme: dark)');
-  
-  currentTheme = signal<Theme>('light');
-  isDarkMode = computed(() => this.currentTheme() === 'dark');
-  
-  // For inverse layout (sidebar/topbar opposite to main theme)
-  isInverseLayout = computed(() => this.isDarkMode()); // When dark theme, inverse the bars
+  private readonly STORAGE_KEY = 'bl-portal:theme';
+  private readonly prefersDark  = window.matchMedia('(prefers-color-scheme: dark)');
+
+  // ── Public signals ──────────────────────────────────────────
+  readonly currentTheme = signal<Theme>(this._loadTheme());
+  readonly isDarkMode   = computed(() => this.currentTheme() === 'dark');
 
   constructor() {
-    // Load saved preference or system preference
-    const saved = localStorage.getItem(this.STORAGE_KEY) as Theme | null;
-    const systemPrefers = this.prefersDark.matches ? 'dark' : 'light';
-    this.currentTheme.set(saved || systemPrefers);
-    this.applyTheme(this.currentTheme());
-    
-    // Watch system preference changes (only if no user preference saved)
+    // Apply immediately on boot — avoids FOUC
+    this._applyTheme(this.currentTheme());
+
+    // Follow OS changes only when the user has not set a manual preference
     this.prefersDark.addEventListener('change', (e) => {
       if (!localStorage.getItem(this.STORAGE_KEY)) {
         this.setTheme(e.matches ? 'dark' : 'light');
@@ -29,25 +40,31 @@ export class ThemeService {
     });
   }
 
-  setTheme(theme: Theme) {
+  // ── Actions ─────────────────────────────────────────────────
+  setTheme(theme: Theme): void {
     this.currentTheme.set(theme);
-    this.applyTheme(theme);
+    this._applyTheme(theme);
     localStorage.setItem(this.STORAGE_KEY, theme);
   }
 
-  toggleTheme() {
-    this.setTheme(this.currentTheme() === 'light' ? 'dark' : 'light');
+  toggleTheme(): void {
+    this.setTheme(this.isDarkMode() ? 'light' : 'dark');
   }
 
-  private applyTheme(theme: Theme) {
-    if (theme === 'dark') {
-      document.body.classList.add('dark');
-      document.body.setAttribute('data-theme', 'dark');
-      document.body.classList.remove('theme-light');
-    } else {
-      document.body.classList.remove('dark');
-      document.body.setAttribute('data-theme', 'light');
-      document.body.classList.add('theme-light');
-    }
+  // ── Private ─────────────────────────────────────────────────
+  /**
+   * Bootstrap 5.3 colour-mode switching:
+   *   <html data-bs-theme="dark">  →  all BS CSS vars switch
+   *
+   * This is the ONLY DOM mutation needed. No class toggling required.
+   */
+  private _applyTheme(theme: Theme): void {
+    document.documentElement.setAttribute('data-bs-theme', theme);
+  }
+
+  private _loadTheme(): Theme {
+    const saved = localStorage.getItem(this.STORAGE_KEY) as Theme | null;
+    if (saved === 'light' || saved === 'dark') return saved;
+    return this.prefersDark.matches ? 'dark' : 'light';
   }
 }

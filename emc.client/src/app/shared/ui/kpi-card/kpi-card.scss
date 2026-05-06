@@ -4,100 +4,128 @@
 
 :host {
   display: block;
+  height: 100%;
 }
 
 .kpi-card {
   position: relative;
+  height: 100%;
   overflow: hidden;
   background: var(--color-surface);
   border: v.$border-width solid var(--color-border);
   border-radius: v.$radius-lg;
   box-shadow: var(--shadow-sm);
-  padding: v.$spacing-5;
+  padding: v.$spacing-6;
   transition: box-shadow v.$duration-base v.$ease-out;
+  display: flex;
+  flex-direction: column;
 
   &:hover {
     box-shadow: var(--shadow-md);
   }
 
-  // Active state: left accent bar + ring
   &--active {
-    box-shadow: inset 0 0 0 1px var(--color-kpi-active-ring), var(--shadow-sm);
-
-    &:hover {
-      box-shadow: inset 0 0 0 1px var(--color-kpi-active-ring), var(--shadow-md);
-    }
+    border-color: var(--color-brand-200);
+    box-shadow: inset 0 0 0 1px var(--color-brand-100), var(--shadow-sm);
   }
 
-  // ── Active bar ───────────────────────────────────────────
   &__bar {
     position: absolute;
     left: 0;
-    top: v.$spacing-3;
-    bottom: v.$spacing-3;
-    width: 3px;
-    border-radius: 0 v.$radius-full v.$radius-full 0;
-    background: var(--color-kpi-active-bar);
+    top: 0;
+    bottom: 0;
+    width: 4px;
+    background: var(--color-brand-500);
   }
 
-  // ── Header ───────────────────────────────────────────────
   &__header {
     display: flex;
     align-items: flex-start;
     justify-content: space-between;
-    gap: v.$spacing-3;
+    margin-bottom: v.$spacing-4;
+  }
+
+  &__label-group {
+    display: flex;
+    flex-direction: column;
+    gap: v.$spacing-0-5;
   }
 
   &__label {
     @include m.micro-label;
     color: var(--color-text-tertiary);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
   }
 
-  // ── Value ────────────────────────────────────────────────
-  &__value {
-    margin-top: v.$spacing-2;
+  &__sub-label {
+    font-size: v.$text-xs;
+    color: var(--color-text-secondary);
+    font-weight: v.$font-medium;
+  }
+
+  &__meta {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: v.$spacing-1;
+    text-align: right;
+  }
+
+  &__meta-text {
+    font-size: v.$text-xs;
+    color: var(--color-text-tertiary);
+  }
+
+  &__body {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+  }
+
+  &__value-row {
     display: flex;
     align-items: baseline;
-    gap: v.$spacing-1-5;
+    justify-content: space-between;
+  }
+
+  &__value {
     font-family: v.$font-display;
-    font-size: v.$text-6xl;
+    font-size: v.$text-5xl;
     font-weight: v.$font-bold;
-    letter-spacing: v.$tracking-tight;
     color: var(--color-text-primary);
-    line-height: 1;
+    line-height: 1.1;
     @include m.num-tabular;
   }
 
   &__unit {
-    font-size: v.$text-sm;
-    font-weight: v.$font-normal;
+    font-size: v.$text-xl;
+    font-weight: v.$font-medium;
     color: var(--color-text-tertiary);
+    margin-left: v.$spacing-1;
   }
 
-  // ── Hint ─────────────────────────────────────────────────
   &__hint {
-    margin-top: v.$spacing-1;
+    margin-top: v.$spacing-2;
     font-size: v.$text-xs;
     color: var(--color-text-tertiary);
-    line-height: v.$leading-relaxed;
+    line-height: 1.4;
   }
 
-  // ── Trend ────────────────────────────────────────────────
   &__trend {
     font-size: v.$text-xs;
     font-weight: v.$font-semibold;
     white-space: nowrap;
-    flex-shrink: 0;
 
     &--up   { color: var(--color-success-600); }
     &--down { color: var(--color-danger-600); }
     &--flat { color: var(--color-text-tertiary); }
   }
 
-  // ── Slotted content ──────────────────────────────────────
   &__content {
+    margin-top: auto;
     &:not(:empty) {
-      margin-top: v.$spacing-4;
+      padding-top: v.$spacing-4;
     }
   }
 }

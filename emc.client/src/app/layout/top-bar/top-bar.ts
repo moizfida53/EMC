@@ -8,16 +8,15 @@ import {
   HostListener,
   ElementRef,
 } from '@angular/core';
-import { CommonModule }               from '@angular/common';
-import { RouterModule, Router,
-         NavigationEnd }              from '@angular/router';
-import { filter, map, startWith }    from 'rxjs/operators';
-import { toSignal }                   from '@angular/core/rxjs-interop';
-import { SidebarService }             from '../../core/services/sidebar.service';
-import { NAV_ITEMS }                  from '../../core/models/nav-item.model';
-import { ThemeService } from 'src/app/core/services/theme.service';
+import { CommonModule }            from '@angular/common';
+import { RouterModule, Router, NavigationEnd } from '@angular/router';
+import { filter, map, startWith }  from 'rxjs/operators';
+import { toSignal }                from '@angular/core/rxjs-interop';
+import { SidebarService }          from '../../core/services/sidebar.service';
+import { ThemeService }            from '../../core/services/theme.service';
+import { NAV_ITEMS }               from '../../core/models/nav-item.model';
 
-// ── Mock user type (replace with real AuthService) ───────────
+// ── Types ─────────────────────────────────────────────────────
 interface AppUser {
   firstname: string;
   lastname:  string;
@@ -27,11 +26,11 @@ interface AppUser {
 }
 
 interface Activity {
-  id:            string;
-  type:          string;
-  subject:       string;
-  scheduledStart:string;
-  read:          boolean;
+  id:             string;
+  type:           string;
+  subject:        string;
+  scheduledStart: string;
+  read:           boolean;
 }
 
 // ── Mock data (replace with real service calls) ───────────────
@@ -52,10 +51,10 @@ const MOCK_COMPANY = {
 const MOCK_ACTIVITIES: Activity[] = [
   { id: '1', type: 'Email',   subject: 'Re: BL-10481 Settlement run BL-04 stalled at 92%', scheduledStart: new Date().toISOString(), read: false },
   { id: '2', type: 'Meeting', subject: 'Settlement Phase 2 — Region A go-live readiness',  scheduledStart: new Date().toISOString(), read: false },
-  { id: '3', type: 'Task',    subject: 'Approve SCIM deprovisioning runbook v1.2',          scheduledStart: new Date().toISOString(), read: true },
-  { id: '4', type: 'Call',    subject: 'Weekly delivery sync with BlueLink',                scheduledStart: new Date().toISOString(), read: true },
-  { id: '5', type: 'Note',    subject: 'MeterLink Wave 3 — variance in Sector 7',           scheduledStart: new Date().toISOString(), read: true },
-  { id: '6', type: 'Email',   subject: 'Release notes: GridIQ 4.18.0 (Staged 2026-05-04)', scheduledStart: new Date().toISOString(), read: true },
+  { id: '3', type: 'Task',    subject: 'Approve SCIM deprovisioning runbook v1.2',          scheduledStart: new Date().toISOString(), read: true  },
+  { id: '4', type: 'Call',    subject: 'Weekly delivery sync with BlueLink',                scheduledStart: new Date().toISOString(), read: true  },
+  { id: '5', type: 'Note',    subject: 'MeterLink Wave 3 — variance in Sector 7',           scheduledStart: new Date().toISOString(), read: true  },
+  { id: '6', type: 'Email',   subject: 'Release notes: GridIQ 4.18.0 (Staged 2026-05-04)', scheduledStart: new Date().toISOString(), read: true  },
 ];
 
 @Component({
@@ -67,21 +66,20 @@ const MOCK_ACTIVITIES: Activity[] = [
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TopbarComponent {
-  private readonly sidebarService = inject(SidebarService);
-    public readonly themeService = inject(ThemeService);
-  private readonly router         = inject(Router);
-  private readonly elRef          = inject(ElementRef<HTMLElement>);
+  private  readonly sidebarService = inject(SidebarService);
+  public   readonly themeService   = inject(ThemeService);  // public: used in template
+  private  readonly router         = inject(Router);
+  private  readonly elRef          = inject(ElementRef<HTMLElement>);
 
-    // Computed classes for inverse theme
-  protected readonly topbarClasses = computed(() => ({
-    'topbar--inverse': this.themeService.isInverseLayout(),
-  }));
+  // NOTE: topbarClasses / isInverseLayout removed.
+  // Bootstrap 5.3 data-bs-theme on <html> handles all colour switching.
+
   // ── Data ──────────────────────────────────────────────────
   protected readonly user       = MOCK_USER;
   protected readonly company    = MOCK_COMPANY;
   protected readonly activities = MOCK_ACTIVITIES;
 
-  // ── UI state signals ──────────────────────────────────────
+  // ── UI state ──────────────────────────────────────────────
   protected readonly notifOpen   = signal(false);
   protected readonly userOpen    = signal(false);
   protected readonly searchQuery = signal('');
@@ -98,16 +96,12 @@ export class TopbarComponent {
   );
 
   protected readonly breadcrumbs = toSignal(
-    this.currentUrl$.pipe(
-      map(url => this._buildBreadcrumbs(url))
-    ),
-    { initialValue: this._buildBreadcrumbs(this.router.url) }
+    this.currentUrl$.pipe(map(url => this._buildBreadcrumbs(url))),
+    { initialValue: this._buildBreadcrumbs(this.router.url) },
   );
 
   // ── Actions ───────────────────────────────────────────────
-  protected toggleMobileSidebar(): void {
-    this.sidebarService.toggleMobile();
-  }
+  protected toggleMobileSidebar(): void { this.sidebarService.toggleMobile(); }
 
   protected toggleNotif(): void {
     this.notifOpen.update(v => !v);
@@ -121,32 +115,20 @@ export class TopbarComponent {
 
   protected markAllRead(): void {
     this.activities.forEach(a => (a.read = true));
-    // In production: call activity service
   }
 
-  protected openSearch(): void {
-    // In production: open command palette modal (⌘K)
-    console.info('Search / command palette coming soon');
-  }
+  protected openSearch():  void { console.info('Command palette coming soon'); }
+  protected openProfile(): void { console.info('Profile & preferences coming soon'); }
+  protected openHelp():    void { console.info('Help center coming soon'); }
+
+  protected toggleTheme(): void { this.themeService.toggleTheme(); }
 
   protected onSearchKey(event: KeyboardEvent): void {
     if (event.key === 'Escape') (event.target as HTMLInputElement).blur();
   }
-    protected toggleTheme(): void {
-    this.themeService.toggleTheme();
-  }
 
   protected signOut(): void {
-    // In production: call AuthService.signOut()
     this.router.navigate(['/login']);
-  }
-
-  protected openProfile(): void {
-    console.info('Profile & preferences coming soon');
-  }
-
-  protected openHelp(): void {
-    console.info('Help center coming soon');
   }
 
   // ── Close popovers when clicking outside ─────────────────
@@ -158,14 +140,12 @@ export class TopbarComponent {
     }
   }
 
-  // ── Close on Escape ──────────────────────────────────────
   @HostListener('document:keydown.escape')
   protected onEscape(): void {
     this.notifOpen.set(false);
     this.userOpen.set(false);
   }
 
-  // ── Global ⌘K shortcut ───────────────────────────────────
   @HostListener('document:keydown', ['$event'])
   protected onGlobalKey(event: KeyboardEvent): void {
     if ((event.metaKey || event.ctrlKey) && event.key === 'k') {
@@ -176,10 +156,7 @@ export class TopbarComponent {
 
   // ── Helpers ──────────────────────────────────────────────
   protected formatTime(iso: string): string {
-    return new Date(iso).toLocaleTimeString('en-GB', {
-      hour:   '2-digit',
-      minute: '2-digit',
-    });
+    return new Date(iso).toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
   }
 
   protected relativeTime(iso: string): string {
@@ -191,7 +168,7 @@ export class TopbarComponent {
     const past = diff < 0;
     let value: string;
 
-    if (abs < hr)       value = `${Math.max(1, Math.round(abs / min))} min`;
+    if      (abs < hr)  value = `${Math.max(1, Math.round(abs / min))} min`;
     else if (abs < day) value = `${Math.round(abs / hr)} h`;
     else                value = `${Math.round(abs / day)} d`;
 
@@ -199,20 +176,11 @@ export class TopbarComponent {
   }
 
   private _buildBreadcrumbs(url: string): { label: string; href: string }[] {
-    const crumbs: { label: string; href: string }[] = [
-      { label: 'Workspace', href: '/' },
-    ];
+    const crumbs = [{ label: 'Workspace', href: '/' }];
+    const match  = NAV_ITEMS.find(n => n.href === url || (n.href !== '/' && url.startsWith(n.href)));
 
-    const match = NAV_ITEMS.find(n =>
-      n.href === url ||
-      (n.href !== '/' && url.startsWith(n.href))
-    );
-
-    if (match && match.href !== '/') {
-      crumbs.push({ label: match.label, href: match.href });
-    } else if (url === '/') {
-      crumbs.push({ label: 'Dashboard', href: '/' });
-    }
+    if (match && match.href !== '/') crumbs.push({ label: match.label, href: match.href });
+    else if (url === '/')            crumbs.push({ label: 'Dashboard', href: '/' });
 
     return crumbs;
   }

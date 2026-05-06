@@ -1,0 +1,440 @@
+// src/app/features/projects/components/roadmap/roadmap.scss
+@use '../../../../../styles/abstracts/variables' as v;
+@use '../../../../../styles/abstracts/mixins' as m;
+
+:host { display: block; }
+
+// ── Status colour map (via data-status attribute) ─────────────
+$status-colors: (
+  'Completed':   (bg: var(--color-success-600),  track: var(--color-success-100)),
+  'In Progress': (bg: var(--color-brand-600),    track: var(--color-brand-100)),
+  'Delayed':     (bg: var(--color-warning-600),  track: var(--color-warning-100)),
+  'Not Started': (bg: var(--color-text-muted),   track: var(--color-border)),
+);
+
+// ── ROOT ─────────────────────────────────────────────────────
+.roadmap {
+  display: flex;
+  flex-direction: column;
+  gap: v.$spacing-5;
+}
+
+// ── HEADER (project dates + duration) ────────────────────────
+.roadmap__header {
+  @include m.flex-between;
+  gap: v.$spacing-4;
+  padding: v.$spacing-3 v.$spacing-5;
+  background: var(--color-surface-hover);
+  border-radius: v.$radius-lg;
+  border: 1px solid var(--color-border);
+  flex-wrap: wrap;
+}
+
+.roadmap__project-dates {
+  display: flex;
+  align-items: center;
+  gap: v.$spacing-2;
+  font-size: v.$text-sm;
+  flex-wrap: wrap;
+}
+
+.roadmap__date-label {
+  color: var(--color-text-muted);
+  font-size: v.$text-xs;
+}
+
+.roadmap__date-value {
+  font-weight: v.$font-semibold;
+  color: var(--color-text-primary);
+  @include m.num-tabular;
+}
+
+.roadmap__separator {
+  color: var(--color-text-muted);
+  margin: 0 v.$spacing-1;
+}
+
+.roadmap__project-duration {
+  display: flex;
+  align-items: center;
+  gap: v.$spacing-2;
+}
+
+.roadmap__duration-days {
+  font-family: v.$font-display;
+  font-size: v.$text-base;
+  font-weight: v.$font-bold;
+  color: var(--color-text-primary);
+  @include m.num-tabular;
+}
+
+// ── TIMELINE CONTAINER ───────────────────────────────────────
+.roadmap__timeline-container {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: v.$radius-lg;
+  overflow: hidden;
+}
+
+// ── TIMELINE HEADER (week numbers) ───────────────────────────
+.roadmap__timeline-header {
+  border-bottom: 1px solid var(--color-border);
+  background: var(--color-surface-hover);
+}
+
+.roadmap__header-labels {
+  display: grid;
+  grid-template-columns: 220px 1fr;
+  gap: v.$spacing-4;
+  padding: v.$spacing-2 v.$spacing-5;
+  border-bottom: 1px solid var(--color-border);
+
+  @include m.respond-to(lg) {
+    grid-template-columns: 260px 1fr;
+  }
+}
+
+.roadmap__label-step,
+.roadmap__label-dates {
+  font-size: v.$text-xs;
+  font-weight: v.$font-semibold;
+  letter-spacing: v.$tracking-wider;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+}
+
+.roadmap__weeks {
+  position: relative;
+  height: 28px;
+  margin-left: calc(220px + v.$spacing-4 + v.$spacing-5);
+  margin-right: v.$spacing-5;
+
+  @include m.respond-to(lg) {
+    margin-left: calc(260px + v.$spacing-4 + v.$spacing-5);
+  }
+}
+
+.roadmap__week {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+
+  &::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: -28px;
+    bottom: -28px;
+    width: 1px;
+    background: var(--color-border);
+    opacity: 0.5;
+  }
+}
+
+.roadmap__week-number {
+  font-size: 10px;
+  font-weight: v.$font-semibold;
+  color: var(--color-text-muted);
+  @include m.num-tabular;
+  white-space: nowrap;
+  padding-left: v.$spacing-1;
+}
+
+// ── STEPS CONTAINER ──────────────────────────────────────────
+.roadmap__steps {
+  display: flex;
+  flex-direction: column;
+}
+
+.roadmap__empty {
+  padding: v.$spacing-8;
+  text-align: center;
+  color: var(--color-text-tertiary);
+  font-size: v.$text-sm;
+}
+
+// ── SINGLE STEP ROW ──────────────────────────────────────────
+.roadmap__step {
+  display: grid;
+  grid-template-columns: 220px 1fr 200px;
+  gap: v.$spacing-4;
+  padding: v.$spacing-3 v.$spacing-5;
+  border-bottom: 1px solid var(--color-border);
+  align-items: center;
+  transition: background v.$duration-base v.$ease-out;
+
+  @include m.respond-to(lg) {
+    grid-template-columns: 260px 1fr 220px;
+  }
+
+  &:last-child {
+    border-bottom: none;
+  }
+
+  &:hover {
+    background: var(--color-surface-hover);
+  }
+}
+
+// ── STEP LABEL (left column) ─────────────────────────────────
+.roadmap__step-label {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.roadmap__step-title {
+  font-size: v.$text-base;
+  font-weight: v.$font-semibold;
+  color: var(--color-text-primary);
+  @include m.truncate;
+  line-height: v.$leading-snug;
+}
+
+.roadmap__step-meta {
+  display: flex;
+  align-items: center;
+  gap: v.$spacing-1-5;
+}
+
+.roadmap__step-date {
+  font-size: v.$text-xs;
+  color: var(--color-text-muted);
+}
+
+// ── GANTT BAR CONTAINER (middle column) ──────────────────────
+.roadmap__step-bar-container {
+  position: relative;
+  height: 36px;
+  display: flex;
+  align-items: center;
+}
+
+.roadmap__step-bar {
+  position: absolute;
+  height: 28px;
+  border-radius: v.$radius-md;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  min-width: 28px;
+  transition:
+    box-shadow v.$duration-base v.$ease-out,
+    opacity    v.$duration-base v.$ease-out;
+
+  // Default (not started)
+  background: var(--color-border);
+
+  // Status-driven bar colours via parent data-status
+  .roadmap__step[data-status='Completed'] & {
+    background: var(--color-success-600);
+    box-shadow: 0 1px 3px rgba(5, 150, 105, 0.25);
+  }
+
+  .roadmap__step[data-status='In Progress'] & {
+    background: var(--color-brand-100);
+    border: 1px solid var(--color-brand-200);
+  }
+
+  .roadmap__step[data-status='Delayed'] & {
+    background: var(--color-warning-100);
+    border: 1px solid var(--color-warning-600);
+  }
+
+  .roadmap__step[data-status='Not Started'] & {
+    background: var(--color-surface-hover);
+    border: 1px dashed var(--color-border);
+  }
+
+  // Modifier classes
+  &--active {
+    box-shadow: 0 0 0 2px var(--color-brand-300);
+  }
+
+  &--overdue {
+    background: var(--color-warning-100) !important;
+    border-color: var(--color-warning-600) !important;
+    box-shadow: 0 0 0 2px var(--color-warning-100);
+  }
+
+  &--upcoming {
+    opacity: 0.55;
+  }
+
+  &:hover {
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+    opacity: 1;
+    z-index: 1;
+  }
+}
+
+// Progress fill inside In Progress bars
+.roadmap__step-progress {
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: 100%;
+  border-radius: v.$radius-md;
+  transition: width v.$duration-slower v.$ease-bounce;
+
+  &[data-tone='brand']   { background: var(--color-brand-600); }
+  &[data-tone='success'] { background: var(--color-success-600); }
+  &[data-tone='warning'] { background: var(--color-warning-600); }
+  &[data-tone='danger']  { background: var(--color-danger-600); }
+}
+
+// Bar content (label + %)
+.roadmap__step-bar-content {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: v.$spacing-2;
+  padding: 0 v.$spacing-2;
+  width: 100%;
+}
+
+.roadmap__step-bar-text {
+  font-size: 10.5px;
+  font-weight: v.$font-semibold;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+
+  .roadmap__step[data-status='Completed'] & {
+    color: white;
+  }
+
+  .roadmap__step[data-status='In Progress'] & {
+    color: var(--color-brand-800);
+  }
+
+  .roadmap__step[data-status='Delayed'] & {
+    color: var(--color-warning-700);
+  }
+
+  .roadmap__step[data-status='Not Started'] & {
+    color: var(--color-text-muted);
+  }
+}
+
+.roadmap__step-bar-percent {
+  font-size: 10px;
+  font-weight: v.$font-bold;
+  color: var(--color-brand-700);
+  @include m.num-tabular;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+// Today indicator line
+.roadmap__today-line {
+  position: absolute;
+  top: -6px;
+  bottom: -6px;
+  width: 2px;
+  background: var(--color-danger-600);
+  border-radius: v.$radius-full;
+  z-index: 2;
+  left: 0; // overridden inline via [style.left]
+
+  // Small "today" label nub at top
+  &::before {
+    content: 'Today';
+    position: absolute;
+    top: -18px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 9px;
+    font-weight: v.$font-bold;
+    color: var(--color-danger-600);
+    white-space: nowrap;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+
+  // Arrow nub
+  &::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 6px;
+    height: 6px;
+    border-radius: v.$radius-full;
+    background: var(--color-danger-600);
+  }
+}
+
+// ── STEP INFO (right column) ─────────────────────────────────
+.roadmap__step-info {
+  display: flex;
+  align-items: center;
+  gap: v.$spacing-2;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+.roadmap__step-dates {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 1px;
+}
+
+.roadmap__days-count {
+  font-size: v.$text-xs;
+  font-weight: v.$font-semibold;
+  color: var(--color-text-secondary);
+}
+
+.roadmap__days-separator {
+  color: var(--color-text-muted);
+  margin: 0 2px;
+}
+
+// ── LEGEND ───────────────────────────────────────────────────
+.roadmap__legend {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: v.$spacing-4;
+  padding: v.$spacing-3 v.$spacing-5;
+  background: var(--color-surface-hover);
+  border: 1px solid var(--color-border);
+  border-radius: v.$radius-lg;
+}
+
+.roadmap__legend-item {
+  display: flex;
+  align-items: center;
+  gap: v.$spacing-1-5;
+  font-size: v.$text-xs;
+  color: var(--color-text-secondary);
+}
+
+.roadmap__legend-box {
+  width: 14px;
+  height: 10px;
+  border-radius: v.$radius-sm;
+  flex-shrink: 0;
+
+  &--active   { background: var(--color-brand-600); }
+  &--success  { background: var(--color-success-600); }
+  &--warning  { background: var(--color-warning-100); border: 1px solid var(--color-warning-600); }
+  &--upcoming { background: var(--color-surface-hover); border: 1px dashed var(--color-border); }
+}
+
+// ── NO PROJECT STATE ─────────────────────────────────────────
+.roadmap__no-project {
+  padding: v.$spacing-8;
+  text-align: center;
+  color: var(--color-text-tertiary);
+  font-size: v.$text-sm;
+  background: var(--color-surface-hover);
+  border: 1px dashed var(--color-border);
+  border-radius: v.$radius-lg;
+}

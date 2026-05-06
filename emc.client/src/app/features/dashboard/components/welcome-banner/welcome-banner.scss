@@ -15,7 +15,7 @@
 &__pattern {
   position: absolute;
   inset: 0;
-
+  background-color: v.$white !important;
   background:
     radial-gradient(
       circle at 80% 30%,

@@ -1,0 +1,223 @@
+// src/app/features/support/components/ticket-table/ticket-table.scss
+@use '../../../../../styles/abstracts/variables' as v;
+@use '../../../../../styles/abstracts/mixins' as m;
+
+:host { display: block; }
+
+.ticket-table {
+  overflow: hidden;
+
+  // ── Header ───────────────────────────────────────────────
+  &__header {
+    display: grid;
+    grid-template-columns: 120px 1fr 110px 160px 180px 48px;
+    gap: v.$spacing-4;
+    padding: v.$spacing-3 v.$spacing-5;
+    border-bottom: 1px solid var(--color-border);
+    background: var(--color-surface-hover);
+    align-items: center;
+  }
+
+  &__th {
+    display: inline-flex;
+    align-items: center;
+    gap: v.$spacing-1;
+    font-size: v.$text-xs;
+    font-weight: v.$font-semibold;
+    letter-spacing: v.$tracking-wider;
+    text-transform: uppercase;
+    color: var(--color-text-muted);
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    @include m.transition-colors;
+
+    &:hover { color: var(--color-text-primary); }
+  }
+
+  &__sort-icon {
+    width: 12px;
+    height: 12px;
+    flex-shrink: 0;
+  }
+
+  // ── Body ─────────────────────────────────────────────────
+  &__body {
+    display: flex;
+    flex-direction: column;
+  }
+
+  &__empty {
+    padding: v.$spacing-8;
+    text-align: center;
+    color: var(--color-text-tertiary);
+    font-size: v.$text-sm;
+  }
+
+  // ── Row ──────────────────────────────────────────────────
+  &__row {
+    display: grid;
+    grid-template-columns: 120px 1fr 110px 160px 180px 48px;
+    gap: v.$spacing-4;
+    padding: v.$spacing-3-5 v.$spacing-5;
+    border-bottom: 1px solid var(--color-border);
+    background: transparent;
+    cursor: pointer;
+    text-align: left;
+    width: 100%;
+    @include m.transition-colors;
+    @include m.focus-ring;
+
+    &:last-child { border-bottom: none; }
+
+    &:hover { background: var(--color-surface-hover); }
+
+    &--open {
+      background: rgba(37, 99, 235, 0.04);
+
+      &:hover { background: rgba(37, 99, 235, 0.06); }
+    }
+
+    // icon visibility
+    &:hover .ticket-table__cell--icon svg {
+      color: var(--color-text-tertiary);
+    }
+  }
+
+  // ── Cells ────────────────────────────────────────────────
+  &__cell {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    min-width: 0;
+
+    &--title { flex: 1; min-width: 0; }
+
+    &--icon {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+
+      svg {
+        width: 16px;
+        height: 16px;
+        color: var(--color-border);
+        transition: color v.$duration-base v.$ease-out;
+      }
+    }
+  }
+
+  &__ticket-num {
+    font-size: 12px;
+    font-weight: v.$font-semibold;
+    font-family: v.$font-mono;
+    color: var(--color-text-primary);
+  }
+
+  &__ticket-date {
+    font-size: v.$text-xs;
+    color: var(--color-text-muted);
+    margin-top: 2px;
+  }
+
+  &__title {
+    font-size: 13.5px;
+    font-weight: v.$font-medium;
+    color: var(--color-text-primary);
+  }
+
+  &__subtitle {
+    font-size: 11.5px;
+    color: var(--color-text-tertiary);
+    margin-top: 2px;
+  }
+
+  &__response-time {
+    font-size: 12px;
+    font-weight: v.$font-medium;
+    color: var(--color-text-secondary);
+  }
+
+  &__response-rel {
+    font-size: v.$text-xs;
+    color: var(--color-text-muted);
+    margin-top: 2px;
+  }
+
+  // ── Pagination ───────────────────────────────────────────
+  &__pagination {
+    @include m.flex-between;
+    padding: v.$spacing-3 v.$spacing-5;
+    border-top: 1px solid var(--color-border);
+    gap: v.$spacing-3;
+  }
+
+  &__pagination-info {
+    font-size: 11.5px;
+    color: var(--color-text-tertiary);
+
+    strong {
+      font-weight: v.$font-semibold;
+      color: var(--color-text-primary);
+    }
+  }
+
+  &__pagination-controls {
+    display: flex;
+    align-items: center;
+    gap: v.$spacing-1;
+  }
+
+  &__page-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    border-radius: v.$radius-md;
+    border: 1px solid var(--color-border);
+    background: var(--color-surface);
+    cursor: pointer;
+    color: var(--color-text-secondary);
+    @include m.transition-colors;
+    @include m.focus-ring;
+
+    svg { width: 14px; height: 14px; }
+
+    &:hover:not(:disabled) {
+      background: var(--color-surface-hover);
+      color: var(--color-text-primary);
+    }
+
+    &:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+  }
+
+  &__page-num {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 28px;
+    height: 28px;
+    padding: 0 v.$spacing-1-5;
+    border-radius: v.$radius-md;
+    border: none;
+    background: transparent;
+    font-size: 12px;
+    font-weight: v.$font-semibold;
+    color: var(--color-text-secondary);
+    cursor: pointer;
+    @include m.transition-colors;
+    @include m.focus-ring;
+
+    &:hover:not(&--active) { background: var(--color-surface-hover); }
+
+    &--active {
+      background: var(--color-brand-700);
+      color: white;
+    }
+  }
+}

@@ -1,11 +1,11 @@
 [
     {
         "type": "Directory",
-        "name": "f:\\BlueLink\\EMC\\emc.client\\src\\app\\features\\auth\\login",
+        "name": "f:\\BlueLink\\EMC\\emc.client\\src\\app\\features",
         "parent_id": null,
-        "fsPath": "f:\\BlueLink\\EMC\\emc.client\\src\\app\\features\\auth\\login",
+        "fsPath": "f:\\BlueLink\\EMC\\emc.client\\src\\app\\features",
         "workspaceRoot": null,
         "workspacePath": null,
-        "id": "FPLMIAgBVzR91yhc"
+        "id": "uQIn7yxrDFZP16iw"
     }
 ]

@@ -7,24 +7,15 @@ import { CommonModule }      from '@angular/common';
 import { RouterModule }      from '@angular/router';
 import { SidebarComponent }  from '../sidebar/sidebar';
 import { TopbarComponent }   from '../top-bar/top-bar';
-
 @Component({
   selector: 'app-shell',
   standalone: true,
   imports: [CommonModule, RouterModule, SidebarComponent, TopbarComponent],
   template: `
     <div class="app-shell">
-
-      <!-- Sidebar -->
       <app-sidebar />
-
-      <!-- Main column -->
       <div class="app-main">
-
-        <!-- Sticky top bar -->
         <app-topbar />
-
-        <!-- Scrollable page content -->
         <main
           class="app-content"
           id="main-content"
@@ -37,15 +28,10 @@ import { TopbarComponent }   from '../top-bar/top-bar';
             BlueLink Solutions · Customer Portal · © {{ year }}
           </footer>
         </main>
-
       </div>
 
       <!-- Brand gradient bottom accent -->
-      <div
-        class="app-shell__gradient"
-        aria-hidden="true">
-      </div>
-
+      <div class="app-shell__gradient" aria-hidden="true"></div>
     </div>
   `,
   styles: [`
@@ -62,7 +48,7 @@ import { TopbarComponent }   from '../top-bar/top-bar';
       inset-inline: 0;
       bottom: 0;
       height: 96px;
-      background: linear-gradient(to top, var(--color-brand-50), transparent);
+      background: lightblue;
       z-index: 0;
       opacity: 0.6;
     }

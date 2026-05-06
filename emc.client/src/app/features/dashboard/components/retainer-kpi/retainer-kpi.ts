@@ -1,14 +1,13 @@
 // src/app/features/dashboard/components/retainer-kpi/retainer-kpi.ts
 import { Component, ChangeDetectionStrategy, inject, computed } from '@angular/core';
-import { CommonModule }    from '@angular/common';
-import { MockDataService } from '../../../../core/mock/mock-data.service';
-import { KpiCard, MiniBar } from '@shared';
-
+import { CommonModule } from '@angular/common';
+import { MockDataService } from '../../../../../app/core/mock/mock-data.service';
+import { KpiCard } from '@shared';
 
 @Component({
   selector: 'app-retainer-kpi',
   standalone: true,
-  imports: [CommonModule, KpiCard, MiniBar],
+  imports: [CommonModule, KpiCard],
   templateUrl: './retainer-kpi.html',
   styleUrl: './retainer-kpi.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -28,7 +27,7 @@ export class RetainerKpi {
   );
 
   protected readonly tone = computed(() =>
-    this.pctAvailable() < 20 ? 'warning' as const : 'brand' as const
+    this.pctAvailable() < 20 ? 'warning' : 'brand'
   );
 
   protected readonly endDate = this.data.formatDate(this.sa.endDate);

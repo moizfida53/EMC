@@ -1,30 +1,32 @@
 // src/app/features/dashboard/components/project-health-rail/project-health-rail.ts
-import { Component, ChangeDetectionStrategy, inject } from '@angular/core';
-import { RouterModule }    from '@angular/router';
-import { CommonModule }    from '@angular/common';
-import { MockDataService } from '../../../../core/mock/mock-data.service';
-import { StatusBadge }     from '../../../../shared/ui/status-badge/status-badge';
-import { MiniBar }         from '../../../../shared/ui/mini-bar/mini-bar';
-import { FormatDatePipe }  from '../../../../shared/pipes/format-date.pipe';
-import { MiniBarTone }     from '../../../../shared/ui/mini-bar/mini-bar';
+import { Component, ChangeDetectionStrategy, inject, computed } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { RouterModule } from '@angular/router';
+import { MockDataService ,ProjectHealth} from '../../../../../app/core/mock/mock-data.service';
 
 @Component({
   selector: 'app-project-health-rail',
   standalone: true,
-  imports: [CommonModule, RouterModule, StatusBadge, MiniBar, FormatDatePipe],
+  imports: [CommonModule, RouterModule],
   templateUrl: './project-health-rail.html',
   styleUrl: './project-health-rail.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ProjectHealthRail {
-  protected readonly data = inject(MockDataService);
+  private readonly data = inject(MockDataService);
 
-  // Show first 4 projects
-  protected readonly projects = this.data.projects.slice(0, 4);
+  protected readonly projects = computed(() => this.data.projects.slice(0, 4));
 
-  protected tone(health: string): MiniBarTone {
-    if (health === 'Off Track') return 'danger';
-    if (health === 'At Risk')   return 'warning';
-    return 'brand';
+  protected tone(health: ProjectHealth): string {
+    switch (health) {
+      case 'Off Track': return 'off-track';
+      case 'At Risk':  return 'at-risk';
+      case 'On Track': return 'on-track';
+      default:         return 'on-track';
+    }
+  }
+
+  protected formatDate(iso: string): string {
+    return this.data.formatDate(iso);
   }
 }

@@ -1,1 +1,286 @@
-<p>contracts works!</p>
+<!-- src/app/features/contracts/contracts.html -->
+<div class="contracts">
+
+  <app-section-header
+    eyebrow="Contracts, agreements & licenses"
+    title="Financial & software-asset transparency"
+    description="Track every contract, retainer balance and software licence in one place. Validation keys are masked by default." />
+
+  <!-- KPI strip -->
+  <div class="kpi-grid">
+    <app-kpi-card
+      label="Service agreements"
+      [value]="serviceAgreements.length"
+      hint="All currently in effect"
+      [active]="true" />
+    <app-kpi-card
+      label="Retained balance"
+      [value]="totalAvailable()"
+      [unit]="'/ ' + totalContracted() + ' h'"
+      [hint]="(((totalAvailable() / totalContracted()) * 100) | number:'1.0-0') + '% available across agreements'" />
+    <app-kpi-card
+      label="Active licenses"
+      [value]="activeCount()"
+      [hint]="'Across ' + products.length + ' products'" />
+    <app-kpi-card
+      label="Expiring · next 30d"
+      [value]="expiring30()"
+      hint="Action needed"
+      [trend]="{ dir: 'flat', text: 'Renewal' }" />
+  </div>
+
+  <!-- Tab switcher -->
+  <div class="contracts__tabs">
+    <button
+      class="contracts__tab"
+      [class.contracts__tab--active]="activeTab() === 'agreements'"
+      type="button"
+      (click)="activeTab.set('agreements')">
+      Service agreements
+    </button>
+    <button
+      class="contracts__tab"
+      [class.contracts__tab--active]="activeTab() === 'licenses'"
+      type="button"
+      (click)="activeTab.set('licenses')">
+      Software licenses
+    </button>
+  </div>
+
+  <!-- ── SERVICE AGREEMENTS TAB ─────────────────────────── -->
+  <div *ngIf="activeTab() === 'agreements'" class="contracts__agreements">
+    <div *ngFor="let sa of serviceAgreements" class="contracts__sa surface-elev">
+
+      <!-- Collapsed header row -->
+      <button
+        class="contracts__sa-header"
+        type="button"
+        (click)="toggleSa(sa.id)">
+
+        <div class="contracts__sa-identity">
+          <div class="contracts__sa-pills">
+            <app-pill tone="brand">{{ sa.type }}</app-pill>
+            <app-status-badge [value]="sa.slaStatus" />
+          </div>
+          <div class="contracts__sa-name">{{ sa.name }}</div>
+        </div>
+
+        <div class="contracts__sa-meta hidden-mobile">
+          <div class="micro-label" style="font-size:10px">Window</div>
+          <div class="contracts__sa-meta-val num-tabular">
+            {{ sa.startDate | formatDate }} → {{ sa.endDate | formatDate }}
+          </div>
+        </div>
+
+        <div class="contracts__sa-meta hidden-mobile">
+          <div class="micro-label" style="font-size:10px">Contracted</div>
+          <div class="contracts__sa-num">{{ sa.contractedBalanceQty }}</div>
+        </div>
+
+        <div class="contracts__sa-meta hidden-mobile">
+          <div class="micro-label" style="font-size:10px">Available</div>
+          <div class="contracts__sa-num"
+            [class.contracts__sa-num--ok]="sa.availableBalanceQty / sa.contractedBalanceQty >= 0.2"
+            [class.contracts__sa-num--warn]="sa.availableBalanceQty / sa.contractedBalanceQty < 0.2">
+            {{ sa.availableBalanceQty }}
+          </div>
+        </div>
+
+        <svg
+          class="contracts__sa-chevron"
+          [class.contracts__sa-chevron--open]="isOpen(sa.id)"
+          viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+          <polyline points="6 9 12 15 18 9"/>
+        </svg>
+      </button>
+
+      <!-- Expanded content -->
+      <div *ngIf="isOpen(sa.id)" class="contracts__sa-body">
+        <div class="contracts__sa-grid">
+
+          <!-- Balance utilisation -->
+          <div>
+            <div class="micro-label" style="margin-bottom:12px">Balance utilisation</div>
+
+            <div class="contracts__balance-row">
+              <div class="contracts__balance-labels">
+                <div>
+                  <div class="contracts__balance-label">Billing balance</div>
+                  <div class="contracts__balance-sub">Hours invoiced this period</div>
+                </div>
+                <div class="contracts__balance-right">
+                  <div class="contracts__balance-val num-tabular">
+                    {{ sa.billingBalanceQty }}<span class="contracts__balance-max">/ {{ sa.contractedBalanceQty }}</span>
+                  </div>
+                  <div class="contracts__balance-pct num-tabular">{{ billingPct(sa.id) }}%</div>
+                </div>
+              </div>
+              <app-mini-bar [value]="sa.billingBalanceQty" [max]="sa.contractedBalanceQty" tone="brand" />
+            </div>
+
+            <div class="contracts__balance-row">
+              <div class="contracts__balance-labels">
+                <div>
+                  <div class="contracts__balance-label">Used balance</div>
+                  <div class="contracts__balance-sub">Hours consumed against the agreement</div>
+                </div>
+                <div class="contracts__balance-right">
+                  <div class="contracts__balance-val num-tabular">
+                    {{ usedHours(sa.id) }}<span class="contracts__balance-max">/ {{ sa.contractedBalanceQty }}</span>
+                  </div>
+                  <div class="contracts__balance-pct num-tabular">{{ usedPct(sa.id) }}%</div>
+                </div>
+              </div>
+              <app-mini-bar [value]="usedHours(sa.id)" [max]="sa.contractedBalanceQty" [tone]="usedTone(sa)" />
+            </div>
+
+            <div class="contracts__balance-row">
+              <div class="contracts__balance-labels">
+                <div>
+                  <div class="contracts__balance-label">Available balance</div>
+                  <div class="contracts__balance-sub">Hours remaining for new work</div>
+                </div>
+                <div class="contracts__balance-right">
+                  <div class="contracts__balance-val num-tabular"
+                    [style.color]="sa.availableBalanceQty / sa.contractedBalanceQty < 0.2 ? 'var(--color-warning-600)' : 'var(--color-success-600)'">
+                    {{ sa.availableBalanceQty }}<span class="contracts__balance-max">/ {{ sa.contractedBalanceQty }}</span>
+                  </div>
+                  <div class="contracts__balance-pct num-tabular">{{ (sa.availableBalanceQty / sa.contractedBalanceQty * 100) | number:'1.0-0' }}%</div>
+                </div>
+              </div>
+              <app-mini-bar [value]="sa.availableBalanceQty" [max]="sa.contractedBalanceQty" [tone]="availTone(sa)" />
+            </div>
+          </div>
+
+          <!-- Right: Coverage + Renewal -->
+          <div class="contracts__sa-right">
+            <div class="contracts__info-card">
+              <div class="micro-label" style="font-size:10px;margin-bottom:6px">Coverage</div>
+              <p class="contracts__info-text">
+                Standard 24×5 platform support with
+                <strong>P1 ack &lt; 30 min</strong>,
+                <strong>resolution within SLA</strong>
+                for the contract period.
+              </p>
+            </div>
+            <div class="contracts__info-card">
+              <div class="micro-label" style="font-size:10px;margin-bottom:6px">Renewal</div>
+              <div class="contracts__renewal-date num-tabular">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" style="width:14px;height:14px;color:var(--color-text-muted)"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                {{ sa.endDate | formatDate }}
+              </div>
+              <div class="contracts__renewal-btns">
+                <app-button variant="secondary" size="sm">Renew</app-button>
+                <app-button variant="ghost" size="sm">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" style="width:14px;height:14px;margin-right:4px"><path d="M20 19.5v.5a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h8.5L18 5.5"/><path d="M8 18h1l12.5-12.5a1.5 1.5 0 0 0-2-2L7 16v1"/></svg>
+                  Contract PDF
+                </app-button>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Info banner -->
+        <div class="contracts__info-banner">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="width:14px;height:14px;display:inline;margin-right:6px"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+          Billed <strong class="num-tabular">{{ billingPct(sa.id) }}%</strong>
+          · Used <strong class="num-tabular">{{ usedPct(sa.id) }}%</strong>
+          of contracted balance.
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ── SOFTWARE LICENSES TAB ──────────────────────────── -->
+  <div *ngIf="activeTab() === 'licenses'" class="contracts__licenses">
+
+    <!-- Search -->
+    <div class="contracts__lic-search surface-elev">
+      <svg class="contracts__lic-search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input
+        class="contracts__lic-search-input"
+        type="search"
+        placeholder="Search licenses by product, name, or validation key…"
+        [value]="licSearch()"
+        (input)="licSearch.set($any($event.target).value)" />
+    </div>
+
+    <!-- Table -->
+    <div class="contracts__lic-table surface-elev">
+      <div class="contracts__lic-thead">
+        <span>Product · License</span>
+        <span>Status</span>
+        <span>Start</span>
+        <span>End</span>
+        <span class="contracts__lic-th--right">Seats</span>
+        <span>Validation key</span>
+      </div>
+
+      <div class="contracts__lic-body">
+        <div *ngFor="let l of filteredLicenses()" class="contracts__lic-row">
+
+          <!-- Product + License name -->
+          <div class="contracts__lic-product">
+            <app-product-logo
+              *ngIf="productFor(l.productId) as prod"
+              [src]="prod.logo"
+              [name]="prod.name"
+              [size]="36" />
+            <div class="contracts__lic-product-info">
+              <div class="contracts__lic-product-name">
+                {{ productFor(l.productId)?.name ?? '—' }}
+              </div>
+              <div class="contracts__lic-product-sub">{{ l.name }}</div>
+            </div>
+          </div>
+
+          <!-- Status -->
+          <div><app-status-badge [value]="l.status" /></div>
+
+          <!-- Start -->
+          <div class="contracts__lic-date num-tabular">{{ l.startDate | formatDate }}</div>
+
+          <!-- End -->
+          <div class="contracts__lic-date num-tabular" [ngClass]="endDateClass(l.status)">
+            {{ l.endDate | formatDate }}
+          </div>
+
+          <!-- Seats -->
+          <div class="contracts__lic-seats num-tabular">{{ l.seats }}</div>
+
+          <!-- Validation key -->
+          <div class="contracts__lic-key-wrap">
+            <span class="contracts__lic-key num-tabular">
+              {{ isRevealed(l.id) ? l.validationKey : (l.validationKey | maskKey) }}
+            </span>
+            <button
+              class="contracts__lic-key-btn"
+              type="button"
+              [attr.aria-label]="isRevealed(l.id) ? 'Hide key' : 'Reveal key'"
+              (click)="toggleReveal(l.id)">
+              <svg *ngIf="!isRevealed(l.id)" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+              <svg *ngIf="isRevealed(l.id)" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"/><path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
+            </button>
+            <button
+              class="contracts__lic-key-btn"
+              type="button"
+              aria-label="Copy key"
+              (click)="copyKey(l.id, l.validationKey)">
+              <svg *ngIf="!isCopied(l.id)" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+              <svg *ngIf="isCopied(l.id)" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" style="color:var(--color-success-600)"><polyline points="20 6 9 17 4 12"/></svg>
+            </button>
+          </div>
+
+        </div>
+
+        <div *ngIf="filteredLicenses().length === 0" class="contracts__lic-empty">
+          No licenses match your search.
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+</div>

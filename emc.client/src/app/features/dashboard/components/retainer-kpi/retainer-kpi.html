@@ -1,45 +1,33 @@
 <!-- src/app/features/dashboard/components/retainer-kpi/retainer-kpi.html -->
 <app-kpi-card
   label="Retainer Health · Platinum"
+  meta="Within SLA"
   [value]="sa.availableBalanceQty"
-  unit="/ {{ sa.contractedBalanceQty }} h"
-  hint="{{ pctAvailable() }}% available · cycle ends {{ endDate }}"
+  [unit]="'/ ' + sa.contractedBalanceQty + ' hours'"
+  [hint]="pctAvailable() + '% available · cycle ends ' + endDate"
   [active]="true"
-  [trend]="{ dir: 'flat', text: 'Within SLA' }">
-
+>
   <div class="retainer-kpi">
-    <!-- Donut visualisation via a CSS conic-gradient -->
-    <div
-      class="retainer-kpi__donut"
-      [style.--pct]="pctAvailable() + '%'"
-      role="img"
-      [attr.aria-label]="pctAvailable() + '% available'">
-      <div class="retainer-kpi__donut-label">
-        <span class="retainer-kpi__donut-value">{{ pctAvailable() }}%</span>
-        <span class="retainer-kpi__donut-sub">Avail.</span>
+    <div class="retainer-kpi__donut-container">
+      <div class="retainer-kpi__donut" [style.--pct]="pctAvailable() + '%'">
+        <div class="retainer-kpi__donut-content">
+          <span class="retainer-kpi__donut-value">{{ pctAvailable() }}%</span>
+          <span class="retainer-kpi__donut-sub">AVAIL.</span>
+        </div>
       </div>
     </div>
 
-    <!-- Legend rows -->
     <div class="retainer-kpi__legend">
-      <div class="retainer-kpi__legend-row">
-        <span class="retainer-kpi__dot retainer-kpi__dot--brand"></span>
+      <div class="retainer-kpi__legend-item">
+        <span class="retainer-kpi__dot retainer-kpi__dot--used"></span>
         <span class="retainer-kpi__legend-label">Used</span>
-        <span class="retainer-kpi__legend-value num-tabular">{{ used() }}h</span>
+        <span class="retainer-kpi__legend-value">{{ used() }}h</span>
       </div>
-      <div class="retainer-kpi__legend-row">
-        <span class="retainer-kpi__dot retainer-kpi__dot--light"></span>
+      <div class="retainer-kpi__legend-item">
+        <span class="retainer-kpi__dot retainer-kpi__dot--available"></span>
         <span class="retainer-kpi__legend-label">Available</span>
-        <span class="retainer-kpi__legend-value num-tabular">{{ sa.availableBalanceQty }}h</span>
+        <span class="retainer-kpi__legend-value">{{ sa.availableBalanceQty }}h</span>
       </div>
-
-      <!-- Progress bar -->
-      <app-mini-bar
-        [value]="used()"
-        [max]="sa.contractedBalanceQty"
-        [tone]="tone()"
-        style="margin-top: 8px;" />
     </div>
   </div>
-
 </app-kpi-card>

@@ -23,7 +23,7 @@ export { Card }            from './ui/card/card';
 export { Input }           from './ui/input/input';
 
 export { KpiCard }         from './ui/kpi-card/kpi-card';
-export type { Trend, TrendDir, MiniBarTone } from './ui/kpi-card/kpi-card';
+export type { Trend, TrendDir } from './ui/kpi-card/kpi-card';
 
 export { MiniBar }         from './ui/mini-bar/mini-bar';
 

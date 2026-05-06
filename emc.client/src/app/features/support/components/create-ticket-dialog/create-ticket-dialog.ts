@@ -7,12 +7,11 @@ import { CommonModule }    from '@angular/common';
 import { FormsModule }     from '@angular/forms';
 import { MockDataService, Case } from '../../../../core/mock/mock-data.service';
 import { Button }          from '../../../../shared/ui/button/button';
-import { Input }           from '../../../../shared/ui/input/input';
 
 @Component({
   selector: 'app-create-ticket-dialog',
   standalone: true,
-  imports: [CommonModule, FormsModule, Button, Input],
+  imports: [CommonModule, FormsModule, Button],
   templateUrl: './create-ticket-dialog.html',
   styleUrl: './create-ticket-dialog.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

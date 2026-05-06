@@ -1,77 +1,97 @@
-// src/app/features/dashboard/components/retainer-kpi/retainer-kpi.scss
-@use '../../../../../styles/abstracts/variables' as v;
-
-:host { display: block; }
+// ============================================================
+// retainer-kpi.scss
+// BlueLink Customer Portal — Retainer KPI donut component
+//
+// The CSS conic-gradient donut reads --pct from the host
+// element's inline style (set via Angular binding).
+// The inner "hole" uses var(--bs-body-bg) so it blends
+// correctly in both light and dark mode.
+// ============================================================
 
 .retainer-kpi {
   display: flex;
   align-items: center;
-  gap: v.$spacing-4;
+  gap: 1.25rem;
+  margin-top: 0.875rem;
 
-  // ── CSS conic-gradient donut ──────────────────────────────
+  // Collapse to a tighter row on very small cards
+  @include media-breakpoint-down(sm) {
+    gap: 0.875rem;
+  }
+
+  // ── Donut chart ────────────────────────────────────────────
+  &__donut-container {
+    flex-shrink: 0;
+  }
+
   &__donut {
     position: relative;
-    width: 88px;
-    height: 88px;
-    flex-shrink: 0;
+    width: 80px;
+    height: 80px;
     border-radius: 50%;
+    // Available = brand-tint arc; Used = brand-full arc
     background: conic-gradient(
-      var(--color-brand-600) var(--pct, 0%),
-      var(--color-brand-100) var(--pct, 0%) 100%
+      rgba(var(--bs-primary-rgb), 0.18) 0%,
+      rgba(var(--bs-primary-rgb), 0.18) var(--pct),
+      var(--bs-primary) var(--pct),
+      var(--bs-primary) 100%
     );
+    display: flex;
+    align-items: center;
+    justify-content: center;
 
-    // Punch-out hole
+    // Inner hole — must match the card surface background
     &::after {
       content: '';
       position: absolute;
-      inset: 14px;
+      width: 58px;
+      height: 58px;
+      background: var(--bs-body-bg);
       border-radius: 50%;
-      background: var(--color-surface);
     }
   }
 
-  &__donut-label {
-    position: absolute;
-    inset: 0;
+  &__donut-content {
+    position: relative;
     z-index: 1;
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
-    gap: 1px;
+    text-align: center;
+    pointer-events: none;
   }
 
   &__donut-value {
-    font-family: v.$font-display;
-    font-size: v.$text-base;
-    font-weight: v.$font-bold;
-    color: var(--color-text-primary);
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--bs-emphasis-color);
     line-height: 1;
     font-variant-numeric: tabular-nums;
   }
 
   &__donut-sub {
     font-size: 9px;
-    font-weight: v.$font-semibold;
+    font-weight: 700;
+    color: var(--bs-secondary-color);
     letter-spacing: 0.08em;
     text-transform: uppercase;
-    color: var(--color-text-muted);
+    margin-top: 2px;
   }
 
-  // ── Legend ───────────────────────────────────────────────
+  // ── Legend ─────────────────────────────────────────────────
   &__legend {
-    flex: 1;
     display: flex;
     flex-direction: column;
-    gap: v.$spacing-1-5;
+    gap: 0.5rem;
+    flex: 1;
     min-width: 0;
   }
 
-  &__legend-row {
+  &__legend-item {
     display: flex;
     align-items: center;
-    gap: v.$spacing-2;
-    font-size: 12px;
+    gap: 0.5rem;
+    font-size: 0.875rem;
   }
 
   &__dot {
@@ -80,14 +100,23 @@
     border-radius: 50%;
     flex-shrink: 0;
 
-    &--brand { background: var(--color-brand-600); }
-    &--light { background: var(--color-brand-100); }
+    // "Used" segment — solid primary
+    &--used      { background: var(--bs-primary); }
+
+    // "Available" segment — tinted primary (matches donut arc)
+    &--available { background: rgba(var(--bs-primary-rgb), 0.18); }
   }
 
-  &__legend-label { flex: 1; color: var(--color-text-tertiary); }
+  &__legend-label {
+    color: var(--bs-secondary-color);
+    flex: 1;
+    min-width: 0;
+  }
 
   &__legend-value {
-    font-weight: v.$font-semibold;
-    color: var(--color-text-primary);
+    font-weight: 600;
+    color: var(--bs-emphasis-color);
+    font-variant-numeric: tabular-nums;
+    flex-shrink: 0;
   }
 }

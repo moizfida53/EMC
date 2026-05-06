@@ -1,31 +1,34 @@
 <!-- src/app/features/dashboard/components/project-health-rail/project-health-rail.html -->
 <div class="health-rail surface-elev">
-
   <div class="health-rail__header">
-    <div>
-      <p class="micro-label">Engagement Health</p>
+    <div class="health-rail__header-content">
+      <span class="health-rail__eyebrow">ENGAGEMENT HEALTH</span>
       <h3 class="health-rail__title">Projects at a glance</h3>
     </div>
     <a routerLink="/projects" class="health-rail__link">Open portfolio</a>
   </div>
 
   <div class="health-rail__list">
-    <div *ngFor="let p of projects" class="health-rail__item">
-      <div class="health-rail__item-top">
-        <div class="health-rail__item-name truncate">{{ p.name }}</div>
-        <app-status-badge [value]="p.health" />
+    <div *ngFor="let p of projects()" class="health-rail__item">
+      <div class="health-rail__item-header">
+        <span class="health-rail__item-name">{{ p.name }}</span>
+        <span class="health-rail__status" [ngClass]="tone(p.health)">
+          <span class="health-rail__status-dot"></span>
+          {{ p.health }}
+        </span>
       </div>
-      <div class="health-rail__item-dates">
-        {{ p.startDate | formatDate }} → {{ p.endDate | formatDate }}
+      <div class="health-rail__item-meta">
+        {{ formatDate(p.startDate) }} — {{ formatDate(p.endDate) }}
       </div>
-      <div class="health-rail__item-bar">
-        <app-mini-bar
-          [value]="p.percentCompleted"
-          [max]="100"
-          [tone]="tone(p.health)" />
-        <span class="health-rail__item-pct num-tabular">{{ p.percentCompleted }}%</span>
+      <div class="health-rail__progress">
+        <div class="health-rail__progress-bar-container">
+          <div class="health-rail__progress-bar" 
+               [style.width.%]="p.percentCompleted"
+               [ngClass]="tone(p.health)">
+          </div>
+        </div>
+        <span class="health-rail__progress-value">{{ p.percentCompleted }}%</span>
       </div>
     </div>
   </div>
-
 </div>

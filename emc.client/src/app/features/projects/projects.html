@@ -1,1 +1,76 @@
-<p>projects works!</p>
+<!-- src/app/features/projects/projects.html -->
+<div class="projects">
+
+  <!-- Section header -->
+  <app-section-header
+    eyebrow="Portfolio"
+    title="Project roadmap"
+    description="See the status, health, and timeline of all active projects. Click any project to view the detailed roadmap and milestones." />
+
+  <!-- KPI strip -->
+  <div class="kpi-grid">
+    <div class="kpi-card kpi-card--highlight">
+      <div class="kpi-card__label">On track</div>
+      <div class="kpi-card__value">{{ onTrackCount() }}</div>
+      <div class="kpi-card__hint">Healthy progress</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-card__label">At risk</div>
+      <div class="kpi-card__value">{{ atRiskCount() }}</div>
+      <div class="kpi-card__hint">Needs attention</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-card__label">Off track</div>
+      <div class="kpi-card__value">{{ offTrackCount() }}</div>
+      <div class="kpi-card__hint">Escalated</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-card__label">Active projects</div>
+      <div class="kpi-card__value">{{ activeCount() }}</div>
+      <div class="kpi-card__hint">In flight</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-card__label">Avg. completion</div>
+      <div class="kpi-card__value num-tabular">{{ avgCompletion() }}%</div>
+      <div class="kpi-card__hint">All projects</div>
+    </div>
+  </div>
+
+  <!-- Filters -->
+  <div class="projects__toolbar surface-elev">
+    <div class="projects__filter-group">
+      <label class="projects__filter-label">Status</label>
+      <select
+        class="projects__filter-select"
+        [value]="statusFilter()"
+        (change)="statusFilter.set($any($event.target).value)">
+        <option value="all">All statuses</option>
+        <option *ngFor="let s of statuses" [value]="s">{{ s }}</option>
+      </select>
+    </div>
+    <div class="projects__filter-group">
+      <label class="projects__filter-label">Health</label>
+      <select
+        class="projects__filter-select"
+        [value]="healthFilter()"
+        (change)="healthFilter.set($any($event.target).value)">
+        <option value="all">All health statuses</option>
+        <option *ngFor="let h of healths" [value]="h">{{ h }}</option>
+      </select>
+    </div>
+  </div>
+
+  <!-- Project grid -->
+  <div class="projects__grid">
+    <app-project-card
+      *ngFor="let p of filtered()"
+      [project]="p"
+      (cardClick)="onCardClick(p.id)" />
+  </div>
+
+  <!-- Empty state -->
+  <div *ngIf="filtered().length === 0" class="projects__empty surface-elev">
+    No projects match your filters.
+  </div>
+
+</div>

@@ -1,86 +1,86 @@
 // ============================================================
-// COMPONENTS / _topbar.scss
-// Sticky app bar: 64px height, company logo, breadcrumbs,
-// global search, notifications popover, user dropdown.
+// top-bar.scss  —  Component styles
+// BlueLink Customer Portal
+//
+// Bootstrap handles colours, borders, and shadows via CSS vars.
+// This file ONLY adds structural/behavioural styles that
+// Bootstrap utilities cannot express inline.
 // ============================================================
 
-@use '../../../styles/abstracts/variables.scss' as v;
-@use '../../../styles/abstracts/mixins.scss' as m;
-
-// ─── HOST ────────────────────────────────────────────────────
-
+// ── HOST ─────────────────────────────────────────────────────
 :host {
   display: block;
   position: sticky;
   top: 0;
-  z-index: v.$z-sticky;
+  z-index: 1030;      // Bootstrap $zindex-sticky
   flex-shrink: 0;
 }
 
-// ─── ROOT ────────────────────────────────────────────────────
-
+// ── TOPBAR ROOT ───────────────────────────────────────────────
 .topbar {
   display: flex;
   align-items: center;
-  gap: v.$spacing-4;
-  height: v.$topbar-height;
-  padding-inline: v.$spacing-5;
-  background: var(--color-topbar-bg);
-  border-bottom: v.$border-width solid var(--color-topbar-border);
-  // Prevent content from going under sidebar on mobile
-  position: relative;
-  z-index: v.$z-sticky;
+  gap: 1rem;
+  height: var(--topbar-height);
+  padding-inline: 1rem;
+  background-color: var(--bs-body-bg);
+  border-bottom: 1px solid var(--bs-border-color);
+  box-shadow: var(--bs-box-shadow-sm);
 
-  // Subtle bottom shadow
-  box-shadow: 0 1px 0 var(--color-border), var(--shadow-xs);
+  @include media-breakpoint-up(md) {
+    padding-inline: 1.25rem;
+  }
 }
 
-// ─── LEFT: Company + Breadcrumbs ─────────────────────────────
-
+// ── LEFT GROUP ────────────────────────────────────────────────
 .topbar__left {
   display: flex;
   align-items: center;
-  gap: v.$spacing-3;
+  gap: 0.625rem;
   min-width: 0;
   flex: 0 1 auto;
+
+  @include media-breakpoint-up(md) {
+    gap: 0.875rem;
+  }
 }
 
-// Hamburger (mobile only)
+// Hamburger — visible only on mobile
 .topbar__hamburger {
   display: flex;
   align-items: center;
   justify-content: center;
   width: 36px;
   height: 36px;
-  border-radius: v.$radius-md;
+  border-radius: var(--bs-border-radius);
   border: none;
   background: transparent;
+  color: var(--bs-secondary-color);
   cursor: pointer;
-  color: var(--color-text-tertiary);
   flex-shrink: 0;
-  @include m.transition-colors;
-  @include m.focus-ring;
+  transition: background-color 0.15s ease, color 0.15s ease;
 
   &:hover {
-    background: var(--color-surface-hover);
-    color: var(--color-text-primary);
+    background: var(--bs-tertiary-bg);
+    color: var(--bs-emphasis-color);
   }
 
-  svg {
-    width: 20px;
-    height: 20px;
+  &:focus-visible {
+    outline: 2px solid var(--bs-primary);
+    outline-offset: 2px;
   }
 
-  @include m.respond-to(md) {
-    display: none; // hidden on desktop — sidebar handles its own toggle
-  }
+  svg { width: 20px; height: 20px; }
+
+  // Hide on desktop — sidebar has its own collapse toggle
+  @include media-breakpoint-up(md) { display: none; }
 }
 
 // Company identity block
 .topbar__company {
   display: flex;
   align-items: center;
-  gap: v.$spacing-2-5;
+  gap: 0.5rem;
   min-width: 0;
   flex-shrink: 0;
 }
@@ -88,8 +88,8 @@
 .topbar__company-logo {
   width: 32px;
   height: 32px;
-  border-radius: v.$radius-md;
-  border: v.$border-width solid var(--color-border);
+  border-radius: var(--bs-border-radius);
+  border: 1px solid var(--bs-border-color);
   object-fit: contain;
   flex-shrink: 0;
 }
@@ -100,160 +100,164 @@
   min-width: 0;
   line-height: 1;
 
-  @include m.respond-to(sm) { display: flex; }
+  // Show company name + industry from sm (≥576px) upward
+  @include media-breakpoint-up(sm) { display: flex; }
 }
 
 .topbar__company-name {
-  font-size: v.$text-base;
-  font-weight: v.$font-semibold;
-  color: var(--color-text-primary);
-  @include m.truncate;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--bs-emphasis-color);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 180px;
 }
 
 .topbar__company-industry {
-  font-size: 11px;
-  color: var(--color-text-tertiary);
-  @include m.truncate;
+  font-size: 0.6875rem;
+  color: var(--bs-secondary-color);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 180px;
 }
 
-// Separator pipe
+// Vertical separator
 .topbar__sep {
   width: 1px;
   height: 24px;
-  background: var(--color-border);
+  background: var(--bs-border-color);
   flex-shrink: 0;
   display: none;
 
-  @include m.respond-to(md) { display: block; }
+  @include media-breakpoint-up(md) { display: block; }
 }
 
-// ─── BREADCRUMBS ─────────────────────────────────────────────
-
+// ── BREADCRUMBS ───────────────────────────────────────────────
 .breadcrumbs {
   display: none;
   align-items: center;
-  gap: v.$spacing-1-5;
-  font-size: 12px;
-  color: var(--color-text-muted);
+  gap: 0.375rem;
+  font-size: 0.75rem;
+  color: var(--bs-secondary-color);
   flex-shrink: 0;
+  white-space: nowrap;
 
-  @include m.respond-to(md) { display: flex; }
+  @include media-breakpoint-up(md) { display: flex; }
 
   &__segment {
     display: flex;
     align-items: center;
-    gap: v.$spacing-1-5;
+    gap: 0.375rem;
   }
 
   &__link {
-    color: var(--color-text-muted);
+    color: var(--bs-secondary-color);
     text-decoration: none;
-    @include m.transition-colors;
+    transition: color 0.15s ease;
 
-    &:hover { color: var(--color-text-primary); }
+    &:hover { color: var(--bs-emphasis-color); }
   }
 
   &__current {
-    font-weight: v.$font-medium;
-    color: var(--color-text-secondary);
+    font-weight: 500;
+    color: var(--bs-body-color);
   }
 
   &__chevron {
     width: 12px;
     height: 12px;
-    color: var(--color-text-muted);
+    color: var(--bs-border-color);
     flex-shrink: 0;
   }
 }
 
-// ─── RIGHT: Search + Actions + User ──────────────────────────
-
+// ── RIGHT GROUP ───────────────────────────────────────────────
 .topbar__right {
   display: flex;
   align-items: center;
-  gap: v.$spacing-2;
+  gap: 0.375rem;
   margin-left: auto;
   flex: 1;
   justify-content: flex-end;
   min-width: 0;
+
+  @include media-breakpoint-up(sm) {
+    gap: 0.5rem;
+  }
 }
 
-// ─── GLOBAL SEARCH ───────────────────────────────────────────
-
+// ── GLOBAL SEARCH ─────────────────────────────────────────────
 .topbar__search {
   display: none;
   position: relative;
   flex: 1;
-  max-width: 400px;
+  max-width: 380px;
 
-  @include m.respond-to(md) { display: block; }
+  @include media-breakpoint-up(md) { display: block; }
 }
 
 .topbar__search-input {
   width: 100%;
   height: 36px;
-  padding: 0 v.$spacing-3 0 v.$spacing-9;
-  border: v.$border-width solid var(--color-input-border);
-  border-radius: v.$radius-md;
-  background: var(--color-bg-secondary);
-  color: var(--color-input-text);
-  font-size: v.$text-sm;
-  font-family: v.$font-sans;
-  @include m.transition-colors;
+  padding: 0 0.75rem 0 2.25rem;
+  border: 1px solid var(--bs-border-color);
+  border-radius: var(--bs-border-radius);
+  background: var(--bs-secondary-bg);
+  color: var(--bs-body-color);
+  font-size: 0.875rem;
   cursor: pointer;
+  transition: border-color 0.15s ease, background-color 0.15s ease, box-shadow 0.15s ease;
 
-  &::placeholder {
-    color: var(--color-input-placeholder);
-  }
+  &::placeholder { color: var(--bs-secondary-color); }
 
   &:hover {
-    border-color: var(--color-input-border-hover);
-    background: var(--color-surface);
+    border-color: rgba(var(--bs-primary-rgb), 0.5);
+    background: var(--bs-body-bg);
   }
 
-  &:focus,
-  &:focus-visible {
+  &:focus {
     outline: none;
-    border-color: var(--color-input-border-focus);
-    background: var(--color-surface);
-    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+    border-color: var(--bs-primary);
+    background: var(--bs-body-bg);
+    box-shadow: 0 0 0 3px rgba(var(--bs-primary-rgb), 0.15);
     cursor: text;
   }
 }
 
 .topbar__search-icon {
   position: absolute;
-  left: v.$spacing-3;
+  left: 0.625rem;
   top: 50%;
   transform: translateY(-50%);
   width: 16px;
   height: 16px;
-  color: var(--color-text-muted);
+  color: var(--bs-secondary-color);
   pointer-events: none;
 }
 
 .topbar__search-kbd {
   position: absolute;
-  right: v.$spacing-2-5;
+  right: 0.5rem;
   top: 50%;
   transform: translateY(-50%);
   display: none;
   align-items: center;
   height: 20px;
-  padding: 0 v.$spacing-1-5;
-  border: v.$border-width solid var(--color-border);
-  border-radius: v.$radius-sm;
-  background: var(--color-surface);
-  font-family: v.$font-mono;
-  font-size: 10px;
-  color: var(--color-text-muted);
+  padding: 0 0.375rem;
+  border: 1px solid var(--bs-border-color);
+  border-radius: var(--bs-border-radius-sm);
+  background: var(--bs-body-bg);
+  font-size: 0.625rem;
+  color: var(--bs-secondary-color);
   pointer-events: none;
+  font-family: var(--bs-font-monospace);
 
-  @include m.respond-to(lg) { display: flex; }
+  @include media-breakpoint-up(lg) { display: flex; }
 }
 
-// ─── ICON ACTIONS (notifications, etc.) ──────────────────────
-
+// ── ACTION BUTTONS (notifications etc.) ──────────────────────
 .topbar__action-btn {
   position: relative;
   display: inline-flex;
@@ -261,174 +265,162 @@
   justify-content: center;
   width: 36px;
   height: 36px;
-  border-radius: v.$radius-md;
+  border-radius: var(--bs-border-radius);
   border: none;
   background: transparent;
   cursor: pointer;
-  color: var(--color-text-tertiary);
+  color: var(--bs-secondary-color);
   flex-shrink: 0;
-  @include m.transition-colors;
-  @include m.focus-ring;
+  transition: background-color 0.15s ease, color 0.15s ease;
 
   &:hover {
-    background: var(--color-surface-hover);
-    color: var(--color-text-primary);
+    background: var(--bs-tertiary-bg);
+    color: var(--bs-emphasis-color);
   }
 
-  svg {
-    width: 18px;
-    height: 18px;
+  &:focus-visible {
+    outline: 2px solid var(--bs-primary);
+    outline-offset: 2px;
   }
+
+  svg { width: 18px; height: 18px; }
 }
 
-// Notification badge dot
 .topbar__notif-dot {
   position: absolute;
   top: 6px;
   right: 6px;
   width: 8px;
   height: 8px;
-  border-radius: v.$radius-full;
+  border-radius: 50%;
   background: #EF4444;
-  border: 2px solid var(--color-topbar-bg);
+  border: 2px solid var(--bs-body-bg);
 }
 
-// ─── NOTIFICATIONS POPOVER ───────────────────────────────────
-
+// ── NOTIFICATIONS POPOVER ─────────────────────────────────────
+// Width clamps to viewport on very small screens (250px min)
 .notif-popover {
   position: absolute;
-  top: calc(100% + v.$spacing-2);
+  top: calc(100% + 0.5rem);
   right: 0;
-  width: 360px;
-  background: var(--color-surface);
-  border: v.$border-width solid var(--color-border);
-  border-radius: v.$radius-xl;
-  box-shadow: var(--shadow-lg);
-  z-index: v.$z-dropdown;
+  width: min(360px, calc(100vw - 1rem));
+  background: var(--bs-body-bg);
+  border: 1px solid var(--bs-border-color);
+  border-radius: var(--bs-border-radius-lg);
+  box-shadow: var(--bs-box-shadow-lg);
+  z-index: 1050;
   overflow: hidden;
-  animation: popover-in v.$duration-slow v.$ease-bounce;
+  animation: popover-in 0.15s ease both;
 
   &__header {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: v.$spacing-3-5;
-    border-bottom: v.$border-width solid var(--color-border);
+    padding: 0.875rem;
+    border-bottom: 1px solid var(--bs-border-color);
   }
 
   &__title {
-    font-size: v.$text-sm;
-    font-weight: v.$font-semibold;
-    color: var(--color-text-primary);
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--bs-emphasis-color);
   }
 
   &__meta {
-    font-size: 11px;
-    color: var(--color-text-tertiary);
+    font-size: 0.6875rem;
+    color: var(--bs-secondary-color);
+    margin-top: 2px;
   }
 
   &__mark-read {
-    font-size: 11px;
-    font-weight: v.$font-semibold;
-    color: var(--color-text-brand);
+    font-size: 0.6875rem;
+    font-weight: 600;
+    color: var(--bs-primary);
     background: none;
     border: none;
     cursor: pointer;
     padding: 0;
-    @include m.focus-ring;
+    white-space: nowrap;
 
-    &:hover { text-decoration: underline; text-underline-offset: 3px; }
+    &:hover { text-decoration: underline; }
   }
 
   &__list {
-    max-height: 360px;
+    max-height: 320px;
     overflow-y: auto;
-    @include m.scrollbar-thin;
+    scrollbar-width: thin;
+    scrollbar-color: var(--bs-border-color) transparent;
   }
 
   &__item {
     display: flex;
     align-items: flex-start;
-    gap: v.$spacing-3;
-    padding: v.$spacing-3-5;
-    border-bottom: v.$border-width solid var(--color-border);
-    @include m.transition-colors;
+    gap: 0.75rem;
+    padding: 0.875rem;
+    border-bottom: 1px solid var(--bs-border-color);
     cursor: pointer;
+    transition: background-color 0.15s ease;
 
     &:last-child { border-bottom: none; }
-
-    &:hover { background: var(--color-surface-hover); }
+    &:hover { background: var(--bs-tertiary-bg); }
   }
 
   &__dot {
     width: 8px;
     height: 8px;
-    border-radius: v.$radius-full;
+    border-radius: 50%;
     flex-shrink: 0;
-    margin-top: v.$spacing-1;
+    margin-top: 0.3125rem;
 
-    &--unread { background: var(--color-brand-600); }
-    &--read   { background: var(--color-border); }
+    &--unread { background: var(--bs-primary); }
+    &--read   { background: var(--bs-border-color); }
   }
 
-  &__item-content {
-    flex: 1;
-    min-width: 0;
-  }
+  &__item-content { flex: 1; min-width: 0; }
 
   &__item-type {
-    @include m.micro-label;
-    font-size: 11px;
-    color: var(--color-text-muted);
+    font-size: 0.625rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--bs-secondary-color);
   }
 
   &__item-subject {
-    font-size: v.$text-sm;
-    font-weight: v.$font-medium;
-    color: var(--color-text-primary);
-    @include m.truncate;
+    font-size: 0.8125rem;
+    font-weight: 500;
+    color: var(--bs-emphasis-color);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
     margin-top: 2px;
   }
 
   &__item-time {
-    font-size: 11px;
-    color: var(--color-text-muted);
+    font-size: 0.6875rem;
+    color: var(--bs-secondary-color);
     margin-top: 2px;
-    @include m.num-tabular;
   }
 
   &__footer {
-    padding: v.$spacing-3;
+    padding: 0.75rem;
     text-align: center;
-    border-top: v.$border-width solid var(--color-border);
+    border-top: 1px solid var(--bs-border-color);
   }
 
   &__footer-link {
-    font-size: 11px;
-    font-weight: v.$font-semibold;
-    color: var(--color-text-tertiary);
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--bs-secondary-color);
     background: none;
     border: none;
     cursor: pointer;
-    @include m.focus-ring;
 
-    &:hover { color: var(--color-text-primary); }
+    &:hover { color: var(--bs-emphasis-color); }
   }
 }
 
-@keyframes popover-in {
-  from {
-    opacity: 0;
-    transform: translateY(-6px) scale(0.97);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0) scale(1);
-  }
-}
-
-// ─── USER DROPDOWN ───────────────────────────────────────────
-
+// ── USER MENU ─────────────────────────────────────────────────
 .user-menu {
   position: relative;
   flex-shrink: 0;
@@ -437,26 +429,30 @@
 .user-menu__trigger {
   display: flex;
   align-items: center;
-  gap: v.$spacing-2-5;
-  padding: v.$spacing-1-5;
-  border-radius: v.$radius-md;
+  gap: 0.5rem;
+  padding: 0.3125rem;
+  border-radius: var(--bs-border-radius);
   border: none;
   background: transparent;
   cursor: pointer;
-  @include m.transition-colors;
-  @include m.focus-ring;
+  transition: background-color 0.15s ease;
 
-  &:hover { background: var(--color-surface-hover); }
+  &:hover { background: var(--bs-tertiary-bg); }
+
+  &:focus-visible {
+    outline: 2px solid var(--bs-primary);
+    outline-offset: 2px;
+  }
 }
 
 .user-menu__avatar {
   width: 32px;
   height: 32px;
-  border-radius: v.$radius-full;
-  background: var(--color-brand-600);
-  color: white;
-  font-size: 12px;
-  font-weight: v.$font-semibold;
+  border-radius: 50%;
+  background: var(--bs-primary);
+  color: #fff;
+  font-size: 0.75rem;
+  font-weight: 700;
   display: grid;
   place-items: center;
   flex-shrink: 0;
@@ -469,117 +465,125 @@
   text-align: left;
   min-width: 0;
 
-  @include m.respond-to(lg) { display: flex; }
+  @include media-breakpoint-up(lg) { display: flex; }
 }
 
 .user-menu__name {
-  font-size: v.$text-base;
-  font-weight: v.$font-semibold;
-  color: var(--color-text-primary);
-  line-height: v.$leading-tight;
-  @include m.truncate;
-  max-width: 140px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--bs-emphasis-color);
+  line-height: 1.25;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 130px;
 }
 
 .user-menu__role {
-  font-size: 11px;
-  color: var(--color-text-tertiary);
-  line-height: v.$leading-tight;
-  @include m.truncate;
-  max-width: 140px;
+  font-size: 0.6875rem;
+  color: var(--bs-secondary-color);
+  line-height: 1.25;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 130px;
 }
 
 .user-menu__chevron {
   display: none;
   width: 14px;
   height: 14px;
-  color: var(--color-text-muted);
-  transition: transform v.$duration-base v.$ease-out;
+  color: var(--bs-secondary-color);
+  flex-shrink: 0;
+  transition: transform 0.15s ease;
 
-  @include m.respond-to(lg) { display: block; }
+  @include media-breakpoint-up(lg) { display: block; }
 
   &--open { transform: rotate(180deg); }
 }
 
-// Dropdown menu
+// ── USER DROPDOWN ─────────────────────────────────────────────
 .user-dropdown {
   position: absolute;
-  top: calc(100% + v.$spacing-1);
+  top: calc(100% + 0.25rem);
   right: 0;
   min-width: 240px;
-  background: var(--color-surface);
-  border: v.$border-width solid var(--color-border);
-  border-radius: v.$radius-xl;
-  box-shadow: var(--shadow-lg);
-  z-index: v.$z-dropdown;
+  background: var(--bs-body-bg);
+  border: 1px solid var(--bs-border-color);
+  border-radius: var(--bs-border-radius-lg);
+  box-shadow: var(--bs-box-shadow-lg);
+  z-index: 1050;
   overflow: hidden;
-  animation: popover-in v.$duration-slow v.$ease-bounce;
+  animation: popover-in 0.15s ease both;
 
   &__header {
-    padding: v.$spacing-3 v.$spacing-3-5;
-    border-bottom: v.$border-width solid var(--color-border);
+    padding: 0.75rem 0.875rem;
+    border-bottom: 1px solid var(--bs-border-color);
   }
 
   &__header-name {
-    font-size: v.$text-sm;
-    font-weight: v.$font-semibold;
-    color: var(--color-text-primary);
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--bs-emphasis-color);
   }
 
   &__header-email {
-    font-size: 11px;
-    color: var(--color-text-tertiary);
+    font-size: 0.6875rem;
+    color: var(--bs-secondary-color);
     margin-top: 2px;
   }
 
-  &__list {
-    padding: v.$spacing-1;
-  }
+  &__list { padding: 0.25rem; }
 
   &__item {
     display: flex;
     align-items: center;
-    gap: v.$spacing-2;
+    gap: 0.5rem;
     width: 100%;
-    padding: v.$spacing-1-5 v.$spacing-2-5;
-    border-radius: v.$radius-md;
+    padding: 0.4375rem 0.625rem;
+    border-radius: var(--bs-border-radius);
     border: none;
     background: transparent;
-    font-size: v.$text-sm;
-    font-weight: v.$font-normal;
-    color: var(--color-text-secondary);
+    font-size: 0.875rem;
+    font-weight: 400;
+    color: var(--bs-body-color);
     cursor: pointer;
     text-align: left;
-    @include m.transition-colors;
-    @include m.focus-ring;
+    transition: background-color 0.15s ease, color 0.15s ease;
 
     svg {
       width: 16px;
       height: 16px;
-      color: var(--color-text-muted);
+      color: var(--bs-secondary-color);
       flex-shrink: 0;
     }
 
     &:hover {
-      background: var(--color-surface-hover);
-      color: var(--color-text-primary);
+      background: var(--bs-tertiary-bg);
+      color: var(--bs-emphasis-color);
     }
 
     &--danger {
-      color: #DC2626;
-      svg { color: #DC2626; }
+      color: var(--bs-danger);
+
+      svg { color: var(--bs-danger); }
 
       &:hover {
-        background: #FEF2F2;
-              color: #DC2626;
-        .dark & { background: rgba(220, 38, 38, 0.12); }
+        background: rgba(var(--bs-danger-rgb), 0.08);
+        color: var(--bs-danger);
       }
     }
   }
 
   &__sep {
     height: 1px;
-    background: var(--color-border);
-    margin: v.$spacing-1;
+    background: var(--bs-border-color);
+    margin: 0.25rem 0;
   }
+}
+
+// ── SHARED ANIMATION ─────────────────────────────────────────
+@keyframes popover-in {
+  from { opacity: 0; transform: translateY(-5px) scale(0.97); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
 }

@@ -1,0 +1,227 @@
+// src/app/features/knowledge/knowledge.scss
+@use '../../../styles/abstracts/variables' as v;
+@use '../../../styles/abstracts/mixins' as m;
+
+:host { display: block; }
+
+.knowledge {
+  display: flex;
+  flex-direction: column;
+  gap: v.$spacing-6;
+}
+
+// ── Hero ──────────────────────────────────────────────────────
+
+.knowledge__hero {
+  position: relative;
+  overflow: hidden;
+}
+
+.knowledge__hero-body {
+  position: relative;
+  z-index: 1;
+  padding: v.$spacing-8 v.$spacing-10;
+  display: flex;
+  flex-direction: column;
+  gap: v.$spacing-4;
+  max-width: 700px;
+}
+
+.knowledge__hero-title {
+  font-family: v.$font-display;
+  font-size: v.$text-5xl;
+  font-weight: v.$font-bold;
+  letter-spacing: v.$tracking-tight;
+  color: var(--color-text-primary);
+  line-height: v.$leading-tight;
+  margin: 0;
+
+  @include m.respond-to(md) { font-size: v.$text-6xl; }
+}
+
+.knowledge__hero-sub {
+  font-size: v.$text-sm;
+  color: var(--color-text-tertiary);
+  line-height: v.$leading-relaxed;
+  margin: 0;
+}
+
+// ── Search ────────────────────────────────────────────────────
+
+.knowledge__search-wrap {
+  position: relative;
+  max-width: 560px;
+}
+
+.knowledge__search-icon {
+  position: absolute;
+  left: v.$spacing-4;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 20px;
+  height: 20px;
+  color: var(--color-text-muted);
+  pointer-events: none;
+}
+
+.knowledge__search-input {
+  width: 100%;
+  height: 48px;
+  padding: 0 v.$spacing-4 0 v.$spacing-12;
+  border: 1px solid var(--color-input-border);
+  border-radius: v.$radius-md;
+  background: var(--color-surface);
+  color: var(--color-input-text);
+  font-size: v.$text-md;
+  font-family: v.$font-sans;
+  box-shadow: var(--shadow-sm);
+  @include m.transition-colors;
+
+  &::placeholder { color: var(--color-input-placeholder); }
+
+  &:focus {
+    outline: none;
+    border-color: var(--color-input-border-focus);
+    box-shadow: 0 0 0 3px rgba(37,99,235,0.15);
+  }
+}
+
+// ── Quick search pills ────────────────────────────────────────
+
+.knowledge__quick {
+  display: flex;
+  flex-wrap: wrap;
+  gap: v.$spacing-1-5;
+}
+
+.knowledge__quick-btn {
+  padding: v.$spacing-1 v.$spacing-2-5;
+  border-radius: v.$radius-full;
+  border: 1px solid var(--color-border);
+  background: rgba(255,255,255,0.8);
+  font-size: 11.5px;
+  font-weight: v.$font-medium;
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  @include m.transition-colors;
+
+  &:hover {
+    background: var(--color-surface);
+    color: var(--color-brand-700);
+    border-color: var(--color-brand-200);
+  }
+
+  @include m.focus-ring;
+}
+
+// ── Two-column layout ─────────────────────────────────────────
+
+.knowledge__layout {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: v.$spacing-6;
+
+  @include m.respond-to(lg) {
+    grid-template-columns: 260px 1fr;
+    align-items: start;
+  }
+}
+
+.knowledge__content {
+  display: flex;
+  flex-direction: column;
+  gap: v.$spacing-4;
+}
+
+// ── Category sidebar ──────────────────────────────────────────
+
+.knowledge__sidebar {
+  padding: v.$spacing-4;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+
+  @include m.respond-to(lg) {
+    position: sticky;
+    top: calc(#{v.$topbar-height} + #{v.$spacing-6});
+  }
+}
+
+.knowledge__cat-btn {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: v.$spacing-2;
+  width: 100%;
+  padding: v.$spacing-2 v.$spacing-2-5;
+  border-radius: v.$radius-md;
+  border: none;
+  background: transparent;
+  font-size: 13px;
+  font-weight: v.$font-medium;
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  text-align: left;
+  @include m.transition-colors;
+  @include m.focus-ring;
+
+  &:hover {
+    background: var(--color-surface-hover);
+    color: var(--color-text-primary);
+  }
+
+  &--active {
+    background: var(--color-sidebar-item-active-bg);
+    color: var(--color-sidebar-item-active-text);
+    font-weight: v.$font-semibold;
+  }
+}
+
+.knowledge__cat-label {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.knowledge__cat-desc {
+  font-size: v.$text-xs;
+  font-weight: v.$font-normal;
+  color: var(--color-text-tertiary);
+  line-height: v.$leading-snug;
+  @include m.line-clamp(2);
+}
+
+.knowledge__cat-count {
+  font-size: 11px;
+  font-weight: v.$font-semibold;
+  color: var(--color-text-muted);
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+// ── CTA card at sidebar bottom ────────────────────────────────
+
+.knowledge__cta {
+  margin-top: v.$spacing-2;
+  padding: v.$spacing-3-5;
+  border-radius: v.$radius-md;
+  background: linear-gradient(135deg, var(--color-brand-700) 0%, var(--color-brand-900) 100%);
+  color: white;
+  display: flex;
+  flex-direction: column;
+  gap: v.$spacing-1;
+}
+
+.knowledge__cta-title {
+  font-size: 13px;
+  font-weight: v.$font-semibold;
+  margin: 0;
+}
+
+.knowledge__cta-sub {
+  font-size: v.$text-xs;
+  color: rgba(255,255,255,0.8);
+  line-height: v.$leading-snug;
+  margin: 0;
+}
