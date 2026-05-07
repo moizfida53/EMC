@@ -1,0 +1,161 @@
+<!-- src/app/features/releases/releases.html -->
+<div class="releases d-flex flex-column gap-4">
+
+  <!-- Page header -->
+  <app-page-header
+    eyebrow="System releases & environment hub"
+    title="Platform updates and environments"
+    description="Live status of every BlueLink-managed environment for your tenant, plus a Kanban view of upcoming releases, hotfixes, features and configuration changes." />
+
+  <!-- KPI strip -->
+  <div class="row g-3">
+    <div class="col-12 col-sm-6 col-xl-3">
+      <app-kpi-card
+        label="Components healthy"
+        [value]="healthyCount() + ' / ' + components.length"
+        [hint]="degradedCount() === 0 ? 'All systems operational' : degradedCount() + ' degraded'"
+        [trend]="degradedCount() > 0 ? { dir: 'down', text: 'Investigate' } : { dir: 'flat', text: 'Stable' }"
+        [active]="true" />
+    </div>
+    <div class="col-12 col-sm-6 col-xl-3">
+      <app-kpi-card
+        label="Releases tracked"
+        [value]="releasesTracked()"
+        hint="Across all components" />
+    </div>
+    <div class="col-12 col-sm-6 col-xl-3">
+      <app-kpi-card
+        label="Upcoming"
+        [value]="upcomingCount()"
+        hint="Targeted in the next 90 days"
+        [trend]="{ dir: 'up', text: '+2' }" />
+    </div>
+    <div class="col-12 col-sm-6 col-xl-3">
+      <app-kpi-card
+        label="Released · YTD"
+        [value]="deliveredYtd()"
+        hint="Promoted to production in 2026" />
+    </div>
+  </div>
+
+  <!-- ── ENVIRONMENTS ──────────────────────────────────────────────────── -->
+  <section class="releases__section">
+    <header class="releases__section-header">
+      <div>
+        <p class="micro-label releases__section-eyebrow mb-1">Environments</p>
+        <h2 class="releases__section-title font-display mb-0">Per-component status</h2>
+      </div>
+      <app-button variant="secondary" size="sm" (clicked)="onSubscribe()">
+        <i class="bi bi-stars me-1"></i>Subscribe to status feed
+      </app-button>
+    </header>
+
+    <div class="row g-3">
+      @for (c of components; track c.id) {
+        <div class="col-12 col-md-6 col-xl-4">
+          <article class="env-card surface-elev">
+
+            <header class="env-card__head">
+              <div class="env-card__head-left">
+                <p class="micro-label mb-1">Component</p>
+                <h3 class="env-card__name font-display">{{ c.name }}</h3>
+                <p class="env-card__desc mb-0">{{ c.description }}</p>
+              </div>
+              <div class="env-card__head-right">
+                <p class="micro-label mb-1">Version</p>
+                <span class="env-card__version num-tabular">{{ versionLabel(c.version) }}</span>
+              </div>
+            </header>
+
+            <div class="env-card__statuses">
+              <div class="env-card__env" [ngClass]="envTintClass(c.stagingStatus)">
+                <div class="env-card__env-head">
+                  <span class="micro-label">Staging</span>
+                  <app-status-badge [value]="c.stagingStatus" />
+                </div>
+                <a [href]="c.stagingUrl" target="_blank" rel="noopener" class="env-card__url">
+                  <span class="env-card__url-text">{{ stripScheme(c.stagingUrl) }}</span>
+                  <i class="bi bi-box-arrow-up-right env-card__url-icon" aria-hidden="true"></i>
+                </a>
+              </div>
+
+              <div class="env-card__env" [ngClass]="envTintClass(c.productionStatus)">
+                <div class="env-card__env-head">
+                  <span class="micro-label">Production</span>
+                  <app-status-badge [value]="c.productionStatus" />
+                </div>
+                <a [href]="c.productionUrl" target="_blank" rel="noopener" class="env-card__url">
+                  <span class="env-card__url-text">{{ stripScheme(c.productionUrl) }}</span>
+                  <i class="bi bi-box-arrow-up-right env-card__url-icon" aria-hidden="true"></i>
+                </a>
+              </div>
+            </div>
+
+          </article>
+        </div>
+      }
+    </div>
+  </section>
+
+  <!-- ── PIPELINE KANBAN ────────────────────────────────────────────────── -->
+  <section class="releases__section">
+    <header class="releases__section-header">
+      <div>
+        <p class="micro-label releases__section-eyebrow mb-1">Release & feature tracker</p>
+        <h2 class="releases__section-title font-display mb-0">Pipeline · Kanban</h2>
+      </div>
+      <div class="releases__filter-meta">
+        <i class="bi bi-funnel" aria-hidden="true"></i>
+        All components · All types
+      </div>
+    </header>
+
+    <div class="kanban">
+      @for (col of columns; track col.status) {
+        <div class="kanban__col" [ngClass]="col.toneClass">
+          <header class="kanban__col-head">
+            <span class="kanban__col-dot"></span>
+            <span class="kanban__col-label">{{ col.label }}</span>
+            <span class="kanban__col-count num-tabular">{{ releasesByStatus(col.status).length }}</span>
+          </header>
+
+          <div class="kanban__col-body">
+            @for (r of releasesByStatus(col.status); track r.id) {
+              <article class="kanban-card">
+                <div class="kanban-card__head">
+                  <app-pill [tone]="requestTypeTone(r.requestType)">{{ r.requestType }}</app-pill>
+                  <span class="kanban-card__version num-tabular">{{ r.version }}</span>
+                </div>
+
+                <h4 class="kanban-card__title">{{ r.title }}</h4>
+                <p class="kanban-card__desc">{{ r.description }}</p>
+
+                <footer class="kanban-card__foot">
+                  <span class="kanban-card__meta">
+                    <i class="bi bi-person" aria-hidden="true"></i>
+                    {{ r.requestedBy }}
+                  </span>
+                  <span class="kanban-card__meta num-tabular">
+                    <i class="bi bi-calendar3" aria-hidden="true"></i>
+                    {{ r.targetCompletionDate | formatDate }}
+                  </span>
+                </footer>
+              </article>
+            }
+
+            @if (releasesByStatus(col.status).length === 0) {
+              <div class="kanban__empty">No items</div>
+            }
+          </div>
+        </div>
+      }
+    </div>
+
+    <p class="releases__notice">
+      <i class="bi bi-tag" aria-hidden="true"></i>
+      Subscribe to release notifications from <strong>Settings → Notifications</strong> to receive
+      e-mail summaries the day before each promotion to production.
+    </p>
+  </section>
+
+</div>

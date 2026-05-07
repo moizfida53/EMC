@@ -21,6 +21,12 @@ mono_crash.*
 [Dd]ebugPublic/
 [Rr]elease/
 [Rr]eleases/
+
+# The .NET ignore above accidentally matches our Angular "releases" feature
+# folder. Re-include it explicitly.
+!emc.client/src/app/features/releases/
+!emc.client/src/app/features/releases/**
+
 x64/
 x86/
 [Ww][Ii][Nn]32/

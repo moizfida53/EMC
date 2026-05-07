@@ -7,7 +7,6 @@ import { FormsModule }     from '@angular/forms';
 import { Router }          from '@angular/router';
 import { AuthService }     from '../../../core/auth/auth.service';
 import { BluelinkLogo }    from '../../../shared/ui/bluelink-logo/bluelink-logo';
-import { Button }          from '@shared';
 import { environment }     from 'src/environments/environment';
 
 interface DemoAccount {
@@ -20,7 +19,7 @@ interface DemoAccount {
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [CommonModule, FormsModule, BluelinkLogo, Button],
+  imports: [CommonModule, FormsModule, BluelinkLogo],
   templateUrl: './login.html',
   styleUrl: './login.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
