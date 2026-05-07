@@ -12,8 +12,7 @@ import { CommonModule } from '@angular/common';
   standalone: true,
   imports: [CommonModule],
   template:`
-  <div class="bluelink-logo">
-
+<div class="d-inline-flex align-items-center gap-2">
   <img
     [src]="logoSrc()"
     alt="BlueLink Solutions"
@@ -21,17 +20,16 @@ import { CommonModule } from '@angular/common';
     [height]="height()"
     [style.width.px]="width()"
     [style.height.px]="height()"
-    class="bluelink-logo__img"
+    class="d-block flex-shrink-0 user-select-none object-fit-contain"
     draggable="false" />
 
   <div
     *ngIf="sublabel()"
-    class="bluelink-logo__sublabel"
+    class="d-none d-sm-block border-start ps-2 text-uppercase fw-semibold text-nowrap bluelink-logo__sublabel"
     [ngStyle]="sublabelStyle()"
     aria-hidden="true">
     {{ sublabel() }}
   </div>
-
 </div>`,
   styleUrl: './bluelink-logo.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

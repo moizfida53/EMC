@@ -1,74 +1,75 @@
-// src/app/features/dashboard/components/welcome-banner/welcome-banner.scss
-@use '../../../../../styles/abstracts/variables' as v;
-@use '../../../../../styles/abstracts/mixins' as m;
+// ============================================================================
+// welcome-banner.scss
+// Theme-aware. Uses dashboard-banner.webp as the right-side decorative
+// pattern in light mode; in dark mode the pattern fades to a subtle brand
+// gradient so we don't blast a bright white halo on a dark background.
+// ============================================================================
 
 :host { display: block; }
 
 .welcome-banner {
-  position: relative;
-  overflow: hidden;
-  padding: v.$spacing-6 v.$spacing-7;
+  padding: 1.5rem;
+  min-height: 220px;
 
-  @include m.respond-to(md) { padding: v.$spacing-8 v.$spacing-10; }
+  @media (min-width: 768px)  { padding: 2.5rem 2rem; min-height: 240px; }
+  @media (min-width: 1200px) { padding: 2.75rem; }
+  @media (max-width: 320px)  { padding: 1rem; min-height: 0; }
 
-  // ── Decorative dot-grid on the right ──────────────────────
-&__pattern {
-  position: absolute;
-  inset: 0;
-  background-color: v.$white !important;
-  background:
-    radial-gradient(
-      circle at 80% 30%,
-      rgba(59, 130, 246, 0.15),
-      transparent 40%
-    ),
-    radial-gradient(
-      circle at 70% 70%,
-      rgba(37, 99, 235, 0.10),
-      transparent 50%
-    );
+  // ── Right-side decorative pattern ───────────────────────────────────────
+  &__pattern {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background-image: url('/dashboard-banner.webp');
+    background-repeat: no-repeat;
+    background-position: right center;
+    background-size: auto 100%;
+    opacity: 0.85;
+    mask-image: linear-gradient(to right, transparent 0%, black 35%, black 100%);
+    -webkit-mask-image: linear-gradient(to right, transparent 0%, black 35%, black 100%);
+  }
 
-  filter: blur(20px);
+  &__inner { z-index: 1; }
+
+  // ── Eyebrow ─────────────────────────────────────────────────────────────
+  &__eyebrow {
+    color: var(--color-brand-700) !important;
+  }
+
+  // ── Title ───────────────────────────────────────────────────────────────
+  &__title {
+    font-size: 1.75rem;
+    font-weight: 800;
+    letter-spacing: -0.025em;
+    color: var(--color-text-primary);
+    line-height: 1.15;
+
+    @media (min-width: 576px) { font-size: 2.25rem; }
+    @media (min-width: 992px) { font-size: 2.5rem; }
+    @media (max-width: 320px) { font-size: 1.25rem; }
+  }
+
+  // ── Sub copy ────────────────────────────────────────────────────────────
+  &__sub {
+    font-size: 0.9375rem;
+    color: var(--color-text-secondary);
+    line-height: 1.6;
+
+    strong {
+      color: var(--color-text-primary);
+      font-weight: 600;
+    }
+
+    &--success { color: var(--color-success-700) !important; }
+    &--warning { color: var(--color-warning-700) !important; }
+  }
 }
 
-  &__body { position: relative; z-index: 1; }
-
-  &__content {
-    max-width: 640px;
-    display: flex;
-    flex-direction: column;
-    gap: v.$spacing-3;
+// ── Dark mode: tone down the bright pattern to avoid the white halo ────
+[data-bs-theme="dark"] .welcome-banner {
+  &__pattern {
+    opacity: 0.18;
+    filter: invert(1) hue-rotate(180deg) saturate(0.7);
   }
-
-  &__title {
-    font-family: v.$font-display;
-    font-size: v.$text-4xl;
-    font-weight: v.$font-bold;
-    letter-spacing: v.$tracking-tight;
-    color: var(--color-text-primary);
-    line-height: v.$leading-tight;
-    margin: 0;
-
-    @include m.respond-to(md) { font-size: v.$text-5xl; }
-  }
-
-  &__sub {
-    font-size: v.$text-sm;
-    color: var(--color-text-tertiary);
-    line-height: v.$leading-relaxed;
-    margin: 0;
-
-    strong       { color: var(--color-text-primary); font-weight: v.$font-semibold; }
-    .text-success { color: var(--color-success-600); }
-    .text-warning { color: var(--color-warning-600); }
-  }
-
-  &__actions {
-    display: flex;
-    flex-wrap: wrap;
-    gap: v.$spacing-2;
-    margin-top: v.$spacing-1;
-
-    a { text-decoration: none; }
-  }
+  &__eyebrow { color: var(--color-brand-400) !important; }
 }

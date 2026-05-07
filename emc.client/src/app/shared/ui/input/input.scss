@@ -1,127 +1,103 @@
-// emc.client/src/app/shared/ui/input/input.scss
-@use '../../../../styles/abstracts/variables' as v;
-@use '../../../../styles/abstracts/mixins' as m;
+// ============================================================================
+// input.scss
+// Bootstrap's .form-control handles structure (border, bg, padding, focus).
+// This file overrides Bootstrap's tokens with our --color-* tokens so light
+// and dark themes both look right, and adds absolute-positioned icon slots.
+// ============================================================================
 
-:host {
-  display: block;
+:host { display: block; }
+
+// ── Label ──────────────────────────────────────────────────
+.input-field__label {
+  font-size: 0.6875rem;
+  letter-spacing: 0.08em;
+  font-weight: 700;
+  color: var(--color-text-tertiary);
+
+  &.required::after {
+    content: ' *';
+    color: var(--color-danger-600);
+  }
 }
 
-// ─── FIELD WRAPPER ───────────────────────────────────────────
+// ── Bootstrap form-control overrides ───────────────────────
+.form-control {
+  height: 38px;
+  background-color: var(--color-surface-elev);
+  border-color: var(--color-border);
+  color: var(--color-text-primary);
+  border-radius: 0.5rem;
+  font-size: 0.875rem;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
 
-.input-field {
-  display: flex;
-  flex-direction: column;
-  gap: v.$spacing-1-5;
+  &::placeholder { color: var(--color-text-muted); }
 
-  &__label {
-    font-size: v.$text-xs;
-    font-weight: v.$font-semibold;
-    letter-spacing: v.$tracking-wider;
-    text-transform: uppercase;
-    color: var(--color-input-label);
-
-    &--required::after {
-      content: ' *';
-      color: var(--color-danger-600);
-    }
+  &:hover:not(:disabled):not([readonly]) {
+    border-color: var(--color-border-strong);
   }
 
-  &__hint {
-    font-size: v.$text-xs;
+  &:focus,
+  &:focus-visible {
+    border-color: var(--color-brand-500);
+    box-shadow: 0 0 0 3px var(--color-brand-100);
+    background-color: var(--color-surface-elev);
+    color: var(--color-text-primary);
+  }
+
+  &:disabled,
+  &[readonly] {
+    background-color: var(--color-surface-hover);
     color: var(--color-text-tertiary);
-    line-height: v.$leading-relaxed;
+  }
 
-    &--error {
-      color: var(--color-danger-600);
-      font-weight: v.$font-medium;
-    }
+  &.is-invalid {
+    border-color: var(--color-danger-600);
+    &:focus { box-shadow: 0 0 0 3px var(--color-danger-100); }
   }
 }
 
-// ─── INPUT WRAPPER ───────────────────────────────────────────
-
+// ── Wrapper ────────────────────────────────────────────────
 .input-wrapper {
   position: relative;
   display: flex;
   align-items: center;
 
-  &__control {
-    width: 100%;
-    height: 36px;
-    padding: 0 v.$spacing-3;
-    border: v.$border-width solid var(--color-input-border);
-    border-radius: v.$radius-md;
-    background: var(--color-input-bg);
-    color: var(--color-input-text);
-    font-size: v.$text-sm;
-    font-family: v.$font-sans;
-    transition:
-      border-color v.$duration-base v.$ease-out,
-      box-shadow   v.$duration-base v.$ease-out,
-      background   v.$duration-base v.$ease-out;
+  &--leading  .form-control { padding-left:  2.5rem; }
+  &--trailing .form-control { padding-right: 2.5rem; }
+}
 
-    &::placeholder {
-      color: var(--color-input-placeholder);
-    }
+// ── Icon slots ─────────────────────────────────────────────
+.input-icon {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.25rem;
+  height: 1.25rem;
+  color: var(--color-text-muted);
+  pointer-events: none;
+  font-size: 1rem;
 
-    &:hover:not(:disabled):not([readonly]) {
-      border-color: var(--color-input-border-hover);
-    }
+  svg { width: 16px; height: 16px; }
 
-    &:focus,
-    &:focus-visible {
-      outline: none;
-      border-color: var(--color-input-border-focus);
-      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
-    }
+  &--lead  { left:  0.75rem; }
+  &--trail { right: 0.75rem; }
+}
 
-    &:disabled {
-      cursor: not-allowed;
-      opacity: 0.5;
-      background: var(--color-surface-hover);
-    }
+// ── Bootstrap select overrides (so <select class="form-select"> matches) ──
+:host ::ng-deep .form-select,
+.form-select {
+  background-color: var(--color-surface-elev);
+  border-color: var(--color-border);
+  color: var(--color-text-primary);
+  border-radius: 0.5rem;
+  font-size: 0.875rem;
+  height: 38px;
 
-    &[readonly] {
-      cursor: default;
-      background: var(--color-surface-hover);
-    }
-
-    &[aria-invalid="true"] {
-      border-color: var(--color-danger-600);
-      &:focus { box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.15); }
-    }
-  }
-
-  // ── Icon slots ────────────────────────────────────────────
-
-  &--leading &__control  { padding-left:  v.$spacing-9; }
-  &--trailing &__control { padding-right: v.$spacing-9; }
-
-  &__icon {
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: v.$spacing-5;
-    height: v.$spacing-5;
-    color: var(--color-text-muted);
-    pointer-events: none;
-
-    &--lead  { left:  v.$spacing-3; }
-    &--trail { right: v.$spacing-3; }
-
-    svg { width: 16px; height: 16px; }
-  }
-
-  // ── Error state ───────────────────────────────────────────
-
-  &--error &__control {
-    border-color: var(--color-danger-600);
-
-    &:focus {
-      box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.15);
-    }
+  &:focus {
+    border-color: var(--color-brand-500);
+    box-shadow: 0 0 0 3px var(--color-brand-100);
   }
 }

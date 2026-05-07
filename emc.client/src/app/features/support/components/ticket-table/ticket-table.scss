@@ -1,223 +1,161 @@
-// src/app/features/support/components/ticket-table/ticket-table.scss
-@use '../../../../../styles/abstracts/variables' as v;
-@use '../../../../../styles/abstracts/mixins' as m;
+// ============================================================================
+// ticket-table.scss
+// Theme-aware table — fixes the all-white header in dark mode.
+// ============================================================================
 
 :host { display: block; }
 
 .ticket-table {
   overflow: hidden;
 
-  // ── Header ───────────────────────────────────────────────
-  &__header {
-    display: grid;
-    grid-template-columns: 120px 1fr 110px 160px 180px 48px;
-    gap: v.$spacing-4;
-    padding: v.$spacing-3 v.$spacing-5;
-    border-bottom: 1px solid var(--color-border);
-    background: var(--color-surface-hover);
-    align-items: center;
+  // ── Table ────────────────────────────────────────────────
+  &__table.table {
+    --bs-table-bg:           transparent;
+    --bs-table-color:        var(--color-text-primary);
+    --bs-table-border-color: var(--color-border);
+    --bs-table-hover-bg:     var(--color-surface-hover);
+    --bs-table-hover-color:  var(--color-text-primary);
+    --bs-table-active-bg:    var(--color-brand-50);
+    --bs-table-active-color: var(--color-text-primary);
+    margin-bottom: 0;
   }
 
-  &__th {
-    display: inline-flex;
-    align-items: center;
-    gap: v.$spacing-1;
-    font-size: v.$text-xs;
-    font-weight: v.$font-semibold;
-    letter-spacing: v.$tracking-wider;
+  // ── Header row ───────────────────────────────────────────
+  &__thead th {
+    background-color: var(--color-surface-subtle);
+    color: var(--color-text-tertiary);
+    font-size: 0.6875rem;
+    font-weight: 700;
     text-transform: uppercase;
-    color: var(--color-text-muted);
+    letter-spacing: 0.06em;
+    border-bottom: 1px solid var(--color-border);
+    padding: 0.75rem 1rem;
+    white-space: nowrap;
+  }
+
+  &__sort {
     background: none;
     border: none;
-    cursor: pointer;
     padding: 0;
-    @include m.transition-colors;
+    color: inherit;
+    font: inherit;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.375rem;
 
-    &:hover { color: var(--color-text-primary); }
+    i { font-size: 0.625rem; opacity: 0.7; }
+
+    &:hover { color: var(--color-text-secondary); }
   }
 
-  &__sort-icon {
-    width: 12px;
-    height: 12px;
-    flex-shrink: 0;
+  // ── Body rows ────────────────────────────────────────────
+  &__row {
+    cursor: pointer;
+    transition: background-color 0.12s ease;
+
+    & > td {
+      padding: 1rem;
+      vertical-align: middle;
+      border-bottom: 1px solid var(--color-border);
+      color: var(--color-text-primary);
+    }
+
+    &:last-child > td { border-bottom: none; }
+
+    &:hover { background-color: var(--color-surface-hover); }
+
+    &--active {
+      background-color: var(--color-brand-50);
+
+      & > td:first-child { box-shadow: inset 3px 0 0 0 var(--color-brand-600); }
+    }
   }
 
-  // ── Body ─────────────────────────────────────────────────
-  &__body {
-    display: flex;
-    flex-direction: column;
+  &__meta {
+    font-size: 0.75rem;
+    color: var(--color-text-tertiary);
+    margin-top: 2px;
   }
 
   &__empty {
-    padding: v.$spacing-8;
-    text-align: center;
     color: var(--color-text-tertiary);
-    font-size: v.$text-sm;
+    background-color: transparent !important;
   }
 
-  // ── Row ──────────────────────────────────────────────────
-  &__row {
-    display: grid;
-    grid-template-columns: 120px 1fr 110px 160px 180px 48px;
-    gap: v.$spacing-4;
-    padding: v.$spacing-3-5 v.$spacing-5;
-    border-bottom: 1px solid var(--color-border);
-    background: transparent;
-    cursor: pointer;
-    text-align: left;
-    width: 100%;
-    @include m.transition-colors;
-    @include m.focus-ring;
-
-    &:last-child { border-bottom: none; }
-
-    &:hover { background: var(--color-surface-hover); }
-
-    &--open {
-      background: rgba(37, 99, 235, 0.04);
-
-      &:hover { background: rgba(37, 99, 235, 0.06); }
-    }
-
-    // icon visibility
-    &:hover .ticket-table__cell--icon svg {
-      color: var(--color-text-tertiary);
-    }
+  &__chev-col { width: 40px; }
+  &__chev {
+    color: var(--color-text-muted);
+    transition: color 0.12s ease;
   }
+  &__row:hover &__chev { color: var(--color-text-brand); }
 
-  // ── Cells ────────────────────────────────────────────────
-  &__cell {
+  // ── Footer (pagination) ──────────────────────────────────
+  &__footer {
     display: flex;
-    flex-direction: column;
-    justify-content: center;
-    min-width: 0;
-
-    &--title { flex: 1; min-width: 0; }
-
-    &--icon {
-      display: flex;
-      align-items: center;
-      justify-content: flex-end;
-
-      svg {
-        width: 16px;
-        height: 16px;
-        color: var(--color-border);
-        transition: color v.$duration-base v.$ease-out;
-      }
-    }
-  }
-
-  &__ticket-num {
-    font-size: 12px;
-    font-weight: v.$font-semibold;
-    font-family: v.$font-mono;
-    color: var(--color-text-primary);
-  }
-
-  &__ticket-date {
-    font-size: v.$text-xs;
-    color: var(--color-text-muted);
-    margin-top: 2px;
-  }
-
-  &__title {
-    font-size: 13.5px;
-    font-weight: v.$font-medium;
-    color: var(--color-text-primary);
-  }
-
-  &__subtitle {
-    font-size: 11.5px;
-    color: var(--color-text-tertiary);
-    margin-top: 2px;
-  }
-
-  &__response-time {
-    font-size: 12px;
-    font-weight: v.$font-medium;
-    color: var(--color-text-secondary);
-  }
-
-  &__response-rel {
-    font-size: v.$text-xs;
-    color: var(--color-text-muted);
-    margin-top: 2px;
-  }
-
-  // ── Pagination ───────────────────────────────────────────
-  &__pagination {
-    @include m.flex-between;
-    padding: v.$spacing-3 v.$spacing-5;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.875rem 1rem;
     border-top: 1px solid var(--color-border);
-    gap: v.$spacing-3;
+    background-color: var(--color-surface-elev);
   }
 
-  &__pagination-info {
-    font-size: 11.5px;
+  &__count {
+    font-size: 0.8125rem;
     color: var(--color-text-tertiary);
 
-    strong {
-      font-weight: v.$font-semibold;
-      color: var(--color-text-primary);
-    }
+    strong { color: var(--color-text-primary); font-weight: 600; }
   }
 
-  &__pagination-controls {
+  &__pager {
     display: flex;
     align-items: center;
-    gap: v.$spacing-1;
+    gap: 0.25rem;
   }
 
   &__page-btn {
-    display: flex;
+    min-width: 32px;
+    height: 32px;
+    padding: 0 0.5rem;
+    border: 1px solid var(--color-border);
+    background-color: var(--color-surface-elev);
+    color: var(--color-text-secondary);
+    font-size: 0.8125rem;
+    font-weight: 600;
+    border-radius: 0.375rem;
+    cursor: pointer;
+    transition: background-color 0.12s ease, border-color 0.12s ease, color 0.12s ease;
+    display: inline-flex;
     align-items: center;
     justify-content: center;
-    width: 28px;
-    height: 28px;
-    border-radius: v.$radius-md;
-    border: 1px solid var(--color-border);
-    background: var(--color-surface);
-    cursor: pointer;
-    color: var(--color-text-secondary);
-    @include m.transition-colors;
-    @include m.focus-ring;
-
-    svg { width: 14px; height: 14px; }
 
     &:hover:not(:disabled) {
-      background: var(--color-surface-hover);
+      background-color: var(--color-surface-hover);
+      border-color: var(--color-border-strong);
       color: var(--color-text-primary);
     }
 
-    &:disabled {
-      opacity: 0.4;
-      cursor: not-allowed;
+    &:disabled { opacity: 0.4; cursor: not-allowed; }
+
+    &--active,
+    &--active:hover {
+      background-color: var(--color-brand-600);
+      border-color: var(--color-brand-600);
+      color: #fff;
     }
+
+    i { font-size: 0.75rem; }
   }
 
-  &__page-num {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    min-width: 28px;
-    height: 28px;
-    padding: 0 v.$spacing-1-5;
-    border-radius: v.$radius-md;
-    border: none;
-    background: transparent;
-    font-size: 12px;
-    font-weight: v.$font-semibold;
-    color: var(--color-text-secondary);
-    cursor: pointer;
-    @include m.transition-colors;
-    @include m.focus-ring;
-
-    &:hover:not(&--active) { background: var(--color-surface-hover); }
-
-    &--active {
-      background: var(--color-brand-700);
-      color: white;
-    }
+  // ── Narrow viewport ──────────────────────────────────────
+  @media (max-width: 575px) {
+    &__row > td { padding: 0.75rem; }
+    &__thead th { padding: 0.625rem 0.75rem; }
+  }
+  @media (max-width: 320px) {
+    &__footer { flex-direction: column; align-items: stretch; }
+    &__pager { justify-content: center; }
   }
 }

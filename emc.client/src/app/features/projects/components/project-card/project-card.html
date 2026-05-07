@@ -1,45 +1,59 @@
 <!-- src/app/features/projects/components/project-card/project-card.html -->
 <button
-  class="project-card"
+  class="project-card surface-elev"
   type="button"
   (click)="cardClick.emit()">
 
-  <!-- Status badges -->
-  <div class="project-card__badges">
+  <!-- Status pills -->
+  <div class="project-card__pills">
     <app-status-badge [value]="project().status" />
     <app-status-badge [value]="project().health" />
   </div>
 
   <!-- Title -->
-  <h3 class="project-card__title">{{ project().name }}</h3>
+  <h3 class="project-card__title font-display">
+    {{ project().name }}
+  </h3>
 
-  <!-- Description snippet -->
-  <p class="project-card__desc line-clamp-2">{{ project().description }}</p>
+  <!-- Description -->
+  <p class="project-card__description">
+    {{ project().description }}
+  </p>
 
-  <!-- Progress bar -->
+  <!-- Progress -->
   <div class="project-card__progress">
-    <app-mini-bar
-      [value]="project().percentCompleted"
-      [max]="100"
-      [tone]="tone(project().health)" />
-    <span class="project-card__pct num-tabular">{{ project().percentCompleted }}%</span>
+    <div class="project-card__progress-bar-wrap">
+      <app-mini-bar
+        [value]="project().percentCompleted"
+        [max]="100"
+        [tone]="tone(project().health)" />
+    </div>
+    <span class="project-card__progress-pct num-tabular">
+      {{ project().percentCompleted }}%
+    </span>
   </div>
 
   <!-- Footer meta -->
   <div class="project-card__footer">
-    <div class="project-card__meta-item">
-      <span class="micro-label" style="font-size:10px">Window</span>
-      <span class="project-card__meta-val num-tabular">
+    <div class="project-card__meta-col">
+      <div class="micro-label">Window</div>
+      <div class="project-card__meta-value num-tabular">
+        <i class="bi bi-calendar3 project-card__meta-icon" aria-hidden="true"></i>
         {{ project().startDate | formatDate }} → {{ project().endDate | formatDate }}
-      </span>
+      </div>
     </div>
-    <div class="project-card__meta-item">
-      <span class="micro-label" style="font-size:10px">Owner</span>
-      <span class="project-card__meta-val">{{ ownerShort(project().owner) }}</span>
+    <div class="project-card__meta-col">
+      <div class="micro-label">Owner</div>
+      <div class="project-card__meta-value">
+        <i class="bi bi-person project-card__meta-icon" aria-hidden="true"></i>
+        {{ ownerShort(project().owner) }}
+      </div>
     </div>
   </div>
 
-  <!-- Hover CTA -->
-  <div class="project-card__cta" aria-hidden="true">Open roadmap →</div>
+  <!-- Hover-revealed CTA -->
+  <span class="project-card__cta">
+    Open roadmap <i class="bi bi-arrow-right" aria-hidden="true"></i>
+  </span>
 
 </button>

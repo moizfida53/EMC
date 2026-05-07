@@ -1,0 +1,8 @@
+// ============================================================================
+// modal.scss
+// Visual theming lives in global styles.scss (so view encapsulation doesn't
+// strip overrides on Bootstrap's .modal / .modal-content / .modal-backdrop).
+// This file is left intentionally minimal.
+// ============================================================================
+
+:host { display: contents; }

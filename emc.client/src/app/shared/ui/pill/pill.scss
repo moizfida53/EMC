@@ -1,63 +1,65 @@
-// emc.client/src/app/shared/ui/pill/pill.scss
-@use '../../../../styles/abstracts/variables' as v;
-@use '../../../../styles/abstracts/mixins' as m;
+// ============================================================================
+// pill.scss
+// Bootstrap's .badge.rounded-pill handles structure. This file sets per-tone
+// colours via existing --color-* tokens (defined in src/styles.scss for both
+// light and dark themes).
+// ============================================================================
 
-:host {
-  display: inline-flex; // so the host doesn't break inline layout
-}
+:host { display: inline-flex; }
 
 .pill {
-  @include m.pill-base;
   border: 1px solid transparent;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  padding: 0.25rem 0.625rem;
+  letter-spacing: 0.01em;
+}
 
-  // ── Dot indicator ──────────────────────────────────────────
-  &__dot {
-    width: 6px;
-    height: 6px;
-    border-radius: v.$radius-full;
-    flex-shrink: 0;
-  }
+.pill__dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
 
-  // ── Tones ──────────────────────────────────────────────────
-  &--brand {
-    background: var(--color-pill-brand-bg);
-    color: var(--color-pill-brand-text);
-    border-color: var(--color-pill-brand-ring);
-    .pill__dot { background: var(--color-brand-600); }
-  }
+.pill--brand {
+  background-color: var(--color-brand-50);
+  color:            var(--color-text-brand);
+  border-color:     var(--color-brand-100);
+  .pill__dot { background-color: var(--color-brand-600); }
+}
 
-  &--success {
-    background: var(--color-pill-success-bg);
-    color: var(--color-pill-success-text);
-    border-color: rgba(16, 185, 129, 0.15);
-    .pill__dot { background: var(--color-success-600); }
-  }
+.pill--success {
+  background-color: var(--color-success-50);
+  color:            var(--color-success-700);
+  border-color:     var(--color-success-100);
+  .pill__dot { background-color: var(--color-success-600); }
+}
 
-  &--warning {
-    background: var(--color-pill-warning-bg);
-    color: var(--color-pill-warning-text);
-    border-color: rgba(245, 158, 11, 0.15);
-    .pill__dot { background: var(--color-warning-600); }
-  }
+.pill--warning {
+  background-color: var(--color-warning-50);
+  color:            var(--color-warning-700);
+  border-color:     var(--color-warning-100);
+  .pill__dot { background-color: var(--color-warning-600); }
+}
 
-  &--danger {
-    background: var(--color-pill-danger-bg);
-    color: var(--color-pill-danger-text);
-    border-color: rgba(239, 68, 68, 0.15);
-    .pill__dot { background: var(--color-danger-600); }
-  }
+.pill--danger {
+  background-color: var(--color-danger-50);
+  color:            var(--color-danger-700);
+  border-color:     var(--color-danger-100);
+  .pill__dot { background-color: var(--color-danger-600); }
+}
 
-  &--muted {
-    background: var(--color-pill-muted-bg);
-    color: var(--color-pill-muted-text);
-    border-color: var(--color-border);
-    .pill__dot { background: var(--color-text-muted); }
-  }
+.pill--muted {
+  background-color: var(--color-surface-hover);
+  color:            var(--color-text-tertiary);
+  border-color:     var(--color-border);
+  .pill__dot { background-color: var(--color-text-muted); }
+}
 
-  &--neutral {
-    background: var(--color-surface-hover);
-    color: var(--color-text-secondary);
-    border-color: var(--color-border);
-    .pill__dot { background: var(--color-text-tertiary); }
-  }
+.pill--neutral {
+  background-color: var(--color-surface-hover);
+  color:            var(--color-text-secondary);
+  border-color:     var(--color-border);
+  .pill__dot { background-color: var(--color-text-tertiary); }
 }

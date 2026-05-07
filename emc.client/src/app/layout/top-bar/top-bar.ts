@@ -12,11 +12,12 @@ import { CommonModule }            from '@angular/common';
 import { RouterModule, Router, NavigationEnd } from '@angular/router';
 import { filter, map, startWith }  from 'rxjs/operators';
 import { toSignal }                from '@angular/core/rxjs-interop';
+import { AuthService }             from '../../core/auth/auth.service';
 import { SidebarService }          from '../../core/services/sidebar.service';
 import { ThemeService }            from '../../core/services/theme.service';
 import { NAV_ITEMS }               from '../../core/models/nav-item.model';
 
-// ── Types ─────────────────────────────────────────────────────
+// ── View-model shape used by the template ────────────────────
 interface AppUser {
   firstname: string;
   lastname:  string;
@@ -32,15 +33,6 @@ interface Activity {
   scheduledStart: string;
   read:           boolean;
 }
-
-// ── Mock data (replace with real service calls) ───────────────
-const MOCK_USER: AppUser = {
-  firstname: 'Amelia',
-  lastname:  'Brooks',
-  jobtitle:  'Director of IT Operations',
-  email:     'amelia.brooks@northwind-energy.com',
-  initials:  'AB',
-};
 
 const MOCK_COMPANY = {
   name:     'Northwind Energy Co.',
@@ -67,15 +59,31 @@ const MOCK_ACTIVITIES: Activity[] = [
 })
 export class TopbarComponent {
   private  readonly sidebarService = inject(SidebarService);
-  public   readonly themeService   = inject(ThemeService);  // public: used in template
+  public   readonly themeService   = inject(ThemeService);
+  private  readonly auth           = inject(AuthService);
   private  readonly router         = inject(Router);
   private  readonly elRef          = inject(ElementRef<HTMLElement>);
 
-  // NOTE: topbarClasses / isInverseLayout removed.
-  // Bootstrap 5.3 data-bs-theme on <html> handles all colour switching.
+  // ── User (signal) ────────────────────────────────────────
+  // Reads from AuthStore — supports both MSAL and demo-account logins.
+  // Returns a stable view-model shape the template can bind to without
+  // null-guards on every property.
+  protected readonly user = computed<AppUser>(() => {
+    const u = this.auth.user();
+    if (!u) {
+      return { firstname: 'Guest', lastname: '', jobtitle: '', email: '', initials: '?' };
+    }
+    const parts = (u.displayName || '').trim().split(/\s+/);
+    return {
+      firstname: parts[0] ?? '',
+      lastname:  parts.slice(1).join(' '),
+      jobtitle:  u.jobTitle ?? '',
+      email:     u.username,
+      initials:  this.auth.initials(),
+    };
+  });
 
-  // ── Data ──────────────────────────────────────────────────
-  protected readonly user       = MOCK_USER;
+  // ── Static data ───────────────────────────────────────────
   protected readonly company    = MOCK_COMPANY;
   protected readonly activities = MOCK_ACTIVITIES;
 
@@ -128,7 +136,8 @@ export class TopbarComponent {
   }
 
   protected signOut(): void {
-    this.router.navigate(['/login']);
+    this.userOpen.set(false);
+    this.auth.logout();
   }
 
   // ── Close popovers when clicking outside ─────────────────

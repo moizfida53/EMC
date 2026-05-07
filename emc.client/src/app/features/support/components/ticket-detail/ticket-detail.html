@@ -1,137 +1,139 @@
 <!-- src/app/features/support/components/ticket-detail/ticket-detail.html -->
 <div *ngIf="caseRow()" class="ticket-detail surface-elev">
+  <div class="ticket-detail__layout">
 
-  <!-- LEFT: Metadata -->
-  <aside class="ticket-detail__meta">
-    <div class="ticket-detail__meta-header">
-      <app-pill tone="muted">{{ caseRow()!.ticketNumber }}</app-pill>
-      <button class="ticket-detail__close" type="button" (click)="close()" aria-label="Close ticket">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-      </button>
-    </div>
+    <!-- ── Left meta column ─────────────────────────────── -->
+    <aside class="ticket-detail__meta">
+      <div class="ticket-detail__meta-header">
+        <div class="d-flex justify-content-between align-items-center gap-2">
+          <app-pill tone="muted">{{ caseRow()!.ticketNumber }}</app-pill>
+          <button
+            class="ticket-detail__close-btn"
+            type="button"
+            (click)="close()"
+            aria-label="Close ticket">
+            <i class="bi bi-x-lg"></i>
+          </button>
+        </div>
+        <h2 class="ticket-detail__title font-display">{{ caseRow()!.title }}</h2>
+      </div>
 
-    <h2 class="ticket-detail__title">{{ caseRow()!.title }}</h2>
-
-    <div class="ticket-detail__fields">
-
-      <div class="ticket-detail__field">
-        <div class="micro-label" style="font-size:10px">Status</div>
-        <div class="ticket-detail__field-val">
+      <div class="ticket-detail__meta-body">
+        <div class="ticket-detail__field">
+          <div class="micro-label">Status</div>
           <app-status-badge [value]="caseRow()!.statusReason" />
         </div>
-      </div>
 
-      <div class="ticket-detail__field">
-        <div class="micro-label" style="font-size:10px">Priority</div>
-        <div class="ticket-detail__field-val">
+        <div class="ticket-detail__field">
+          <div class="micro-label">Priority</div>
           <app-badge [priority]="caseRow()!.priority" />
         </div>
-      </div>
 
-      <div class="ticket-detail__field">
-        <div class="micro-label" style="font-size:10px">Subject</div>
-        <div class="ticket-detail__field-text">{{ subjectTitle(caseRow()!.subjectId) }}</div>
-      </div>
+        <div class="ticket-detail__field">
+          <div class="micro-label">Subject</div>
+          <div class="ticket-detail__field-value">{{ subjectTitle(caseRow()!.subjectId) }}</div>
+        </div>
 
-      <div class="ticket-detail__field">
-        <div class="micro-label" style="font-size:10px">Product</div>
-        <div class="ticket-detail__field-text">{{ productName(caseRow()!.productId) }}</div>
-      </div>
+        <div class="ticket-detail__field">
+          <div class="micro-label">Product</div>
+          <div class="ticket-detail__field-value">{{ productName(caseRow()!.productId) }}</div>
+        </div>
 
-      <div class="ticket-detail__field">
-        <div class="micro-label" style="font-size:10px">Opened by</div>
-        <div class="ticket-detail__field-text">{{ caseRow()!.contact }}</div>
-      </div>
+        <div class="ticket-detail__field">
+          <div class="micro-label">Opened by</div>
+          <div class="ticket-detail__field-value">{{ caseRow()!.contact }}</div>
+        </div>
 
-      <div class="ticket-detail__field">
-        <div class="micro-label" style="font-size:10px">Opened on</div>
-        <div class="ticket-detail__field-text num-tabular">{{ caseRow()!.createdOn | formatDate:'datetime' }}</div>
-      </div>
+        <div class="ticket-detail__field">
+          <div class="micro-label">Opened on</div>
+          <div class="ticket-detail__field-value num-tabular">
+            {{ caseRow()!.createdOn | formatDate:'datetime' }}
+          </div>
+        </div>
 
-      <div class="ticket-detail__field">
-        <div class="micro-label" style="font-size:10px">Response by</div>
-        <div class="ticket-detail__field-text num-tabular">{{ caseRow()!.responseBy | formatDate:'datetime' }}</div>
-        <div class="ticket-detail__sla">{{ relativeTime(caseRow()!.responseBy) }} · within SLA</div>
-      </div>
+        <div class="ticket-detail__field">
+          <div class="micro-label">Response by</div>
+          <div class="ticket-detail__field-value num-tabular">
+            {{ caseRow()!.responseBy | formatDate:'datetime' }}
+          </div>
+          <div class="ticket-detail__sla">
+            {{ relativeTime(caseRow()!.responseBy) }} · within SLA
+          </div>
+        </div>
 
-    </div>
-
-    <div style="margin-top: 20px; display: flex; flex-direction: column; gap: 8px;">
-      <app-button variant="secondary" size="sm" style="width:100%">Update status</app-button>
-      <app-button variant="secondary" size="sm" style="width:100%">Link to article</app-button>
-    </div>
-  </aside>
-
-  <!-- RIGHT: Thread -->
-  <div class="ticket-detail__thread">
-
-    <div class="ticket-detail__thread-header">
-      <div>
-        <div class="micro-label">Conversation</div>
-        <div class="ticket-detail__thread-count">
-          {{ allEntries().length }} {{ allEntries().length === 1 ? 'entry' : 'entries' }}
+        <div class="ticket-detail__actions">
+          <app-button variant="secondary" size="sm">Update status</app-button>
+          <app-button variant="secondary" size="sm">Link to article</app-button>
         </div>
       </div>
-      <app-pill tone="brand" [dot]="true">Live</app-pill>
-    </div>
+    </aside>
 
-    <!-- Messages -->
-    <div class="ticket-detail__messages" appScrollThin>
-      <div
-        *ngFor="let e of allEntries()"
-        class="ticket-detail__msg-row"
-        [class.ticket-detail__msg-row--right]="isCustomer(e.type)">
+    <!-- ── Right conversation column ────────────────────── -->
+    <div class="ticket-detail__chat">
+      <div class="ticket-detail__chat-header">
+        <div>
+          <div class="micro-label">Conversation</div>
+          <div class="ticket-detail__chat-count">
+            {{ allEntries().length }} {{ allEntries().length === 1 ? 'entry' : 'entries' }}
+          </div>
+        </div>
+        <app-pill tone="brand" [dot]="true">Live</app-pill>
+      </div>
 
-        <!-- Avatar (left for agent/system) -->
+      <div class="ticket-detail__messages" appScrollThin>
         <div
-          *ngIf="!isCustomer(e.type)"
-          class="ticket-detail__avatar"
-          [class.ticket-detail__avatar--system]="isSystem(e.type)">
-          {{ isSystem(e.type) ? '·' : 'BL' }}
-        </div>
+          *ngFor="let e of allEntries()"
+          class="ticket-detail__row"
+          [class.ticket-detail__row--customer]="isCustomer(e.type)">
 
-        <!-- Bubble -->
-        <div
-          class="ticket-detail__bubble"
-          [class.ticket-detail__bubble--customer]="isCustomer(e.type)"
-          [class.ticket-detail__bubble--system]="isSystem(e.type)">
-          <div *ngIf="!isSystem(e.type)" class="ticket-detail__bubble-author">{{ e.author }}</div>
-          <p class="ticket-detail__bubble-text">{{ e.description }}</p>
-          <div class="ticket-detail__bubble-time num-tabular">{{ formatDateTime(e.createdOn) }}</div>
-        </div>
+          <div
+            *ngIf="!isCustomer(e.type)"
+            class="ticket-detail__avatar"
+            [class.ticket-detail__avatar--system]="isSystem(e.type)">
+            {{ isSystem(e.type) ? '·' : 'BL' }}
+          </div>
 
-        <!-- Avatar (right for customer) -->
-        <div
-          *ngIf="isCustomer(e.type)"
-          class="ticket-detail__avatar ticket-detail__avatar--customer">
-          {{ initials(e.author) }}
-        </div>
+          <div
+            class="ticket-detail__bubble"
+            [class.ticket-detail__bubble--customer]="isCustomer(e.type)"
+            [class.ticket-detail__bubble--system]="isSystem(e.type)">
+            <div *ngIf="!isSystem(e.type) && !isCustomer(e.type)" class="ticket-detail__bubble-author">
+              {{ e.author }}
+            </div>
+            <div class="ticket-detail__bubble-text">{{ e.description }}</div>
+            <div class="ticket-detail__bubble-time num-tabular">
+              {{ formatDateTime(e.createdOn) }}
+            </div>
+          </div>
 
+          <div
+            *ngIf="isCustomer(e.type)"
+            class="ticket-detail__avatar ticket-detail__avatar--customer">
+            {{ initials(e.author) }}
+          </div>
+        </div>
       </div>
-    </div>
 
-    <!-- Composer -->
-    <div class="ticket-detail__composer">
-      <div class="ticket-detail__composer-box">
-        <textarea
-          class="ticket-detail__composer-input"
-          rows="2"
-          placeholder="Add a reply…"
-          [value]="reply()"
-          (input)="reply.set($any($event.target).value)"
-          (keydown.ctrl.enter)="send()"
-          (keydown.meta.enter)="send()">
-        </textarea>
-        <div class="ticket-detail__composer-actions">
-          <span class="ticket-detail__composer-hint">Ctrl+Enter to send</span>
-          <app-button variant="primary" size="sm" (clicked)="send()">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="width:14px;height:14px;margin-right:4px"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
-            Send reply
-          </app-button>
+      <div class="ticket-detail__compose">
+        <div class="ticket-detail__compose-box">
+          <textarea
+            class="ticket-detail__textarea"
+            rows="2"
+            placeholder="Add a reply…"
+            [value]="reply()"
+            (input)="reply.set($any($event.target).value)"
+            (keydown.ctrl.enter)="send()"
+            (keydown.meta.enter)="send()"></textarea>
+
+          <div class="ticket-detail__compose-foot">
+            <span class="ticket-detail__hint">Ctrl+Enter to send</span>
+            <app-button variant="primary" size="sm" (clicked)="send()">
+              Send reply
+            </app-button>
+          </div>
         </div>
       </div>
     </div>
 
   </div>
-
 </div>

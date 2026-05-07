@@ -3,7 +3,7 @@ import { Component, ChangeDetectionStrategy, inject, computed } from '@angular/c
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { MockDataService } from '../../core/mock/mock-data.service';
-import { KpiCard, SectionHeader } from '@shared';
+import { KpiCard, MiniBar } from '@shared';
 import { RetainerKpi } from './components/retainer-kpi/retainer-kpi';
 import { ProjectHealthRail } from '../dashboard/components/project-health-rail/project-health-rail';
 import { ActivityFeed } from '../dashboard/components/activity-feed/activity-feed';
@@ -12,7 +12,6 @@ import { WelcomeBanner } from "./components/welcome-banner/welcome-banner";
 interface QuickLink {
   label: string;
   url: string;
-  icon: string;
 }
 
 @Component({
@@ -22,11 +21,12 @@ interface QuickLink {
     CommonModule,
     RouterModule,
     KpiCard,
+    MiniBar,
     RetainerKpi,
     ProjectHealthRail,
     ActivityFeed,
-    WelcomeBanner
-],
+    WelcomeBanner,
+  ],
   templateUrl: './dashboard.html',
   styleUrl: './dashboard.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -54,9 +54,9 @@ export class Dashboard {
   );
 
   protected readonly quickLinks: QuickLink[] = [
-    { label: 'New ticket', url: '/support/new', icon: 'bi-arrow-right' },
-    { label: 'Knowledge base', url: '/knowledge', icon: 'bi-arrow-right' },
-    { label: 'Renew licence', url: '/licences', icon: 'bi-arrow-right' },
-    { label: 'Release notes', url: '/releases', icon: 'bi-arrow-right' }
+    { label: 'New ticket',     url: '/support/new' },
+    { label: 'Knowledge base', url: '/knowledge'   },
+    { label: 'Renew licence',  url: '/licences'    },
+    { label: 'Release notes',  url: '/releases'    },
   ];
 }

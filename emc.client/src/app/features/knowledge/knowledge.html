@@ -1,105 +1,99 @@
 <!-- src/app/features/knowledge/knowledge.html -->
 
-<!-- Article detail view -->
+<!-- ── Article detail view ────────────────────────────────────────────── -->
 <app-article-detail
   *ngIf="openArticle()"
   [article]="openArticle()!"
   (back)="openArticleId.set(null)" />
 
-<!-- List view -->
-<div *ngIf="!openArticle()" class="knowledge">
+<!-- ── List view ──────────────────────────────────────────────────────── -->
+<div *ngIf="!openArticle()" class="knowledge d-flex flex-column gap-4">
 
   <!-- Hero search -->
   <section class="knowledge__hero surface-elev">
-    <div class="knowledge__hero-body">
-      <p class="micro-label" style="color: var(--color-brand-700)">
-        Self-help · Knowledge base
-      </p>
-      <h1 class="knowledge__hero-title">How can we help you today?</h1>
-      <p class="knowledge__hero-sub">
-        Search across {{ visibleCount() }} live articles covering the BlueLink
-        platform, integrations and operational playbooks.
-      </p>
+    <p class="micro-label knowledge__hero-eyebrow mb-2">BlueLink · Knowledge Base</p>
+    <h1 class="knowledge__hero-title font-display mb-2">How can we help you today?</h1>
+    <p class="knowledge__hero-sub mb-3">
+      Search across {{ visibleCount() }} live articles covering the BlueLink platform,
+      integrations and operational playbooks.
+    </p>
 
-      <!-- Search input -->
-      <div class="knowledge__search-wrap">
-        <svg class="knowledge__search-icon" viewBox="0 0 24 24" fill="none"
-             stroke="currentColor" stroke-width="1.75">
-          <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
-        </svg>
-        <input
-          class="knowledge__search-input"
-          type="search"
-          autofocus
-          placeholder='Try "settlement run", "NTP drift", "SCIM provisioning"…'
-          [value]="search()"
-          (input)="search.set($any($event.target).value)" />
-      </div>
+    <div class="knowledge__hero-search">
+      <i class="bi bi-search knowledge__hero-search-icon" aria-hidden="true"></i>
+      <input
+        class="form-control knowledge__hero-input"
+        type="search"
+        autofocus
+        placeholder='Try "settlement run", "NTP drift", "SCIM provisioning"…'
+        [value]="search()"
+        (input)="search.set($any($event.target).value)" />
+    </div>
 
-      <!-- Quick searches -->
-      <div class="knowledge__quick">
-        <button
-          *ngFor="let q of quickSearches"
-          class="knowledge__quick-btn"
-          type="button"
-          (click)="search.set(q)">
-          {{ q }}
-        </button>
-      </div>
+    <div class="knowledge__chips">
+      <button
+        *ngFor="let q of quickSearches"
+        class="knowledge__chip"
+        type="button"
+        (click)="search.set(q)">
+        {{ q }}
+      </button>
     </div>
   </section>
 
-  <!-- Two-column layout: sidebar + list -->
-  <div class="knowledge__layout">
+  <!-- Two-column layout: category sidebar + article list -->
+  <div class="row g-4">
 
-    <!-- Category sidebar -->
-    <aside class="knowledge__sidebar surface-elev">
-      <p class="micro-label" style="margin-bottom: 10px;">Browse by category</p>
+    <!-- ── Category sidebar ────────────────────────────────── -->
+    <aside class="col-12 col-lg-3">
+      <div class="knowledge__sidebar surface-elev">
+        <p class="micro-label knowledge__sidebar-title mb-2">Browse by category</p>
 
-      <!-- All articles -->
-      <button
-        class="knowledge__cat-btn"
-        type="button"
-        [class.knowledge__cat-btn--active]="activeSubject() === 'all'"
-        (click)="activeSubject.set('all')">
-        <span>All articles</span>
-        <span class="knowledge__cat-count num-tabular">{{ visibleCount() }}</span>
-      </button>
+        <div class="knowledge__cat-list">
+          <button
+            class="knowledge__cat-item"
+            type="button"
+            [class.knowledge__cat-item--active]="activeSubject() === 'all'"
+            (click)="activeSubject.set('all')">
+            <span class="knowledge__cat-name">All articles</span>
+            <span class="knowledge__cat-count num-tabular">{{ visibleCount() }}</span>
+          </button>
 
-      <!-- Per-subject -->
-      <button
-        *ngFor="let s of subjects"
-        class="knowledge__cat-btn"
-        type="button"
-        [class.knowledge__cat-btn--active]="activeSubject() === s.id"
-        (click)="activeSubject.set(s.id)">
-        <div class="knowledge__cat-label">
-          <span>{{ s.title }}</span>
-          <span
-            *ngIf="activeSubject() === s.id"
-            class="knowledge__cat-desc">
-            {{ s.description }}
-          </span>
+          <button
+            *ngFor="let s of subjects"
+            class="knowledge__cat-item"
+            type="button"
+            [class.knowledge__cat-item--active]="activeSubject() === s.id"
+            (click)="activeSubject.set(s.id)">
+            <span class="knowledge__cat-text">
+              <span class="knowledge__cat-name">{{ s.title }}</span>
+              <span *ngIf="activeSubject() === s.id" class="knowledge__cat-desc">
+                {{ s.description }}
+              </span>
+            </span>
+            <span class="knowledge__cat-count num-tabular">{{ countBySubject(s.id) }}</span>
+          </button>
         </div>
-        <span class="knowledge__cat-count num-tabular">{{ countBySubject(s.id) }}</span>
-      </button>
 
-      <!-- CTA card -->
-      <div class="knowledge__cta">
-        <p class="knowledge__cta-title">Can't find an answer?</p>
-        <p class="knowledge__cta-sub">
-          Open a ticket and we'll get back to you within 2 business hours.
-        </p>
+        <div class="knowledge__cta">
+          <p class="knowledge__cta-title mb-1">Can't find an answer?</p>
+          <p class="knowledge__cta-body mb-2">
+            Open a ticket and we'll get back to you within 2 business hours.
+          </p>
+          <a routerLink="/support" class="knowledge__cta-link">
+            Open a ticket <i class="bi bi-arrow-right ms-1"></i>
+          </a>
+        </div>
       </div>
     </aside>
 
-    <!-- Article list -->
-    <div class="knowledge__content">
-      <app-section-header
-        [title]="activeSubject() === 'all'
-          ? filtered().length + ' articles'
-          : subjects.find(s => s.id === activeSubject())?.title"
-        description="Most recently published first." />
+    <!-- ── Article list ────────────────────────────────────── -->
+    <div class="col-12 col-lg-9 d-flex flex-column gap-3">
+      <div class="knowledge__results-header">
+        <h2 class="knowledge__results-count font-display mb-0">
+          {{ filtered().length }} {{ filtered().length === 1 ? 'article' : 'articles' }}
+        </h2>
+        <p class="knowledge__results-sub mb-0">Most recently published first</p>
+      </div>
 
       <app-article-list
         [articles]="filtered()"

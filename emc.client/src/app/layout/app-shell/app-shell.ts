@@ -29,28 +29,12 @@ import { TopbarComponent }   from '../top-bar/top-bar';
           </footer>
         </main>
       </div>
-
-      <!-- Brand gradient bottom accent -->
-      <div class="app-shell__gradient" aria-hidden="true"></div>
-    </div>
   `,
   styles: [`
     :host { display: contents; }
 
     .app-shell {
       position: relative;
-    }
-
-    /* Bottom gradient accent */
-    .app-shell__gradient {
-      pointer-events: none;
-      position: fixed;
-      inset-inline: 0;
-      bottom: 0;
-      height: 96px;
-      background: lightblue;
-      z-index: 0;
-      opacity: 0.6;
     }
   `],
   changeDetection: ChangeDetectionStrategy.OnPush,

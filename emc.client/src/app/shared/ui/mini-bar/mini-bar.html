@@ -1,12 +1,13 @@
 <!-- emc.client/src/app/shared/ui/mini-bar/mini-bar.html -->
 <div
-  class="mini-bar"
+  class="progress mini-bar"
   role="progressbar"
   [attr.aria-valuenow]="value()"
   [attr.aria-valuemin]="0"
   [attr.aria-valuemax]="max()"
   [attr.aria-label]="value() + ' of ' + max()">
   <div
+    class="progress-bar"
     [ngClass]="fillClasses()"
     [style.width.%]="pct()">
   </div>

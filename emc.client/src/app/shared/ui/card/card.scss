@@ -1,48 +1,47 @@
-// emc.client/src/app/shared/ui/card/card.scss
-@use '../../../../styles/abstracts/variables' as v;
-@use '../../../../styles/abstracts/mixins' as m;
+// Bootstrap's .card handles structure (bg, border, border-radius, box-shadow).
+// This file only overrides colors with CSS variables and adds our custom states.
 
 :host {
   display: block;
 }
 
 .card {
-  background: var(--color-surface);
-  border: v.$border-width solid var(--color-border);
-  border-radius: v.$radius-lg;
-  box-shadow: var(--shadow-sm);
+  background-color: var(--color-surface-elev);
+  border-color:     var(--color-border);
+  box-shadow:       var(--shadow-sm);
 
   // ── Padding variants ─────────────────────────────────────
   &--pad-none { padding: 0; }
-  &--pad-sm   { padding: v.$spacing-3; }
-  &--pad-md   { padding: v.$spacing-5; }
-  &--pad-lg   { padding: v.$spacing-8; }
+  &--pad-sm   { padding: 0.75rem; }
+  &--pad-md   { padding: 1.25rem; }
+  &--pad-lg   { padding: 2rem; }
 
   // ── Clickable card ───────────────────────────────────────
   &--clickable {
     cursor: pointer;
     transition:
-      border-color v.$duration-base v.$ease-out,
-      box-shadow   v.$duration-base v.$ease-out,
-      transform    v.$duration-base v.$ease-out;
+      border-color 150ms ease-out,
+      box-shadow   150ms ease-out,
+      transform    150ms ease-out;
 
     &:hover {
       border-color: var(--color-border-brand);
-      box-shadow: var(--shadow-md);
-      transform: translateY(-1px);
+      box-shadow:   var(--shadow-md);
+      transform:    translateY(-1px);
     }
-
     &:active {
-      transform: translateY(0);
+      transform:  translateY(0);
       box-shadow: var(--shadow-sm);
     }
-
-    @include m.focus-ring;
+    &:focus-visible {
+      outline:        2px solid var(--color-brand-500);
+      outline-offset: 2px;
+    }
   }
 
-  // ── Highlighted ──────────────────────────────────────────
+  // ── Highlighted / selected ────────────────────────────────
   &--highlighted {
     border-color: var(--color-brand-300);
-    box-shadow: 0 0 0 1px var(--color-brand-200), var(--shadow-sm);
+    box-shadow:   0 0 0 1px var(--color-brand-200), var(--shadow-sm);
   }
 }

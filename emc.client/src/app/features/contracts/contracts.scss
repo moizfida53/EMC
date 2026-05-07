@@ -1,185 +1,369 @@
-// src/app/features/contracts/contracts.scss
-@use '../../../styles/abstracts/variables' as v;
-@use '../../../styles/abstracts/mixins' as m;
+// ============================================================================
+// contracts.scss
+// Themed segmented tabs, custom accordion (no Bootstrap default), themed
+// license table, all surfaces tracked via --color-* tokens.
+// ============================================================================
 
 :host { display: block; }
 
 .contracts {
-  display: flex;
-  flex-direction: column;
-  gap: v.$spacing-6;
-}
 
-// ── KPI cards ─────────────────────────────────────────────────
-
-.kpi-grid {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: v.$spacing-3;
-
-  @include m.respond-to(md) {
-    grid-template-columns: repeat(2, 1fr);
+  // ── Segmented tab switcher ─────────────────────────────────
+  &__tabs {
+    display: inline-flex;
+    align-self: flex-start;
+    gap: 0.25rem;
+    padding: 0.25rem;
+    border-radius: 0.625rem;
   }
 
-  @include m.respond-to(lg) {
-    grid-template-columns: repeat(4, 1fr);
+  &__tab {
+    background: transparent;
+    border: none;
+    padding: 0.4375rem 0.875rem;
+    border-radius: 0.5rem;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    color: var(--color-text-secondary);
+    cursor: pointer;
+    transition: background-color 0.15s ease, color 0.15s ease;
+
+    &:hover {
+      background-color: var(--color-surface-hover);
+      color: var(--color-text-primary);
+    }
+    &:focus-visible {
+      outline: 2px solid var(--color-brand-500);
+      outline-offset: 2px;
+    }
+
+    &--active,
+    &--active:hover {
+      background-color: var(--color-brand-50);
+      color: var(--color-text-brand);
+    }
   }
-}
 
-.kpi-card {
-  padding: v.$spacing-4;
-  background: var(--color-surface);
-  border: 1px solid var(--color-border);
-  border-radius: v.$radius-lg;
-  display: flex;
-  flex-direction: column;
-  gap: v.$spacing-1;
+  // ──────────────────────────────────────────────────────────
+  //  SERVICE AGREEMENT ACCORDION
+  // ──────────────────────────────────────────────────────────
+  &__sa {
+    overflow: hidden;
+    transition: border-color 0.15s ease;
 
-  &__label {
-    font-size: v.$text-xs;
-    font-weight: v.$font-semibold;
-    letter-spacing: v.$tracking-wider;
-    text-transform: uppercase;
-    color: var(--color-text-tertiary);
+    &--open { border-color: var(--color-border-brand); }
   }
 
-  &__value {
-    font-family: v.$font-display;
-    font-size: v.$text-3xl;
-    font-weight: v.$font-bold;
+  &__sa-header {
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+    width: 100%;
+    padding: 1.125rem 1.25rem;
+    background: transparent;
+    border: none;
     color: var(--color-text-primary);
-    line-height: 1;
+    text-align: left;
+    cursor: pointer;
+    transition: background-color 0.15s ease;
+
+    &:hover { background-color: var(--color-surface-hover); }
+    &:focus-visible {
+      outline: 2px solid var(--color-brand-500);
+      outline-offset: -2px;
+    }
+
+    @media (max-width: 767px) {
+      flex-direction: column;
+      align-items: stretch;
+    }
   }
 
-  &__hint {
-    font-size: v.$text-xs;
+  &__sa-header-left {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  &__sa-pills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.375rem;
+  }
+
+  &__sa-name {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--color-text-primary);
+    line-height: 1.3;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  &__sa-header-right {
+    display: flex;
+    align-items: center;
+    gap: 1.25rem;
+    flex-shrink: 0;
+
+    @media (max-width: 767px) {
+      flex-wrap: wrap;
+      gap: 1rem;
+      padding-top: 0.5rem;
+      border-top: 1px solid var(--color-border);
+    }
+  }
+
+  &__sa-stat {
+    display: flex;
+    flex-direction: column;
+    gap: 0.1875rem;
+    text-align: right;
+
+    @media (max-width: 767px) { text-align: left; }
+  }
+
+  &__sa-stat-value {
+    font-size: 0.8125rem;
+    color: var(--color-text-secondary);
+
+    &--num {
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--color-text-primary);
+    }
+  }
+
+  &__sa-caret {
     color: var(--color-text-muted);
+    font-size: 1rem;
+    transition: transform 0.2s ease;
   }
-}
 
-// ── Table ──────────────────────────────────────────────────────
+  &__sa--open &__sa-caret { transform: rotate(180deg); }
 
-.contracts__table {
-  overflow: hidden;
-}
+  // ── Body ─────────────────────────────────────────────────
+  &__sa-body {
+    padding: 0 1.25rem 1.25rem;
+    border-top: 1px solid var(--color-border);
 
-.contracts__head {
-  display: grid;
-  grid-template-columns: 1fr 200px 220px 160px;
-  gap: v.$spacing-4;
-  padding: v.$spacing-3 v.$spacing-5;
-  background: var(--color-surface-hover);
-  border-bottom: 1px solid var(--color-border);
-  font-size: v.$text-xs;
-  font-weight: v.$font-semibold;
-  letter-spacing: v.$tracking-wider;
-  text-transform: uppercase;
-  color: var(--color-text-tertiary);
-
-  @include m.respond-below(lg) {
-    grid-template-columns: 1fr;
-    gap: 0;
+    > .row { padding-top: 1.25rem; }
   }
-}
 
-.contracts__body { display: flex; flex-direction: column; }
-
-.contracts__row {
-  display: grid;
-  grid-template-columns: 1fr 200px 220px 160px;
-  gap: v.$spacing-4;
-  align-items: center;
-  padding: v.$spacing-3-5 v.$spacing-5;
-  border-bottom: 1px solid var(--color-border);
-  @include m.transition-colors;
-
-  &:last-child { border-bottom: none; }
-  &:hover { background: var(--color-surface-hover); }
-
-  @include m.respond-below(lg) {
-    grid-template-columns: 1fr;
-    gap: v.$spacing-2;
-    padding: v.$spacing-4;
+  // ── Balance utilisation rows ─────────────────────────────
+  &__bal {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
   }
-}
 
-.contracts__cell {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-  min-width: 0;
-}
+  &__bal-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 0.75rem;
+  }
 
-// ── Name column ────────────────────────────────────────────
+  &__bal-info { min-width: 0; }
 
-.contracts__title {
-  font-size: v.$text-base;
-  font-weight: v.$font-semibold;
-  color: var(--color-text-primary);
-  @include m.truncate;
-}
+  &__bal-name {
+    font-weight: 600;
+    color: var(--color-text-primary);
+    font-size: 0.875rem;
+  }
 
-.contracts__type {
-  font-size: v.$text-xs;
-  color: var(--color-text-muted);
-}
+  &__bal-sub {
+    font-size: 0.75rem;
+    color: var(--color-text-tertiary);
+    margin-top: 2px;
+  }
 
-// ── Terms column ───────────────────────────────────────────
+  &__bal-numbers {
+    text-align: right;
+    flex-shrink: 0;
+  }
 
-.contracts__term-val {
-  font-size: 12px;
-  font-weight: v.$font-medium;
-  color: var(--color-text-primary);
-}
+  &__bal-frac {
+    font-size: 0.9375rem;
+    font-weight: 700;
+    color: var(--color-text-primary);
+  }
 
-.contracts__term-meta {
-  font-size: v.$text-xs;
-  color: var(--color-text-muted);
-  @include m.truncate;
-}
+  &__bal-denom {
+    color: var(--color-text-tertiary);
+    font-weight: 500;
+    margin-left: 0.125rem;
+  }
 
-// ── Hours column ───────────────────────────────────────────
+  &__bal-pct {
+    font-size: 0.75rem;
+    color: var(--color-text-tertiary);
+    margin-top: 2px;
+  }
 
-.contracts__hours-bar {
-  width: 100%;
-  height: 6px;
-  border-radius: 3px;
-  background: var(--color-surface-hover);
-  overflow: hidden;
-}
+  // Available text classes
+  &__avail {
+    &--ok  { color: var(--color-success-700) !important; }
+    &--low { color: var(--color-warning-700) !important; }
+  }
 
-.contracts__hours-fill {
-  height: 100%;
-  background: var(--color-brand-600);
-  @include m.transition-all;
-}
+  // ── Coverage / Renewal info cards ────────────────────────
+  &__info-card {
+    border: 1px solid var(--color-border);
+    background-color: var(--color-surface-elev);
+    border-radius: 0.5rem;
+    padding: 1rem 1.125rem;
+  }
 
-.contracts__hours-text {
-  font-size: 11px;
-  color: var(--color-text-muted);
-}
+  &__info-text {
+    font-size: 0.8125rem;
+    color: var(--color-text-secondary);
+    line-height: 1.55;
 
-// ── Expiry column ──────────────────────────────────────────
+    strong { color: var(--color-text-primary); font-weight: 600; }
+  }
 
-.contracts__expiry-date {
-  font-size: v.$text-xs;
-  color: var(--color-text-muted);
-}
+  &__renewal-date {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.9375rem;
+    font-weight: 600;
+    color: var(--color-text-primary);
+  }
 
-// ── Responsive column helpers ──────────────────────────────
+  &__renewal-icon {
+    color: var(--color-text-muted);
+    font-size: 0.9375rem;
+  }
 
-.contracts__col--name {
-  @include m.respond-below(lg) { grid-column: 1; }
-}
+  // ── Summary alert under expanded body ────────────────────
+  &__summary {
+    margin-top: 1.25rem;
+    padding: 0.625rem 0.875rem;
+    background-color: var(--color-brand-50);
+    border: 1px dashed var(--color-brand-200);
+    border-radius: 0.5rem;
+    font-size: 0.8125rem;
+    color: var(--color-text-secondary);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
 
-.contracts__col--terms {
-  @include m.respond-below(lg) { grid-column: 1; }
-}
+    strong { color: var(--color-text-primary); font-weight: 700; }
+  }
 
-.contracts__col--hours {
-  @include m.respond-below(lg) { grid-column: 1; }
-}
+  &__summary-icon { color: var(--color-text-brand); }
 
-.contracts__col--expiry {
-  @include m.respond-below(lg) { grid-column: 1; }
+  // ──────────────────────────────────────────────────────────
+  //  LICENSE TABLE
+  // ──────────────────────────────────────────────────────────
+  &__lic-table { overflow: hidden; }
+
+  &__lic-table-el.table {
+    --bs-table-bg:           transparent;
+    --bs-table-color:        var(--color-text-primary);
+    --bs-table-border-color: var(--color-border);
+    margin-bottom: 0;
+  }
+
+  &__lic-thead th {
+    background-color: var(--color-surface-subtle);
+    color: var(--color-text-tertiary);
+    font-size: 0.6875rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    border-bottom: 1px solid var(--color-border);
+    padding: 0.75rem 1rem;
+    white-space: nowrap;
+  }
+
+  &__lic-row > td {
+    padding: 1rem;
+    vertical-align: middle;
+    border-bottom: 1px solid var(--color-border);
+    color: var(--color-text-primary);
+  }
+  &__lic-row:last-child > td { border-bottom: none; }
+  &__lic-row:hover { background-color: var(--color-surface-hover); }
+
+  &__lic-product {
+    font-weight: 600;
+    color: var(--color-text-primary);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  &__lic-name {
+    font-size: 0.75rem;
+    color: var(--color-text-tertiary);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  &__lic-end {
+    &--expired  { color: var(--color-danger-700) !important; font-weight: 600; }
+    &--expiring { color: var(--color-warning-700) !important; font-weight: 600; }
+  }
+
+  &__lic-empty {
+    color: var(--color-text-tertiary);
+    text-align: center;
+    padding: 2rem 1rem !important;
+  }
+
+  // Validation key cell
+  &__key-cell {
+    display: flex;
+    align-items: center;
+    gap: 0.375rem;
+    flex-wrap: wrap;
+  }
+
+  &__key {
+    background-color: var(--color-surface-hover);
+    border: 1px solid var(--color-border);
+    border-radius: 0.375rem;
+    padding: 0.1875rem 0.5rem;
+    font-size: 0.75rem;
+    color: var(--color-text-primary);
+  }
+
+  &__key-btn {
+    width: 28px;
+    height: 28px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: transparent;
+    border: 1px solid var(--color-border);
+    border-radius: 0.375rem;
+    color: var(--color-text-tertiary);
+    cursor: pointer;
+    transition: background-color 0.12s ease, color 0.12s ease;
+
+    &:hover {
+      background-color: var(--color-surface-hover);
+      color: var(--color-text-primary);
+    }
+
+    i { font-size: 0.75rem; }
+  }
+
+  // ── Narrow viewport ──────────────────────────────────────
+  @media (max-width: 575px) {
+    &__sa-header { padding: 0.875rem; }
+    &__sa-body   { padding: 0 0.875rem 0.875rem; }
+    &__lic-row > td { padding: 0.75rem; }
+  }
+  @media (max-width: 320px) {
+    gap: 0.875rem !important;
+    &__tabs { width: 100%; justify-content: stretch; }
+    &__tab  { flex: 1; }
+    &__sa-name { font-size: 0.9375rem; }
+  }
 }

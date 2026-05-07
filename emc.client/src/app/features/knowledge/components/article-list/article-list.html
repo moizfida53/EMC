@@ -2,49 +2,40 @@
 
 <!-- Empty state -->
 <div *ngIf="articles().length === 0" class="article-list__empty surface-elev">
-  No articles match your search.
+  <i class="bi bi-search article-list__empty-icon" aria-hidden="true"></i>
+  <p class="article-list__empty-text mb-0">No articles match your search.</p>
 </div>
 
 <!-- Card grid -->
-<div *ngIf="articles().length > 0" class="article-list__grid">
+<div *ngIf="articles().length > 0" class="row g-3">
+  <div *ngFor="let a of articles()" class="col-12 col-md-6">
+    <button
+      class="article-card surface-elev"
+      type="button"
+      (click)="articleOpen.emit(a.id)">
 
-  <button
-    *ngFor="let a of articles()"
-    class="article-card"
-    type="button"
-    (click)="articleOpen.emit(a.id)">
+      <div class="article-card__head">
+        <app-pill tone="brand">{{ subjectTitle(a.subjectId) }}</app-pill>
+        <span class="article-card__date num-tabular">{{ a.publishOn | formatDate }}</span>
+      </div>
 
-    <!-- Meta row -->
-    <div class="article-card__meta">
-      <app-pill tone="brand">{{ subjectTitle(a.subjectId) }}</app-pill>
-      <span class="article-card__date num-tabular">
-        {{ a.publishOn | formatDate }}
-      </span>
-    </div>
+      <h3 class="article-card__title font-display">{{ a.title }}</h3>
 
-    <!-- Title -->
-    <h3 class="article-card__title">{{ a.title }}</h3>
+      <p class="article-card__snippet">{{ snippet(a.contentHtml) }}</p>
 
-    <!-- Snippet -->
-    <p class="article-card__snippet line-clamp-2">{{ snippet(a.contentHtml) }}</p>
-
-    <!-- Footer stats -->
-    <div class="article-card__footer">
-      <span class="article-card__stat">
-        <!-- eye icon -->
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
-        {{ a.views.toLocaleString() }}
-      </span>
-      <span class="article-card__stat">
-        <!-- thumbs-up icon -->
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"/></svg>
-        {{ a.helpful }}%
-      </span>
-      <span class="article-card__read-more">
-        Read article →
-      </span>
-    </div>
-
-  </button>
-
+      <div class="article-card__foot">
+        <span class="article-card__meta num-tabular">
+          <i class="bi bi-eye" aria-hidden="true"></i>
+          {{ a.views.toLocaleString() }}
+        </span>
+        <span class="article-card__meta num-tabular">
+          <i class="bi bi-hand-thumbs-up" aria-hidden="true"></i>
+          {{ a.helpful }}%
+        </span>
+        <span class="article-card__read">
+          Read <i class="bi bi-arrow-right" aria-hidden="true"></i>
+        </span>
+      </div>
+    </button>
+  </div>
 </div>

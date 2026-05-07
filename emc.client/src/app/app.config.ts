@@ -41,6 +41,7 @@ import { routes }            from './app.routes';
 import { environment }       from 'src/environments/environment';
 import { authInterceptor }   from './core/http/auth.interceptor';
 import { errorInterceptor }  from './core/http/error.interceptor';
+import { AuthStore }         from './core/auth/auth.store';
 
 // ── Singleton MSAL instance ────────────────────────────────────────────────
 let _msalInstance: PublicClientApplication | null = null;
@@ -71,9 +72,16 @@ export function MSALGuardConfigFactory(): MsalGuardConfiguration {
 }
 
 // ── App initializer: MUST await before any HTTP call fires ─────────────────
+//
+// IMPORTANT: this function is also responsible for syncing the freshly-
+// authenticated MSAL account into the AuthStore. Without that step, the
+// AuthGuard would see an empty store on the very first navigation after a
+// post-redirect login, immediately fire `auth.login()` again, and bounce
+// the user back to the login page in an apparent infinite loop.
 export function initializeApp() {
   return async (): Promise<void> => {
     const msalService = inject(MsalService);
+    const authStore   = inject(AuthStore);
 
     // 1. Hydrate the in-memory token cache from LocalStorage
     await msalService.instance.initialize();
@@ -81,12 +89,15 @@ export function initializeApp() {
     // 2. Exchange the auth-code in the URL (post-redirect) for tokens
     const result = await msalService.instance.handleRedirectPromise();
 
-    // 3. Promote the returned account (or first cached account) to active
-    if (result?.account) {
-      msalService.instance.setActiveAccount(result.account);
-    } else {
-      const accounts = msalService.instance.getAllAccounts();
-      if (accounts.length > 0) msalService.instance.setActiveAccount(accounts[0]);
+    // 3. Pick the active account: just-returned > first cached
+    let active = result?.account ?? msalService.instance.getAllAccounts()[0] ?? null;
+
+    if (active) {
+      msalService.instance.setActiveAccount(active);
+      // 4. Push it into AuthStore so the AuthGuard recognises the session
+      //    on the first route activation. setUser() also clears any stale
+      //    demo-account session from a previous login.
+      authStore.setUser(active);
     }
   };
 }
@@ -116,7 +127,7 @@ export const appConfig: ApplicationConfig = {
     {
       provide:    APP_INITIALIZER,
       useFactory: initializeApp,
-      deps:       [MsalService],
+      deps:       [MsalService, AuthStore],
       multi:      true,
     },
     MsalService,

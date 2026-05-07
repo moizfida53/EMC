@@ -1,5 +1,7 @@
 <!-- emc.client/src/app/shared/ui/pill/pill.html -->
-<span class="pill" [ngClass]="classes()">
+<span
+  class="badge rounded-pill d-inline-flex align-items-center gap-1 fw-medium pill"
+  [ngClass]="classes()">
   <span *ngIf="dot()" class="pill__dot" aria-hidden="true"></span>
   <ng-content />
 </span>

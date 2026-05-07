@@ -1,0 +1,8 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(ls \"/mnt/c/Users/Moiz Taha/Downloads/EMC_Pictures/\" 2>&1 || ls \"C:/Users/Moiz Taha/Downloads/EMC_Pictures/\" 2>&1)",
+      "Read(//f/BlueLink/EMC/emc.client/**)"
+    ]
+  }
+}

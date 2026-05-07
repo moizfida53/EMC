@@ -4,8 +4,13 @@ import {
   inject, computed, signal,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { MockDataService, type Project, type ProjectStep } from '../../../../core/mock/mock-data.service';
-import { Pill, StatusBadge, FormatDatePipe } from "@shared";
+import {
+  MockDataService,
+  type Project,
+  type ProjectStep,
+  type StepStatus,
+} from '../../../../core/mock/mock-data.service';
+import { Pill, StatusBadge, FormatDatePipe } from '@shared';
 
 @Component({
   selector: 'app-roadmap',
@@ -20,140 +25,96 @@ export class Roadmap {
 
   private readonly data = inject(MockDataService);
 
-  protected readonly steps = computed(() => {
+  // ── Steps for this project ────────────────────────────────
+  protected readonly steps = computed<ProjectStep[]>(() => {
     if (!this.project) return [];
-    return this.data.projectSteps.filter(s => s.projectId === this.project?.id);
+    return this.data.projectSteps
+      .filter(s => s.projectId === this.project!.id)
+      .sort((a, b) => new Date(a.plannedStart).getTime() - new Date(b.plannedStart).getTime());
   });
 
-  protected readonly now = signal(new Date());
+  // ── Counts (header KPI + milestones-status card) ─────────
+  protected readonly milestonesCount = computed(() => this.steps().length);
+  protected readonly completedCount  = computed(() => this.steps().filter(s => s.status === 'Completed').length);
+  protected readonly inProgressCount = computed(() => this.steps().filter(s => s.status === 'In Progress').length);
+  protected readonly delayedCount    = computed(() => this.steps().filter(s => this.isOverdue(s)).length);
 
-  protected readonly timelineStart = computed(() => {
-    if (!this.project) return new Date();
-    return new Date(this.project.startDate);
+  // Overall % complete: weight Completed = 100%, In Progress = stepProgress(), else 0
+  protected readonly progressPct = computed(() => {
+    const all = this.steps();
+    if (!all.length) return 0;
+    const total = all.reduce((sum, s) => {
+      if (s.status === 'Completed')   return sum + 100;
+      if (s.status === 'In Progress') return sum + this.stepProgress(s);
+      return sum;
+    }, 0);
+    return Math.round(total / all.length);
   });
 
-  protected readonly timelineEnd = computed(() => {
-    if (!this.project) return new Date();
-    return new Date(this.project.endDate);
+  // ── Window / duration ────────────────────────────────────
+  protected readonly durationDays = computed(() => {
+    if (!this.project) return 0;
+    const start = new Date(this.project.startDate).getTime();
+    const end   = new Date(this.project.endDate).getTime();
+    return Math.max(0, Math.ceil((end - start) / 86400000));
   });
 
-  protected readonly totalDays = computed(() => {
-    const start = this.timelineStart().getTime();
-    const end = this.timelineEnd().getTime();
-    return Math.ceil((end - start) / (1000 * 60 * 60 * 24));
-  });
-
-  // Calculate step position (percentage from start)
-  protected stepStartPercent(step: ProjectStep): number {
-    const stepStart = new Date(step.plannedStart).getTime();
-    const timelineStart = this.timelineStart().getTime();
-    const totalMs = this.totalDays() * 24 * 60 * 60 * 1000;
-    const offset = stepStart - timelineStart;
-    return Math.max(0, (offset / totalMs) * 100);
+  // ── Owner — split "BlueLink Delivery — Karim Y." ─────────
+  protected ownerOrg(owner: string): string {
+    return owner.includes('—') ? owner.split('—')[0].trim() : owner;
+  }
+  protected ownerPerson(owner: string): string {
+    return owner.includes('—') ? owner.split('—').slice(1).join('—').trim() : '';
   }
 
-  // Calculate step duration (percentage of total)
-  protected stepDurationPercent(step: ProjectStep): number {
-    const stepStart = new Date(step.plannedStart).getTime();
-    const stepEnd = new Date(step.plannedFinish).getTime();
-    const stepDuration = stepEnd - stepStart;
-    const totalMs = this.totalDays() * 24 * 60 * 60 * 1000;
-    return Math.max(2, (stepDuration / totalMs) * 100); // Min 2% for visibility
-  }
-
-  // Map step status to tone for styling
-  protected stepTone(status: string): 'success' | 'warning' | 'danger' | 'brand' {
+  // ── Milestone status helpers ─────────────────────────────
+  protected stepIcon(status: StepStatus): string {
     switch (status) {
-      case 'Completed':
-        return 'success';
-      case 'In Progress':
-        return 'brand';
-      case 'At Risk':
-        return 'warning';
-      case 'Blocked':
-        return 'danger';
-      default:
-        return 'brand';
+      case 'Completed':   return 'bi-check-circle-fill';
+      case 'In Progress': return 'bi-play-circle-fill';
+      case 'Delayed':     return 'bi-exclamation-circle-fill';
+      default:            return 'bi-circle';
     }
   }
 
-  // Get days remaining for a step
-  protected daysRemaining(endDate: string): number {
-    const end = new Date(endDate).getTime();
-    const now = Date.now();
-    const days = Math.ceil((end - now) / (1000 * 60 * 60 * 24));
-    return Math.max(0, days);
+  protected stepIconClass(status: StepStatus): string {
+    switch (status) {
+      case 'Completed':   return 'roadmap__icon--completed';
+      case 'In Progress': return 'roadmap__icon--in-progress';
+      case 'Delayed':     return 'roadmap__icon--delayed';
+      default:            return 'roadmap__icon--not-started';
+    }
   }
 
-  // Get days elapsed for a step
-  protected daysElapsed(startDate: string): number {
-    const start = new Date(startDate).getTime();
-    const now = Date.now();
-    const days = Math.ceil((now - start) / (1000 * 60 * 60 * 24));
-    return Math.max(0, days);
-  }
-
-  // Check if step is overdue
+  // Is the milestone past its planned finish but not yet completed?
   protected isOverdue(step: ProjectStep): boolean {
-    const endDate = new Date(step.plannedFinish).getTime();
-    return step.status === 'In Progress' && endDate < Date.now();
+    if (step.status === 'Completed') return false;
+    return new Date(step.plannedFinish).getTime() < Date.now();
   }
 
-  // Check if step is upcoming (starts in future)
-  protected isUpcoming(step: ProjectStep): boolean {
-    const startDate = new Date(step.plannedStart).getTime();
-    return startDate > Date.now();
+  // How many days the actual finish overran the planned finish (Completed steps only).
+  protected overrunDays(step: ProjectStep): number {
+    if (step.status !== 'Completed' || !step.actualFinish) return 0;
+    const planned = new Date(step.plannedFinish).getTime();
+    const actual  = new Date(step.actualFinish).getTime();
+    const diff = actual - planned;
+    return diff > 0 ? Math.ceil(diff / 86400000) : 0;
   }
 
-  // Check if step is active (current)
-  protected isActive(step: ProjectStep): boolean {
-    const startDate = new Date(step.plannedStart).getTime();
-    const endDate = new Date(step.plannedFinish).getTime();
-    const now = Date.now();
-    return startDate <= now && now <= endDate && step.status === 'In Progress';
-  }
-
-  // Calculate progress for step (if in progress)
+  // % progress within an in-progress step (date-based)
   protected stepProgress(step: ProjectStep): number {
-    if (step.status !== 'In Progress') {
-      return step.status === 'Completed' ? 100 : 0;
-    }
+    if (step.status === 'Completed')   return 100;
+    if (step.status !== 'In Progress') return 0;
 
-    const startDate = new Date(step.plannedStart).getTime();
-    const endDate = new Date(step.plannedFinish).getTime();
-    const now = Date.now();
-
-    if (now < startDate) return 0;
-    if (now > endDate) return 100;
-
-    const total = endDate - startDate;
-    const elapsed = now - startDate;
-    return Math.round((elapsed / total) * 100);
+    const start = new Date(step.plannedStart).getTime();
+    const end   = new Date(step.plannedFinish).getTime();
+    const now   = Date.now();
+    if (now <= start) return 0;
+    if (now >= end)   return 100;
+    return Math.round(((now - start) / (end - start)) * 100);
   }
 
-  // Get week numbers for timeline header
-  protected get weekNumbers(): { week: number; start: Date; percent: number }[] {
-    const weeks = [];
-    let current = new Date(this.timelineStart());
-    let weekNum = 1;
-
-    while (current < this.timelineEnd()) {
-      const weekStart = new Date(current);
-      const percent = this.calcPercent(weekStart);
-      weeks.push({ week: weekNum, start: weekStart, percent });
-
-      current.setDate(current.getDate() + 7);
-      weekNum++;
-    }
-
-    return weeks;
-  }
-
-  private calcPercent(date: Date): number {
-    const dateTime = date.getTime();
-    const timelineStart = this.timelineStart().getTime();
-    const totalMs = this.totalDays() * 24 * 60 * 60 * 1000;
-    const offset = dateTime - timelineStart;
-    return (offset / totalMs) * 100;
+  protected hasActual(step: ProjectStep): boolean {
+    return !!step.actualStart || !!step.actualFinish;
   }
 }

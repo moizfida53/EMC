@@ -1,68 +1,71 @@
 <!-- src/app/features/projects/projects.html -->
-<div class="projects">
 
-  <!-- Section header -->
-  <app-section-header
-    eyebrow="Portfolio"
-    title="Project roadmap"
-    description="See the status, health, and timeline of all active projects. Click any project to view the detailed roadmap and milestones." />
+<!-- ── Roadmap view (when a project is selected) ─────────────────────── -->
+<div *ngIf="openProject() as p" class="projects d-flex flex-column gap-4">
+  <button class="projects__back" type="button" (click)="closeRoadmap()">
+    <i class="bi bi-chevron-left" aria-hidden="true"></i>
+    Back to projects
+  </button>
+
+  <app-roadmap [project]="p" />
+</div>
+
+<!-- ── List view (default) ────────────────────────────────────────────── -->
+<div *ngIf="!openProject()" class="projects d-flex flex-column gap-4">
+
+  <!-- Page header -->
+  <app-page-header
+    eyebrow="Project Portfolio"
+    title="Engagements with BlueLink"
+    description="A transparent view of every active and completed engagement, including BlueLink-led projects and joint delivery work. Internal financials are intentionally hidden.">
+    <app-button slot="actions" variant="secondary" (clicked)="exportPortfolio()">
+      <i class="bi bi-box-arrow-up me-1"></i>Export portfolio
+    </app-button>
+  </app-page-header>
 
   <!-- KPI strip -->
-  <div class="kpi-grid">
-    <div class="kpi-card kpi-card--highlight">
-      <div class="kpi-card__label">On track</div>
-      <div class="kpi-card__value">{{ onTrackCount() }}</div>
-      <div class="kpi-card__hint">Healthy progress</div>
+  <div class="row g-3">
+    <div class="col-12 col-sm-6 col-xl-3">
+      <app-kpi-card
+        label="Active engagements"
+        [value]="activeCount()"
+        [active]="true" />
     </div>
-    <div class="kpi-card">
-      <div class="kpi-card__label">At risk</div>
-      <div class="kpi-card__value">{{ atRiskCount() }}</div>
-      <div class="kpi-card__hint">Needs attention</div>
+    <div class="col-12 col-sm-6 col-xl-3">
+      <app-kpi-card
+        label="Avg completion"
+        [value]="avgCompletion()"
+        unit="%"
+        hint="Across all engagements"
+        [trend]="{ dir: 'up', text: '+4 pts WoW' }" />
     </div>
-    <div class="kpi-card">
-      <div class="kpi-card__label">Off track</div>
-      <div class="kpi-card__value">{{ offTrackCount() }}</div>
-      <div class="kpi-card__hint">Escalated</div>
+    <div class="col-12 col-sm-6 col-xl-3">
+      <app-kpi-card
+        label="Needs attention"
+        [value]="needsAttention()"
+        hint="At Risk or Off Track"
+        [trend]="{ dir: 'flat', text: 'Action' }" />
     </div>
-    <div class="kpi-card">
-      <div class="kpi-card__label">Active projects</div>
-      <div class="kpi-card__value">{{ activeCount() }}</div>
-      <div class="kpi-card__hint">In flight</div>
-    </div>
-    <div class="kpi-card">
-      <div class="kpi-card__label">Avg. completion</div>
-      <div class="kpi-card__value num-tabular">{{ avgCompletion() }}%</div>
-      <div class="kpi-card__hint">All projects</div>
+    <div class="col-12 col-sm-6 col-xl-3">
+      <app-kpi-card
+        label="Delivered · YTD"
+        [value]="deliveredYtd()"
+        hint="Completed in 2026" />
     </div>
   </div>
 
-  <!-- Filters -->
-  <div class="projects__toolbar surface-elev">
-    <div class="projects__filter-group">
-      <label class="projects__filter-label">Status</label>
-      <select
-        class="projects__filter-select"
-        [value]="statusFilter()"
-        (change)="statusFilter.set($any($event.target).value)">
-        <option value="all">All statuses</option>
-        <option *ngFor="let s of statuses" [value]="s">{{ s }}</option>
-      </select>
-    </div>
-    <div class="projects__filter-group">
-      <label class="projects__filter-label">Health</label>
-      <select
-        class="projects__filter-select"
-        [value]="healthFilter()"
-        (change)="healthFilter.set($any($event.target).value)">
-        <option value="all">All health statuses</option>
-        <option *ngFor="let h of healths" [value]="h">{{ h }}</option>
-      </select>
-    </div>
-  </div>
+  <!-- Search + filters -->
+  <app-searchbar
+    placeholder="Search projects by name or description…"
+    [query]="searchQuery()"
+    (queryChange)="onSearch($event)"
+    [filters]="searchFilters"
+    (filtersChange)="onFiltersChange($event)" />
 
   <!-- Project grid -->
-  <div class="projects__grid">
+  <div class="row row-cols-1 row-cols-md-2 row-cols-xl-3 g-3">
     <app-project-card
+      class="col"
       *ngFor="let p of filtered()"
       [project]="p"
       (cardClick)="onCardClick(p.id)" />
@@ -70,7 +73,8 @@
 
   <!-- Empty state -->
   <div *ngIf="filtered().length === 0" class="projects__empty surface-elev">
-    No projects match your filters.
+    <i class="bi bi-folder2-open projects__empty-icon" aria-hidden="true"></i>
+    <p class="projects__empty-text mb-0">No projects match your filters.</p>
   </div>
 
 </div>

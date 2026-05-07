@@ -23,36 +23,32 @@ export interface Trend {
   <!-- Active accent bar -->
   <div *ngIf="active()" class="kpi-card__bar" aria-hidden="true"></div>
 
-  <!-- Header row: label + trend -->
-  <div class="kpi-card__header">
-    <div class="kpi-card__label-group">
-      <div class="kpi-card__label">{{ label() }}</div>
+  <!-- Header row: label + meta/trend -->
+  <div class="d-flex align-items-start justify-content-between mb-3 flex-narrow-stack">
+    <div class="d-flex flex-column gap-1 min-w-0">
+      <div class="kpi-card__label text-uppercase">{{ label() }}</div>
       <div *ngIf="subLabel()" class="kpi-card__sub-label">{{ subLabel() }}</div>
     </div>
-    <div class="kpi-card__meta">
+    <div class="d-flex flex-column align-items-end gap-1 flex-shrink-0">
       <div *ngIf="meta()" class="kpi-card__meta-text">{{ meta() }}</div>
-      <span *ngIf="trend()" [ngClass]="trendClasses()">
-        {{ trend()!.text }}
-      </span>
+      <span *ngIf="trend()" [ngClass]="trendClasses()">{{ trend()!.text }}</span>
     </div>
   </div>
 
   <!-- Main value -->
-  <div class="kpi-card__body">
-    <div class="kpi-card__value-row">
-      <div class="kpi-card__value">
-        {{ value() }}
-        <span *ngIf="unit()" class="kpi-card__unit">{{ unit() }}</span>
-      </div>
+  <div class="d-flex align-items-baseline">
+    <div class="kpi-card__value">
+      {{ value() }}
+      <span *ngIf="unit()" class="kpi-card__unit">{{ unit() }}</span>
     </div>
+  </div>
 
-    <!-- Hint text -->
-    <div *ngIf="hint()" class="kpi-card__hint">{{ hint() }}</div>
+  <!-- Hint text -->
+  <div *ngIf="hint()" class="kpi-card__hint mt-2">{{ hint() }}</div>
 
-    <!-- Optional slotted content (chart, list, breakdown, etc.) -->
-    <div class="kpi-card__content">
-      <ng-content />
-    </div>
+  <!-- Optional slotted content (chart, list, breakdown, etc.) -->
+  <div class="kpi-card__content">
+    <ng-content />
   </div>
 </div>
   `,
@@ -74,6 +70,8 @@ export class KpiCard {
   protected readonly hostClasses = computed(() => ({
     'kpi-card':         true,
     'kpi-card--active': this.active(),
+    'd-flex':           true,
+    'flex-column':      true,
   }));
 
   protected readonly trendClasses = computed(() => {

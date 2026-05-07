@@ -1,38 +1,33 @@
-// ============================================================
-// top-bar.scss  —  Component styles
-// BlueLink Customer Portal
-//
-// Bootstrap handles colours, borders, and shadows via CSS vars.
-// This file ONLY adds structural/behavioural styles that
-// Bootstrap utilities cannot express inline.
-// ============================================================
+// ============================================================================
+// top-bar.scss  —  BlueLink Customer Portal
+// Theme-aware via --color-* tokens. All surfaces, borders, and text follow
+// the design tokens defined in src/styles.scss for both light and dark modes.
+// ============================================================================
 
-// ── HOST ─────────────────────────────────────────────────────
 :host {
   display: block;
   position: sticky;
   top: 0;
-  z-index: 1030;      // Bootstrap $zindex-sticky
+  z-index: 1030;       // Bootstrap $zindex-sticky
   flex-shrink: 0;
 }
 
-// ── TOPBAR ROOT ───────────────────────────────────────────────
+// ── TOPBAR ROOT ────────────────────────────────────────────
 .topbar {
   display: flex;
   align-items: center;
   gap: 1rem;
   height: var(--topbar-height);
   padding-inline: 1rem;
-  background-color: var(--bs-body-bg);
-  border-bottom: 1px solid var(--bs-border-color);
-  box-shadow: var(--bs-box-shadow-sm);
+  background-color: var(--color-surface-elev);
+  border-bottom: 1px solid var(--color-border);
+  box-shadow: var(--shadow-xs);
 
-  @include media-breakpoint-up(md) {
-    padding-inline: 1.25rem;
-  }
+  @media (min-width: 768px) { padding-inline: 1.25rem; }
+  @media (max-width: 320px) { padding-inline: 0.5rem; gap: 0.5rem; }
 }
 
-// ── LEFT GROUP ────────────────────────────────────────────────
+// ── LEFT GROUP ─────────────────────────────────────────────
 .topbar__left {
   display: flex;
   align-items: center;
@@ -40,43 +35,40 @@
   min-width: 0;
   flex: 0 1 auto;
 
-  @include media-breakpoint-up(md) {
-    gap: 0.875rem;
-  }
+  @media (min-width: 768px) { gap: 0.875rem; }
 }
 
-// Hamburger — visible only on mobile
+// ── HAMBURGER (mobile only) ────────────────────────────────
 .topbar__hamburger {
   display: flex;
   align-items: center;
   justify-content: center;
   width: 36px;
   height: 36px;
-  border-radius: var(--bs-border-radius);
+  border-radius: 0.5rem;
   border: none;
   background: transparent;
-  color: var(--bs-secondary-color);
+  color: var(--color-text-tertiary);
   cursor: pointer;
   flex-shrink: 0;
   transition: background-color 0.15s ease, color 0.15s ease;
 
   &:hover {
-    background: var(--bs-tertiary-bg);
-    color: var(--bs-emphasis-color);
+    background-color: var(--color-surface-hover);
+    color: var(--color-text-primary);
   }
 
   &:focus-visible {
-    outline: 2px solid var(--bs-primary);
+    outline: 2px solid var(--color-brand-500);
     outline-offset: 2px;
   }
 
   svg { width: 20px; height: 20px; }
 
-  // Hide on desktop — sidebar has its own collapse toggle
-  @include media-breakpoint-up(md) { display: none; }
+  @media (min-width: 768px) { display: none; }
 }
 
-// Company identity block
+// ── COMPANY IDENTITY ───────────────────────────────────────
 .topbar__company {
   display: flex;
   align-items: center;
@@ -88,8 +80,8 @@
 .topbar__company-logo {
   width: 32px;
   height: 32px;
-  border-radius: var(--bs-border-radius);
-  border: 1px solid var(--bs-border-color);
+  border-radius: 0.375rem;
+  border: 1px solid var(--color-border);
   object-fit: contain;
   flex-shrink: 0;
 }
@@ -100,14 +92,13 @@
   min-width: 0;
   line-height: 1;
 
-  // Show company name + industry from sm (≥576px) upward
-  @include media-breakpoint-up(sm) { display: flex; }
+  @media (min-width: 576px) { display: flex; }
 }
 
 .topbar__company-name {
   font-size: 0.875rem;
   font-weight: 600;
-  color: var(--bs-emphasis-color);
+  color: var(--color-text-primary);
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -116,35 +107,35 @@
 
 .topbar__company-industry {
   font-size: 0.6875rem;
-  color: var(--bs-secondary-color);
+  color: var(--color-text-tertiary);
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
   max-width: 180px;
 }
 
-// Vertical separator
+// ── SEPARATOR ──────────────────────────────────────────────
 .topbar__sep {
   width: 1px;
   height: 24px;
-  background: var(--bs-border-color);
+  background-color: var(--color-border);
   flex-shrink: 0;
   display: none;
 
-  @include media-breakpoint-up(md) { display: block; }
+  @media (min-width: 768px) { display: block; }
 }
 
-// ── BREADCRUMBS ───────────────────────────────────────────────
+// ── BREADCRUMBS ────────────────────────────────────────────
 .breadcrumbs {
   display: none;
   align-items: center;
   gap: 0.375rem;
   font-size: 0.75rem;
-  color: var(--bs-secondary-color);
+  color: var(--color-text-tertiary);
   flex-shrink: 0;
   white-space: nowrap;
 
-  @include media-breakpoint-up(md) { display: flex; }
+  @media (min-width: 768px) { display: flex; }
 
   &__segment {
     display: flex;
@@ -153,27 +144,27 @@
   }
 
   &__link {
-    color: var(--bs-secondary-color);
+    color: var(--color-text-tertiary);
     text-decoration: none;
     transition: color 0.15s ease;
 
-    &:hover { color: var(--bs-emphasis-color); }
+    &:hover { color: var(--color-text-primary); }
   }
 
   &__current {
-    font-weight: 500;
-    color: var(--bs-body-color);
+    font-weight: 600;
+    color: var(--color-text-primary);
   }
 
   &__chevron {
     width: 12px;
     height: 12px;
-    color: var(--bs-border-color);
+    color: var(--color-text-muted);
     flex-shrink: 0;
   }
 }
 
-// ── RIGHT GROUP ───────────────────────────────────────────────
+// ── RIGHT GROUP ────────────────────────────────────────────
 .topbar__right {
   display: flex;
   align-items: center;
@@ -183,45 +174,43 @@
   justify-content: flex-end;
   min-width: 0;
 
-  @include media-breakpoint-up(sm) {
-    gap: 0.5rem;
-  }
+  @media (min-width: 576px) { gap: 0.5rem; }
 }
 
-// ── GLOBAL SEARCH ─────────────────────────────────────────────
+// ── GLOBAL SEARCH ──────────────────────────────────────────
 .topbar__search {
   display: none;
   position: relative;
   flex: 1;
   max-width: 380px;
 
-  @include media-breakpoint-up(md) { display: block; }
+  @media (min-width: 768px) { display: block; }
 }
 
 .topbar__search-input {
   width: 100%;
   height: 36px;
   padding: 0 0.75rem 0 2.25rem;
-  border: 1px solid var(--bs-border-color);
-  border-radius: var(--bs-border-radius);
-  background: var(--bs-secondary-bg);
-  color: var(--bs-body-color);
+  border: 1px solid var(--color-border);
+  border-radius: 0.5rem;
+  background-color: var(--color-surface-subtle);
+  color: var(--color-text-primary);
   font-size: 0.875rem;
   cursor: pointer;
   transition: border-color 0.15s ease, background-color 0.15s ease, box-shadow 0.15s ease;
 
-  &::placeholder { color: var(--bs-secondary-color); }
+  &::placeholder { color: var(--color-text-muted); }
 
   &:hover {
-    border-color: rgba(var(--bs-primary-rgb), 0.5);
-    background: var(--bs-body-bg);
+    border-color: var(--color-border-strong);
+    background-color: var(--color-surface-elev);
   }
 
   &:focus {
     outline: none;
-    border-color: var(--bs-primary);
-    background: var(--bs-body-bg);
-    box-shadow: 0 0 0 3px rgba(var(--bs-primary-rgb), 0.15);
+    border-color: var(--color-brand-500);
+    background-color: var(--color-surface-elev);
+    box-shadow: 0 0 0 3px var(--color-brand-100);
     cursor: text;
   }
 }
@@ -233,7 +222,7 @@
   transform: translateY(-50%);
   width: 16px;
   height: 16px;
-  color: var(--bs-secondary-color);
+  color: var(--color-text-muted);
   pointer-events: none;
 }
 
@@ -246,18 +235,18 @@
   align-items: center;
   height: 20px;
   padding: 0 0.375rem;
-  border: 1px solid var(--bs-border-color);
-  border-radius: var(--bs-border-radius-sm);
-  background: var(--bs-body-bg);
+  border: 1px solid var(--color-border);
+  border-radius: 0.25rem;
+  background-color: var(--color-surface-elev);
   font-size: 0.625rem;
-  color: var(--bs-secondary-color);
+  color: var(--color-text-tertiary);
   pointer-events: none;
-  font-family: var(--bs-font-monospace);
+  font-family: var(--font-mono);
 
-  @include media-breakpoint-up(lg) { display: flex; }
+  @media (min-width: 992px) { display: flex; }
 }
 
-// ── ACTION BUTTONS (notifications etc.) ──────────────────────
+// ── ACTION BUTTONS ─────────────────────────────────────────
 .topbar__action-btn {
   position: relative;
   display: inline-flex;
@@ -265,21 +254,21 @@
   justify-content: center;
   width: 36px;
   height: 36px;
-  border-radius: var(--bs-border-radius);
+  border-radius: 0.5rem;
   border: none;
   background: transparent;
   cursor: pointer;
-  color: var(--bs-secondary-color);
+  color: var(--color-text-tertiary);
   flex-shrink: 0;
   transition: background-color 0.15s ease, color 0.15s ease;
 
   &:hover {
-    background: var(--bs-tertiary-bg);
-    color: var(--bs-emphasis-color);
+    background-color: var(--color-surface-hover);
+    color: var(--color-text-primary);
   }
 
   &:focus-visible {
-    outline: 2px solid var(--bs-primary);
+    outline: 2px solid var(--color-brand-500);
     outline-offset: 2px;
   }
 
@@ -293,21 +282,20 @@
   width: 8px;
   height: 8px;
   border-radius: 50%;
-  background: #EF4444;
-  border: 2px solid var(--bs-body-bg);
+  background-color: var(--color-danger-600);
+  border: 2px solid var(--color-surface-elev);
 }
 
-// ── NOTIFICATIONS POPOVER ─────────────────────────────────────
-// Width clamps to viewport on very small screens (250px min)
+// ── NOTIFICATIONS POPOVER ──────────────────────────────────
 .notif-popover {
   position: absolute;
   top: calc(100% + 0.5rem);
   right: 0;
   width: min(360px, calc(100vw - 1rem));
-  background: var(--bs-body-bg);
-  border: 1px solid var(--bs-border-color);
-  border-radius: var(--bs-border-radius-lg);
-  box-shadow: var(--bs-box-shadow-lg);
+  background-color: var(--color-surface-elev);
+  border: 1px solid var(--color-border);
+  border-radius: 0.75rem;
+  box-shadow: var(--shadow-lg);
   z-index: 1050;
   overflow: hidden;
   animation: popover-in 0.15s ease both;
@@ -317,39 +305,39 @@
     align-items: center;
     justify-content: space-between;
     padding: 0.875rem;
-    border-bottom: 1px solid var(--bs-border-color);
+    border-bottom: 1px solid var(--color-border);
   }
 
   &__title {
     font-size: 0.875rem;
-    font-weight: 600;
-    color: var(--bs-emphasis-color);
+    font-weight: 700;
+    color: var(--color-text-primary);
   }
 
   &__meta {
     font-size: 0.6875rem;
-    color: var(--bs-secondary-color);
+    color: var(--color-text-tertiary);
     margin-top: 2px;
   }
 
   &__mark-read {
     font-size: 0.6875rem;
-    font-weight: 600;
-    color: var(--bs-primary);
+    font-weight: 700;
+    color: var(--color-text-brand);
     background: none;
     border: none;
     cursor: pointer;
     padding: 0;
     white-space: nowrap;
 
-    &:hover { text-decoration: underline; }
+    &:hover { text-decoration: underline; text-underline-offset: 3px; }
   }
 
   &__list {
     max-height: 320px;
     overflow-y: auto;
     scrollbar-width: thin;
-    scrollbar-color: var(--bs-border-color) transparent;
+    scrollbar-color: var(--color-border-strong) transparent;
   }
 
   &__item {
@@ -357,12 +345,12 @@
     align-items: flex-start;
     gap: 0.75rem;
     padding: 0.875rem;
-    border-bottom: 1px solid var(--bs-border-color);
+    border-bottom: 1px solid var(--color-border);
     cursor: pointer;
     transition: background-color 0.15s ease;
 
     &:last-child { border-bottom: none; }
-    &:hover { background: var(--bs-tertiary-bg); }
+    &:hover      { background-color: var(--color-surface-hover); }
   }
 
   &__dot {
@@ -372,8 +360,8 @@
     flex-shrink: 0;
     margin-top: 0.3125rem;
 
-    &--unread { background: var(--bs-primary); }
-    &--read   { background: var(--bs-border-color); }
+    &--unread { background-color: var(--color-brand-600); }
+    &--read   { background-color: var(--color-border-strong); }
   }
 
   &__item-content { flex: 1; min-width: 0; }
@@ -383,13 +371,13 @@
     font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 0.08em;
-    color: var(--bs-secondary-color);
+    color: var(--color-text-tertiary);
   }
 
   &__item-subject {
     font-size: 0.8125rem;
     font-weight: 500;
-    color: var(--bs-emphasis-color);
+    color: var(--color-text-primary);
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
@@ -398,29 +386,29 @@
 
   &__item-time {
     font-size: 0.6875rem;
-    color: var(--bs-secondary-color);
+    color: var(--color-text-tertiary);
     margin-top: 2px;
   }
 
   &__footer {
     padding: 0.75rem;
     text-align: center;
-    border-top: 1px solid var(--bs-border-color);
+    border-top: 1px solid var(--color-border);
   }
 
   &__footer-link {
     font-size: 0.75rem;
     font-weight: 600;
-    color: var(--bs-secondary-color);
+    color: var(--color-text-tertiary);
     background: none;
     border: none;
     cursor: pointer;
 
-    &:hover { color: var(--bs-emphasis-color); }
+    &:hover { color: var(--color-text-primary); }
   }
 }
 
-// ── USER MENU ─────────────────────────────────────────────────
+// ── USER MENU ──────────────────────────────────────────────
 .user-menu {
   position: relative;
   flex-shrink: 0;
@@ -431,16 +419,15 @@
   align-items: center;
   gap: 0.5rem;
   padding: 0.3125rem;
-  border-radius: var(--bs-border-radius);
+  border-radius: 0.5rem;
   border: none;
   background: transparent;
   cursor: pointer;
   transition: background-color 0.15s ease;
 
-  &:hover { background: var(--bs-tertiary-bg); }
-
+  &:hover { background-color: var(--color-surface-hover); }
   &:focus-visible {
-    outline: 2px solid var(--bs-primary);
+    outline: 2px solid var(--color-brand-500);
     outline-offset: 2px;
   }
 }
@@ -449,8 +436,8 @@
   width: 32px;
   height: 32px;
   border-radius: 50%;
-  background: var(--bs-primary);
-  color: #fff;
+  background-color: var(--color-brand-600);
+  color: #ffffff;
   font-size: 0.75rem;
   font-weight: 700;
   display: grid;
@@ -465,13 +452,13 @@
   text-align: left;
   min-width: 0;
 
-  @include media-breakpoint-up(lg) { display: flex; }
+  @media (min-width: 992px) { display: flex; }
 }
 
 .user-menu__name {
   font-size: 0.875rem;
   font-weight: 600;
-  color: var(--bs-emphasis-color);
+  color: var(--color-text-primary);
   line-height: 1.25;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -481,7 +468,7 @@
 
 .user-menu__role {
   font-size: 0.6875rem;
-  color: var(--bs-secondary-color);
+  color: var(--color-text-tertiary);
   line-height: 1.25;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -493,44 +480,51 @@
   display: none;
   width: 14px;
   height: 14px;
-  color: var(--bs-secondary-color);
+  color: var(--color-text-tertiary);
   flex-shrink: 0;
   transition: transform 0.15s ease;
 
-  @include media-breakpoint-up(lg) { display: block; }
+  @media (min-width: 992px) { display: block; }
 
   &--open { transform: rotate(180deg); }
 }
 
-// ── USER DROPDOWN ─────────────────────────────────────────────
+// ── USER DROPDOWN ──────────────────────────────────────────
 .user-dropdown {
   position: absolute;
   top: calc(100% + 0.25rem);
   right: 0;
   min-width: 240px;
-  background: var(--bs-body-bg);
-  border: 1px solid var(--bs-border-color);
-  border-radius: var(--bs-border-radius-lg);
-  box-shadow: var(--bs-box-shadow-lg);
+  max-width: calc(100vw - 1rem);
+  background-color: var(--color-surface-elev);
+  border: 1px solid var(--color-border);
+  border-radius: 0.75rem;
+  box-shadow: var(--shadow-lg);
   z-index: 1050;
   overflow: hidden;
   animation: popover-in 0.15s ease both;
 
   &__header {
     padding: 0.75rem 0.875rem;
-    border-bottom: 1px solid var(--bs-border-color);
+    border-bottom: 1px solid var(--color-border);
   }
 
   &__header-name {
     font-size: 0.875rem;
-    font-weight: 600;
-    color: var(--bs-emphasis-color);
+    font-weight: 700;
+    color: var(--color-text-primary);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
 
   &__header-email {
-    font-size: 0.6875rem;
-    color: var(--bs-secondary-color);
+    font-size: 0.75rem;
+    color: var(--color-text-tertiary);
     margin-top: 2px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
 
   &__list { padding: 0.25rem; }
@@ -541,12 +535,12 @@
     gap: 0.5rem;
     width: 100%;
     padding: 0.4375rem 0.625rem;
-    border-radius: var(--bs-border-radius);
+    border-radius: 0.375rem;
     border: none;
     background: transparent;
     font-size: 0.875rem;
-    font-weight: 400;
-    color: var(--bs-body-color);
+    font-weight: 500;
+    color: var(--color-text-primary);
     cursor: pointer;
     text-align: left;
     transition: background-color 0.15s ease, color 0.15s ease;
@@ -554,35 +548,42 @@
     svg {
       width: 16px;
       height: 16px;
-      color: var(--bs-secondary-color);
+      color: var(--color-text-tertiary);
       flex-shrink: 0;
     }
 
     &:hover {
-      background: var(--bs-tertiary-bg);
-      color: var(--bs-emphasis-color);
+      background-color: var(--color-surface-hover);
+      color: var(--color-text-primary);
+
+      svg { color: var(--color-text-primary); }
     }
 
     &--danger {
-      color: var(--bs-danger);
+      color: var(--color-danger-600);
 
-      svg { color: var(--bs-danger); }
+      svg { color: var(--color-danger-600); }
 
       &:hover {
-        background: rgba(var(--bs-danger-rgb), 0.08);
-        color: var(--bs-danger);
+        background-color: var(--color-danger-50);
+        color: var(--color-danger-700);
+
+        svg { color: var(--color-danger-700); }
       }
     }
   }
 
   &__sep {
     height: 1px;
-    background: var(--bs-border-color);
+    background-color: var(--color-border);
     margin: 0.25rem 0;
   }
 }
 
-// ── SHARED ANIMATION ─────────────────────────────────────────
+// ── SHARED ANIMATION ───────────────────────────────────────
+//   IMPORTANT: keep transforms ONLY on these popover elements (which sit
+//   *above* their containing block) — never on a wrapper that could
+//   become a containing block for fixed-positioned modals.
 @keyframes popover-in {
   from { opacity: 0; transform: translateY(-5px) scale(0.97); }
   to   { opacity: 1; transform: translateY(0) scale(1); }

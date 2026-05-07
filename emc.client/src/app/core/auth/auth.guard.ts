@@ -1,28 +1,35 @@
 // src/app/core/auth/auth.guard.ts
 //
-// Mirrors reference masl.guard.ts:
-//   1. Try getActiveAccount()
-//   2. If null, try getAllAccounts()[0] and promote it
-//   3. Still null → loginRedirect + return false
+// Route guard for protected routes. Order:
+//   1. AuthStore already has a user (MSAL or demo) → allow.
+//   2. MSAL has a cached account but the store is empty → sync via bootstrap()
+//      and allow.
+//   3. No session at all → redirect to the in-app /login page.
 //
-import { inject }           from '@angular/core';
-import { CanActivateFn }    from '@angular/router';
-import { AuthService }      from './auth.service';
+// IMPORTANT: do NOT call auth.login() here. That kicks the user straight to
+// login.microsoftonline.com without ever showing them our login page (with
+// SSO, Microsoft, and demo-account options).
+//
+import { inject }                     from '@angular/core';
+import { CanActivateFn, Router }      from '@angular/router';
+import { AuthService }                from './auth.service';
 
 export const authGuard: CanActivateFn = () => {
-  const auth = inject(AuthService);
+  const auth   = inject(AuthService);
+  const router = inject(Router);
 
-  // Account already set — let route activate
+  // 1. Already authenticated (either MSAL or demo) → let the route activate.
   if (auth.isLoggedIn()) return true;
 
-  // Try to restore from cache (handles page refresh)
+  // 2. MSAL has a cached account from a previous session → sync the store.
   const account = auth.getAccount();
   if (account) {
-    auth.bootstrap(); // syncs store
+    auth.bootstrap();
     return true;
   }
 
-  // No session → trigger redirect login and block route
-  auth.login();
-  return false;
+  // 3. No session → redirect to our in-app login page so the user can pick
+  //    SSO / Microsoft / a demo account. createUrlTree is the canonical
+  //    way for a guard to express a redirect.
+  return router.createUrlTree(['/login']);
 };

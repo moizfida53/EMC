@@ -1,137 +1,126 @@
 <!-- src/app/features/support/components/ticket-table/ticket-table.html -->
 <div class="ticket-table surface-elev">
+  <div class="table-responsive">
+    <table class="table align-middle mb-0 ticket-table__table">
+      <thead class="ticket-table__thead">
+        <tr>
+          <th scope="col">
+            <button class="ticket-table__sort" type="button" (click)="toggleSort('ticketNumber')">
+              Ticket #
+              <i *ngIf="isSorted('ticketNumber')" class="bi"
+                 [class.bi-arrow-up]="sortDir() === 'asc'"
+                 [class.bi-arrow-down]="sortDir() === 'desc'"></i>
+            </button>
+          </th>
+          <th scope="col">
+            <button class="ticket-table__sort" type="button" (click)="toggleSort('title')">
+              Title
+              <i *ngIf="isSorted('title')" class="bi"
+                 [class.bi-arrow-up]="sortDir() === 'asc'"
+                 [class.bi-arrow-down]="sortDir() === 'desc'"></i>
+            </button>
+          </th>
+          <th scope="col" class="d-none d-md-table-cell">
+            <button class="ticket-table__sort" type="button" (click)="toggleSort('priority')">
+              Priority
+              <i *ngIf="isSorted('priority')" class="bi"
+                 [class.bi-arrow-up]="sortDir() === 'asc'"
+                 [class.bi-arrow-down]="sortDir() === 'desc'"></i>
+            </button>
+          </th>
+          <th scope="col" class="d-none d-md-table-cell">
+            <button class="ticket-table__sort" type="button" (click)="toggleSort('statusReason')">
+              Status
+              <i *ngIf="isSorted('statusReason')" class="bi"
+                 [class.bi-arrow-up]="sortDir() === 'asc'"
+                 [class.bi-arrow-down]="sortDir() === 'desc'"></i>
+            </button>
+          </th>
+          <th scope="col" class="d-none d-lg-table-cell">
+            <button class="ticket-table__sort" type="button" (click)="toggleSort('responseBy')">
+              Response by
+              <i *ngIf="isSorted('responseBy')" class="bi"
+                 [class.bi-arrow-up]="sortDir() === 'asc'"
+                 [class.bi-arrow-down]="sortDir() === 'desc'"></i>
+            </button>
+          </th>
+          <th scope="col" class="text-end ticket-table__chev-col" aria-label="Open"></th>
+        </tr>
+      </thead>
 
-  <!-- Table header -->
-  <div class="ticket-table__header">
-    <button class="ticket-table__th" (click)="toggleSort('ticketNumber')">
-      Ticket #
-      <svg *ngIf="isSorted('ticketNumber')" class="ticket-table__sort-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-        <polyline *ngIf="sortDir() === 'asc'" points="18 15 12 9 6 15"/>
-        <polyline *ngIf="sortDir() === 'desc'" points="6 9 12 15 18 9"/>
-      </svg>
-    </button>
-    <button class="ticket-table__th" (click)="toggleSort('title')">
-      Title
-      <svg *ngIf="isSorted('title')" class="ticket-table__sort-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-        <polyline *ngIf="sortDir() === 'asc'" points="18 15 12 9 6 15"/>
-        <polyline *ngIf="sortDir() === 'desc'" points="6 9 12 15 18 9"/>
-      </svg>
-    </button>
-    <button class="ticket-table__th" (click)="toggleSort('priority')">
-      Priority
-      <svg *ngIf="isSorted('priority')" class="ticket-table__sort-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-        <polyline *ngIf="sortDir() === 'asc'" points="18 15 12 9 6 15"/>
-        <polyline *ngIf="sortDir() === 'desc'" points="6 9 12 15 18 9"/>
-      </svg>
-    </button>
-    <button class="ticket-table__th" (click)="toggleSort('statusReason')">
-      Status reason
-      <svg *ngIf="isSorted('statusReason')" class="ticket-table__sort-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-        <polyline *ngIf="sortDir() === 'asc'" points="18 15 12 9 6 15"/>
-        <polyline *ngIf="sortDir() === 'desc'" points="6 9 12 15 18 9"/>
-      </svg>
-    </button>
-    <button class="ticket-table__th" (click)="toggleSort('responseBy')">
-      Response by
-      <svg *ngIf="isSorted('responseBy')" class="ticket-table__sort-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-        <polyline *ngIf="sortDir() === 'asc'" points="18 15 12 9 6 15"/>
-        <polyline *ngIf="sortDir() === 'desc'" points="6 9 12 15 18 9"/>
-      </svg>
-    </button>
-    <span></span>
+      <tbody>
+        <tr
+          *ngFor="let c of store.pageRows()"
+          class="ticket-table__row"
+          [class.ticket-table__row--active]="isOpen(c.id)"
+          role="button"
+          (click)="openTicket(c.id)">
+          <td>
+            <div class="fw-semibold">{{ c.ticketNumber }}</div>
+            <div class="ticket-table__meta num-tabular">{{ c.createdOn | formatDate }}</div>
+          </td>
+          <td class="min-w-0">
+            <div class="fw-semibold text-truncate">{{ c.title }}</div>
+            <div class="ticket-table__meta text-truncate">
+              {{ c.contact }} · {{ subjectTitle(c.subjectId) }}
+            </div>
+          </td>
+          <td class="d-none d-md-table-cell">
+            <app-badge [priority]="c.priority" />
+          </td>
+          <td class="d-none d-md-table-cell">
+            <app-status-badge [value]="c.statusReason" />
+          </td>
+          <td class="d-none d-lg-table-cell">
+            <div class="num-tabular">{{ c.responseBy | formatDate:'datetime' }}</div>
+            <div class="ticket-table__meta num-tabular">{{ c.responseBy | relativeTime }}</div>
+          </td>
+          <td class="text-end ticket-table__chev-col">
+            <i class="bi bi-chat-left-text ticket-table__chev" aria-hidden="true"></i>
+          </td>
+        </tr>
+
+        <tr *ngIf="store.pageRows().length === 0">
+          <td colspan="6" class="text-center py-4 ticket-table__empty">
+            No tickets match your filters.
+          </td>
+        </tr>
+      </tbody>
+    </table>
   </div>
 
-  <!-- Rows -->
-  <div class="ticket-table__body">
-    <button
-      *ngFor="let c of store.pageRows()"
-      class="ticket-table__row"
-      [class.ticket-table__row--open]="isOpen(c.id)"
-      type="button"
-      (click)="openTicket(c.id)">
-
-      <!-- Ticket # -->
-      <div class="ticket-table__cell">
-        <div class="ticket-table__ticket-num">{{ c.ticketNumber }}</div>
-        <div class="ticket-table__ticket-date num-tabular">{{ c.createdOn | formatDate }}</div>
-      </div>
-
-      <!-- Title -->
-      <div class="ticket-table__cell ticket-table__cell--title">
-        <div class="ticket-table__title truncate">{{ c.title }}</div>
-        <div class="ticket-table__subtitle truncate">
-          {{ c.contact }} · {{ subjectTitle(c.subjectId) }}
-        </div>
-      </div>
-
-      <!-- Priority -->
-      <div class="ticket-table__cell">
-        <app-badge [priority]="c.priority" />
-      </div>
-
-      <!-- Status -->
-      <div class="ticket-table__cell">
-        <app-status-badge [value]="c.statusReason" />
-      </div>
-
-      <!-- Response by -->
-      <div class="ticket-table__cell">
-        <div class="ticket-table__response-time num-tabular">
-          {{ c.responseBy | formatDate:'datetime' }}
-        </div>
-        <div class="ticket-table__response-rel num-tabular">
-          {{ c.responseBy | relativeTime }}
-        </div>
-      </div>
-
-      <!-- Icon -->
-      <div class="ticket-table__cell ticket-table__cell--icon">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round">
-          <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
-        </svg>
-      </div>
-
-    </button>
-
-    <!-- Empty state -->
-    <div *ngIf="store.pageRows().length === 0" class="ticket-table__empty">
-      No tickets match your filters.
-    </div>
-  </div>
-
-  <!-- Pagination -->
-  <div class="ticket-table__pagination">
-    <div class="ticket-table__pagination-info num-tabular">
+  <!-- Pagination footer -->
+  <div class="ticket-table__footer">
+    <div class="ticket-table__count num-tabular">
       Showing
-      <strong>{{ (store.page() - 1) * store.pageSize + 1 }}</strong>–<strong>{{ [store.page() * store.pageSize, store.filtered().length]  }}</strong>
+      <strong>{{ (store.page() - 1) * store.pageSize + 1 }}</strong>–<strong>{{ store.page() * store.pageSize > store.filtered().length ? store.filtered().length : store.page() * store.pageSize }}</strong>
       of <strong>{{ store.filtered().length }}</strong> tickets
     </div>
-    <div class="ticket-table__pagination-controls">
+    <div class="ticket-table__pager">
       <button
         class="ticket-table__page-btn"
         type="button"
         [disabled]="store.page() === 1"
-        (click)="store.setPage(store.page() - 1)">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg>
+        (click)="store.setPage(store.page() - 1)"
+        aria-label="Previous page">
+        <i class="bi bi-chevron-left"></i>
       </button>
-
       <button
         *ngFor="let p of pages()"
-        class="ticket-table__page-num"
-        [class.ticket-table__page-num--active]="store.page() === p"
+        class="ticket-table__page-btn"
+        [class.ticket-table__page-btn--active]="store.page() === p"
         type="button"
         (click)="store.setPage(p)">
         {{ p }}
       </button>
-
       <button
         class="ticket-table__page-btn"
         type="button"
         [disabled]="store.page() === store.totalPages()"
-        (click)="store.setPage(store.page() + 1)">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg>
+        (click)="store.setPage(store.page() + 1)"
+        aria-label="Next page">
+        <i class="bi bi-chevron-right"></i>
       </button>
     </div>
   </div>
-
 </div>

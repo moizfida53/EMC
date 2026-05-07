@@ -3,23 +3,30 @@ import {
   Component, ChangeDetectionStrategy, inject, signal, computed,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { MockDataService } from '../../core/mock/mock-data.service';
-import { SectionHeader } from '../../shared/ui/section-header/section-header';
-import { KpiCard } from '../../shared/ui/kpi-card/kpi-card';
-import { StatusBadge } from '../../shared/ui/status-badge/status-badge';
-import { Pill } from '../../shared/ui/pill/pill';
-import { MiniBar } from '../../shared/ui/mini-bar/mini-bar';
-import { Button } from '../../shared/ui/button/button';
-import { ProductLogo } from '../../shared/ui/product-logo/product-logo';
+import { MockDataService, ServiceAgreement } from '../../core/mock/mock-data.service';
 import { MaskKeyPipe } from '../../shared/pipes/mask-key.pipe';
 import { FormatDatePipe } from '../../shared/pipes/format-date.pipe';
+import {
+  KpiCard,
+  StatusBadge,
+  Pill,
+  MiniBar,
+  Button,
+  ProductLogo,
+  PageHeader,
+  Searchbar,
+} from '../../shared/shared';
+
+type ContractsTab = 'agreements' | 'licenses';
 
 @Component({
   selector: 'app-contracts',
   standalone: true,
   imports: [
-    CommonModule, SectionHeader, KpiCard, StatusBadge, Pill,
-    MiniBar, Button, ProductLogo, MaskKeyPipe, FormatDatePipe,
+    CommonModule,
+    KpiCard, StatusBadge, Pill, MiniBar, Button, ProductLogo,
+    PageHeader, Searchbar,
+    MaskKeyPipe, FormatDatePipe,
   ],
   templateUrl: './contracts.html',
   styleUrl: './contracts.scss',
@@ -32,11 +39,11 @@ export class Contracts {
   protected readonly licenses          = this.data.licenses;
   protected readonly products          = this.data.products;
 
-  protected readonly activeTab   = signal<'agreements' | 'licenses'>('agreements');
-  protected readonly openSaId    = signal<string | null>(this.data.serviceAgreements[0]?.id ?? null);
-  protected readonly licSearch   = signal('');
-  protected readonly revealedKeys= signal<Set<string>>(new Set());
-  protected readonly copiedKeys  = signal<Set<string>>(new Set());
+  protected readonly activeTab    = signal<ContractsTab>('agreements');
+  protected readonly openSaId     = signal<string | null>(this.data.serviceAgreements[0]?.id ?? null);
+  protected readonly licSearch    = signal('');
+  protected readonly revealedKeys = signal<Set<string>>(new Set());
+  protected readonly copiedKeys   = signal<Set<string>>(new Set());
 
   // ── KPIs ────────────────────────────────────────────────
   protected readonly totalContracted = computed(() =>
@@ -45,6 +52,10 @@ export class Contracts {
   protected readonly totalAvailable = computed(() =>
     this.serviceAgreements.reduce((a, sa) => a + sa.availableBalanceQty, 0)
   );
+  protected readonly availablePct = computed(() =>
+    this.totalContracted() === 0 ? 0
+      : Math.round((this.totalAvailable() / this.totalContracted()) * 100)
+  );
   protected readonly activeCount = computed(() =>
     this.licenses.filter(l => l.status === 'Active').length
   );
@@ -52,7 +63,7 @@ export class Contracts {
     this.data.expiringLicenses(30).length
   );
 
-  // ── Filtered licenses ────────────────────────────────────
+  // ── Filtered licenses ─────────────────────────────────────
   protected readonly filteredLicenses = computed(() => {
     const q = this.licSearch().toLowerCase().trim();
     if (!q) return this.licenses;
@@ -62,44 +73,51 @@ export class Contracts {
     });
   });
 
+  // ── Tabs ─────────────────────────────────────────────────
+  protected setTab(tab: ContractsTab): void { this.activeTab.set(tab); }
+
   // ── SA accordion ─────────────────────────────────────────
   protected toggleSa(id: string): void {
     this.openSaId.update(v => v === id ? null : id);
   }
 
-  protected isOpen(id: string): boolean {
-    return this.openSaId() === id;
-  }
+  protected isOpen(id: string): boolean { return this.openSaId() === id; }
 
-  protected usedHours(saId: string): number {
-    const sa = this.serviceAgreements.find(s => s.id === saId)!;
+  protected usedHours(sa: ServiceAgreement): number {
     return sa.contractedBalanceQty - sa.availableBalanceQty;
   }
 
-  protected billingPct(saId: string): number {
-    const sa = this.serviceAgreements.find(s => s.id === saId)!;
+  protected billingPct(sa: ServiceAgreement): number {
     return Math.round((sa.billingBalanceQty / sa.contractedBalanceQty) * 100);
   }
 
-  protected usedPct(saId: string): number {
-    const sa = this.serviceAgreements.find(s => s.id === saId)!;
-    const used = sa.contractedBalanceQty - sa.availableBalanceQty;
-    return Math.round((used / sa.contractedBalanceQty) * 100);
+  protected usedPct(sa: ServiceAgreement): number {
+    return Math.round((this.usedHours(sa) / sa.contractedBalanceQty) * 100);
   }
 
-  protected availTone(sa: any): 'brand' | 'warning' {
-    return (sa.availableBalanceQty / sa.contractedBalanceQty) < 0.2 ? 'warning' : 'brand';
+  protected availPct(sa: ServiceAgreement): number {
+    return Math.round((sa.availableBalanceQty / sa.contractedBalanceQty) * 100);
   }
 
-  protected usedTone(sa: any): 'brand' | 'warning' {
-    const used = sa.contractedBalanceQty - sa.availableBalanceQty;
-    return (used / sa.contractedBalanceQty) > 0.8 ? 'warning' : 'brand';
+  protected availTone(sa: ServiceAgreement): 'brand' | 'warning' | 'success' {
+    const ratio = sa.availableBalanceQty / sa.contractedBalanceQty;
+    if (ratio < 0.2) return 'warning';
+    if (ratio > 0.5) return 'success';
+    return 'brand';
+  }
+
+  protected usedTone(sa: ServiceAgreement): 'brand' | 'warning' {
+    return this.usedHours(sa) / sa.contractedBalanceQty > 0.8 ? 'warning' : 'brand';
+  }
+
+  protected availTextClass(sa: ServiceAgreement): string {
+    const ratio = sa.availableBalanceQty / sa.contractedBalanceQty;
+    if (ratio < 0.2) return 'contracts__avail--low';
+    return 'contracts__avail--ok';
   }
 
   // ── Key reveal/copy ──────────────────────────────────────
-  protected isRevealed(id: string): boolean {
-    return this.revealedKeys().has(id);
-  }
+  protected isRevealed(id: string): boolean { return this.revealedKeys().has(id); }
 
   protected toggleReveal(id: string): void {
     this.revealedKeys.update(s => {
@@ -119,17 +137,20 @@ export class Contracts {
     }, 1500);
   }
 
-  protected isCopied(id: string): boolean {
-    return this.copiedKeys().has(id);
-  }
+  protected isCopied(id: string): boolean { return this.copiedKeys().has(id); }
 
   protected productFor(productId: string) {
     return this.products.find(p => p.id === productId);
   }
 
   protected endDateClass(status: string): string {
-    if (status === 'Expired') return 'contracts__lic-end--expired';
+    if (status === 'Expired')  return 'contracts__lic-end--expired';
     if (status === 'Expiring') return 'contracts__lic-end--expiring';
     return '';
+  }
+
+  // ── Searchbar handler (licenses tab) ─────────────────────
+  protected onLicenseSearch(q: string): void {
+    this.licSearch.set(q);
   }
 }

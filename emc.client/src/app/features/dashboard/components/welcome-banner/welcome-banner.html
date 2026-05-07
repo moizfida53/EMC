@@ -1,34 +1,37 @@
 <!-- src/app/features/dashboard/components/welcome-banner/welcome-banner.html -->
-<section class="welcome-banner surface-elev">
+<section class="welcome-banner surface-elev position-relative overflow-hidden">
 
-  <!-- Decorative pattern (CSS background) -->
+  <!-- Decorative process pattern (right side) -->
   <div class="welcome-banner__pattern" aria-hidden="true"></div>
 
-  <div class="welcome-banner__body">
-    <div class="welcome-banner__content">
-      <p class="micro-label" style="color: var(--color-brand-700)">
+  <div class="welcome-banner__inner position-relative">
+    <div class="d-flex flex-column gap-3" style="max-width: 640px">
+      <p class="micro-label welcome-banner__eyebrow mb-0">
         Welcome back · {{ today }}
       </p>
-      <h1 class="welcome-banner__title">
+
+      <h1 class="welcome-banner__title font-display mb-0">
         Welcome back, {{ firstname() }}.
       </h1>
-      <p class="welcome-banner__sub">
+
+      <p class="welcome-banner__sub mb-0">
         Your engagement is
-        <strong class="text-success">healthy</strong> overall.
+        <strong class="welcome-banner__sub--success">healthy</strong> overall.
         You have
         <strong>{{ activeTickets() }} active tickets</strong>
         and
-        <strong class="text-warning">{{ expiringLicenses() }} licences</strong>
+        <strong class="welcome-banner__sub--warning">{{ expiringLicenses() }} licences</strong>
         approaching renewal in the next 30 days.
       </p>
 
-      <div class="welcome-banner__actions">
-        <a routerLink="/support">
+      <div class="d-flex flex-wrap gap-2 mt-2">
+        <a routerLink="/support" class="text-decoration-none">
           <app-button variant="primary">
             Open new ticket
+            <i class="bi bi-arrow-right ms-1"></i>
           </app-button>
         </a>
-        <a routerLink="/projects">
+        <a routerLink="/projects" class="text-decoration-none">
           <app-button variant="secondary">
             View project portfolio
           </app-button>

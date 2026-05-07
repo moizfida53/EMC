@@ -1,53 +1,47 @@
-// ============================================================
+// ============================================================================
 // retainer-kpi.scss
-// BlueLink Customer Portal — Retainer KPI donut component
-//
-// The CSS conic-gradient donut reads --pct from the host
-// element's inline style (set via Angular binding).
-// The inner "hole" uses var(--bs-body-bg) so it blends
-// correctly in both light and dark mode.
-// ============================================================
+// Conic-gradient donut. Inner hole uses --color-surface-elev so it blends
+// with the KPI card surface in BOTH light and dark themes.
+// ============================================================================
 
 .retainer-kpi {
   display: flex;
   align-items: center;
-  gap: 1.25rem;
-  margin-top: 0.875rem;
+  gap: 1rem;
 
-  // Collapse to a tighter row on very small cards
-  @include media-breakpoint-down(sm) {
-    gap: 0.875rem;
-  }
+  @media (max-width: 380px) { gap: 0.75rem; }
 
-  // ── Donut chart ────────────────────────────────────────────
-  &__donut-container {
-    flex-shrink: 0;
-  }
+  // ── Donut chart ──────────────────────────────────────────
+  &__donut-container { flex-shrink: 0; }
 
   &__donut {
     position: relative;
-    width: 80px;
-    height: 80px;
+    width: 88px;
+    height: 88px;
     border-radius: 50%;
-    // Available = brand-tint arc; Used = brand-full arc
     background: conic-gradient(
-      rgba(var(--bs-primary-rgb), 0.18) 0%,
-      rgba(var(--bs-primary-rgb), 0.18) var(--pct),
-      var(--bs-primary) var(--pct),
-      var(--bs-primary) 100%
+      var(--color-brand-100) 0%,
+      var(--color-brand-100) var(--pct),
+      var(--color-brand-600) var(--pct),
+      var(--color-brand-600) 100%
     );
     display: flex;
     align-items: center;
     justify-content: center;
 
-    // Inner hole — must match the card surface background
+    // Inner hole — must blend with the KPI card surface
     &::after {
       content: '';
       position: absolute;
-      width: 58px;
-      height: 58px;
-      background: var(--bs-body-bg);
+      width: 64px;
+      height: 64px;
+      background-color: var(--color-surface-elev);
       border-radius: 50%;
+    }
+
+    @media (max-width: 320px) {
+      width: 72px; height: 72px;
+      &::after { width: 52px; height: 52px; }
     }
   }
 
@@ -62,23 +56,25 @@
   }
 
   &__donut-value {
-    font-size: 1rem;
+    font-family: var(--font-display);
+    font-size: 1.0625rem;
     font-weight: 700;
-    color: var(--bs-emphasis-color);
+    color: var(--color-text-primary);
     line-height: 1;
     font-variant-numeric: tabular-nums;
+    letter-spacing: -0.02em;
   }
 
   &__donut-sub {
-    font-size: 9px;
+    font-size: 0.5625rem;
     font-weight: 700;
-    color: var(--bs-secondary-color);
-    letter-spacing: 0.08em;
+    color: var(--color-text-tertiary);
+    letter-spacing: 0.1em;
     text-transform: uppercase;
-    margin-top: 2px;
+    margin-top: 3px;
   }
 
-  // ── Legend ─────────────────────────────────────────────────
+  // ── Legend ───────────────────────────────────────────────
   &__legend {
     display: flex;
     flex-direction: column;
@@ -91,7 +87,7 @@
     display: flex;
     align-items: center;
     gap: 0.5rem;
-    font-size: 0.875rem;
+    font-size: 0.8125rem;
   }
 
   &__dot {
@@ -100,22 +96,19 @@
     border-radius: 50%;
     flex-shrink: 0;
 
-    // "Used" segment — solid primary
-    &--used      { background: var(--bs-primary); }
-
-    // "Available" segment — tinted primary (matches donut arc)
-    &--available { background: rgba(var(--bs-primary-rgb), 0.18); }
+    &--used      { background-color: var(--color-brand-600); }
+    &--available { background-color: var(--color-brand-100); }
   }
 
   &__legend-label {
-    color: var(--bs-secondary-color);
+    color: var(--color-text-secondary);
     flex: 1;
     min-width: 0;
   }
 
   &__legend-value {
-    font-weight: 600;
-    color: var(--bs-emphasis-color);
+    font-weight: 700;
+    color: var(--color-text-primary);
     font-variant-numeric: tabular-nums;
     flex-shrink: 0;
   }

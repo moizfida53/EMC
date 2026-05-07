@@ -90,10 +90,10 @@ export class MockDataService {
   ];
 
   readonly products: Product[] = [
-    { id: 'prd-1', name: 'GridIQ',    vendor: 'BlueLink', logo: 'assets/logos/gridiq.png' },
-    { id: 'prd-2', name: 'MeterLink', vendor: 'BlueLink', logo: 'assets/logos/meterlink.png' },
-    { id: 'prd-3', name: 'FlowOps',   vendor: 'BlueLink', logo: 'assets/logos/flowops.png' },
-    { id: 'prd-4', name: 'AssetNav',  vendor: 'BlueLink', logo: 'assets/logos/assetnav.png' },
+    { id: 'prd-1', name: 'GridIQ',    vendor: 'BlueLink', logo: '/contract1.webp' },
+    { id: 'prd-2', name: 'MeterLink', vendor: 'BlueLink', logo: '/contract2.webp' },
+    { id: 'prd-3', name: 'FlowOps',   vendor: 'BlueLink', logo: '/contract3.webp' },
+    { id: 'prd-4', name: 'AssetNav',  vendor: 'BlueLink', logo: '/contract4.webp' },
   ];
 
   readonly cases = signal<Case[]>([

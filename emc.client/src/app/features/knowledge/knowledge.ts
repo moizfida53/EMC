@@ -4,15 +4,15 @@ import {
   signal, computed,
 } from '@angular/core';
 import { CommonModule }       from '@angular/common';
+import { RouterModule }       from '@angular/router';
 import { MockDataService, KnowledgeArticle } from '../../core/mock/mock-data.service';
 import { ArticleList }        from './components/article-list/article-list';
 import { ArticleDetail }      from './components/article-detail/article-detail';
-import {SectionHeader } from '@shared';
 
 @Component({
   selector: 'app-knowledge',
   standalone: true,
-  imports: [CommonModule, ArticleList, ArticleDetail, SectionHeader],
+  imports: [CommonModule, RouterModule, ArticleList, ArticleDetail],
   templateUrl: './knowledge.html',
   styleUrl: './knowledge.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

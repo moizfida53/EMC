@@ -1,127 +1,59 @@
 // src/app/features/projects/projects.scss
-@use '../../../styles/abstracts/variables' as v;
-@use '../../../styles/abstracts/mixins' as m;
+// Bootstrap-first; SCSS handles the empty state + ultra-narrow tuning.
 
 :host { display: block; }
 
 .projects {
-  display: flex;
-  flex-direction: column;
-  gap: v.$spacing-6;
-}
 
-// ── Toolbar ───────────────────────────────────────────────────
+  // ── Back link (roadmap view) ────────────────────────────
+  &__back {
+    align-self: flex-start;
+    background: transparent;
+    border: none;
+    padding: 0;
+    color: var(--color-text-brand);
+    font-size: 0.8125rem;
+    font-weight: 600;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.375rem;
 
-.projects__toolbar {
-  display: flex;
-  gap: v.$spacing-3;
-  padding: v.$spacing-3-5;
-  flex-wrap: wrap;
-}
+    &:hover { text-decoration: underline; text-underline-offset: 3px; }
+    &:focus-visible {
+      outline: 2px solid var(--color-brand-500);
+      outline-offset: 2px;
+      border-radius: 2px;
+    }
 
-.projects__filter-group {
-  display: flex;
-  flex-direction: column;
-  gap: v.$spacing-1-5;
-}
-
-.projects__filter-label {
-  font-size: v.$text-xs;
-  font-weight: v.$font-semibold;
-  letter-spacing: v.$tracking-wider;
-  text-transform: uppercase;
-  color: var(--color-input-label);
-}
-
-.projects__filter-select {
-  height: 36px;
-  padding: 0 v.$spacing-3;
-  border: 1px solid var(--color-input-border);
-  border-radius: v.$radius-md;
-  background: var(--color-surface);
-  color: var(--color-input-text);
-  font-size: v.$text-sm;
-  font-family: v.$font-sans;
-  cursor: pointer;
-  @include m.transition-colors;
-  @include m.focus-ring;
-
-  &:hover { border-color: var(--color-input-border-hover); }
-}
-
-// ── Grid ───────────────────────────────────────────────────
-
-.projects__grid {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: v.$spacing-4;
-
-  @include m.respond-to(md) {
-    grid-template-columns: repeat(2, 1fr);
+    i { font-size: 0.875rem; transition: transform 0.15s ease; }
+    &:hover i { transform: translateX(-2px); }
   }
 
-  @include m.respond-to(lg) {
-    grid-template-columns: repeat(3, 1fr);
-  }
-}
-
-// ── Empty state ────────────────────────────────────────────
-
-.projects__empty {
-  padding: v.$spacing-8;
-  text-align: center;
-  color: var(--color-text-tertiary);
-  font-size: v.$text-sm;
-}
-
-// ── KPI cards inline styling ──────────────────────────────
-
-.kpi-grid {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: v.$spacing-3;
-
-  @include m.respond-to(md) {
-    grid-template-columns: repeat(2, 1fr);
+  // ── Empty state ─────────────────────────────────────────
+  &__empty {
+    padding: 2.5rem 1.5rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    text-align: center;
   }
 
-  @include m.respond-to(lg) {
-    grid-template-columns: repeat(5, 1fr);
-  }
-}
-
-.kpi-card {
-  padding: v.$spacing-4;
-  background: var(--color-surface);
-  border: 1px solid var(--color-border);
-  border-radius: v.$radius-lg;
-  display: flex;
-  flex-direction: column;
-  gap: v.$spacing-1;
-
-  &--highlight {
-    background: linear-gradient(135deg, var(--color-success-50), var(--color-brand-50));
-    border-color: var(--color-success-200);
+  &__empty-icon {
+    font-size: 1.75rem;
+    color: var(--color-text-muted);
   }
 
-  &__label {
-    font-size: v.$text-xs;
-    font-weight: v.$font-semibold;
-    letter-spacing: v.$tracking-wider;
-    text-transform: uppercase;
+  &__empty-text {
+    font-size: 0.9375rem;
     color: var(--color-text-tertiary);
   }
 
-  &__value {
-    font-family: v.$font-display;
-    font-size: v.$text-3xl;
-    font-weight: v.$font-bold;
-    color: var(--color-text-primary);
-    line-height: 1;
-  }
+  @media (max-width: 320px) {
+    gap: 0.875rem !important;
 
-  &__hint {
-    font-size: v.$text-xs;
-    color: var(--color-text-muted);
+    &__empty { padding: 1.5rem 0.875rem; }
   }
 }

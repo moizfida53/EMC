@@ -1,38 +1,14 @@
-// emc.client/src/app/shared/ui/bluelink-logo/bluelink-logo.scss
-@use '../../../../styles/abstracts/variables' as v;
+// Bootstrap utilities in the template cover flex layout, gap, border-start,
+// padding, text-uppercase, fw-semibold, text-nowrap, and d-none/d-sm-block.
+// Only the three values Bootstrap can't express remain here.
 
 :host {
   display: inline-flex;
 }
 
-.bluelink-logo {
-  display: flex;
-  align-items: center;
-  gap: v.$spacing-2-5;
-
-  &__img {
-    display: block;
-    flex-shrink: 0;
-    user-select: none;
-    object-fit: contain;
-  }
-
-  &__sublabel {
-    // visible only on sm+ (hidden on very small screens)
-    display: none;
-    border-left-width: 1px;
-    border-left-style: solid;
-    padding-left: v.$spacing-2-5;
-    font-size: 10px;
-    font-weight: v.$font-semibold;
-    letter-spacing: 0.18em;
-    text-transform: uppercase;
-    line-height: v.$leading-tight;
-    white-space: nowrap;
-    margin-top: 5px;
-
-    @media (min-width: v.$bp-sm) {
-      display: block;
-    }
-  }
+.bluelink-logo__sublabel {
+  font-size:      10px;
+  letter-spacing: 0.18em;
+  line-height:    1.25;
+  margin-top:     5px;
 }

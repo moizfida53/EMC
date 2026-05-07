@@ -7,5 +7,14 @@
         "workspaceRoot": null,
         "workspacePath": null,
         "id": "uQIn7yxrDFZP16iw"
+    },
+    {
+        "type": "Directory",
+        "name": "f:\\BlueLink\\EMC\\emc.client\\src\\app\\features\\contracts",
+        "parent_id": null,
+        "fsPath": "f:\\BlueLink\\EMC\\emc.client\\src\\app\\features\\contracts",
+        "workspaceRoot": null,
+        "workspacePath": null,
+        "id": "Y1cPGFUbpLox6dRD"
     }
 ]

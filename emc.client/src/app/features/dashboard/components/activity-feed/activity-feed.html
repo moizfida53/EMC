@@ -2,21 +2,21 @@
 <div class="activity-feed surface-elev">
   <div class="activity-feed__header">
     <div class="activity-feed__header-content">
-      <span class="activity-feed__eyebrow">RECENT ACTIVITY</span>
+      <span class="activity-feed__eyebrow">Recent activity</span>
       <h3 class="activity-feed__title">What's been happening</h3>
     </div>
-    <button class="activity-feed__view-all">View all</button>
+    <button type="button" class="activity-feed__view-all">View all</button>
   </div>
 
   <div class="activity-feed__list">
     <div *ngFor="let act of activities(); let last = last" class="activity-feed__item">
       <div class="activity-feed__timeline">
         <div class="activity-feed__icon-container">
-          <i [ngClass]="icon(act.type)"></i>
+          <i [ngClass]="icon(act.type)" aria-hidden="true"></i>
         </div>
         <div *ngIf="!last" class="activity-feed__line"></div>
       </div>
-      
+
       <div class="activity-feed__content">
         <div class="activity-feed__item-header">
           <span class="activity-feed__type-pill">

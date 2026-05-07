@@ -63,10 +63,9 @@ export class Input implements ControlValueAccessor {
   );
 
   protected readonly wrapperClasses = computed(() => ({
-    'input-wrapper':          true,
-    'input-wrapper--error':   this.hasError(),
-    'input-wrapper--leading': this.leadingIcon(),
-    'input-wrapper--trailing':this.trailingIcon(),
+    'input-wrapper':           true,
+    'input-wrapper--leading':  this.leadingIcon(),
+    'input-wrapper--trailing': this.trailingIcon(),
   }));
 
   // ── CVA ───────────────────────────────────────────────────

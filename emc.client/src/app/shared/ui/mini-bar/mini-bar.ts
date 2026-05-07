@@ -29,7 +29,6 @@ export class MiniBar {
   });
 
   protected readonly fillClasses = computed(() => ({
-    'mini-bar__fill':               true,
     [`mini-bar__fill--${this.tone()}`]: true,
   }));
 }

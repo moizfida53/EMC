@@ -1,58 +1,50 @@
 <!-- src/app/features/knowledge/components/article-detail/article-detail.html -->
-<div class="article-detail">
+<div class="article-detail d-flex flex-column gap-4">
 
-  <!-- Back link -->
   <button class="article-detail__back" type="button" (click)="back.emit()">
-    ← Back to knowledge base
+    <i class="bi bi-arrow-left" aria-hidden="true"></i>
+    Back to knowledge base
   </button>
 
-  <!-- Article body -->
-  <article class="article-detail__card surface-elev">
-
-    <!-- Header -->
-    <div class="article-detail__header">
-      <div class="article-detail__meta">
+  <article class="article-detail__article surface-elev">
+    <header class="article-detail__header">
+      <div class="article-detail__header-top">
         <app-pill tone="brand">{{ subjectTitle(article().subjectId) }}</app-pill>
-        <span class="article-detail__date num-tabular">
+        <span class="article-detail__published num-tabular">
           Published {{ article().publishOn | formatDate }}
         </span>
       </div>
 
-      <h1 class="article-detail__title">{{ article().title }}</h1>
+      <h1 class="article-detail__title font-display">{{ article().title }}</h1>
 
       <div class="article-detail__stats">
-        <span class="article-detail__stat">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+        <span class="article-detail__stat num-tabular">
+          <i class="bi bi-eye" aria-hidden="true"></i>
           {{ article().views.toLocaleString() }} views
         </span>
-        <span class="article-detail__stat">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3z"/></svg>
+        <span class="article-detail__stat num-tabular">
+          <i class="bi bi-hand-thumbs-up" aria-hidden="true"></i>
           {{ article().helpful }}% found this helpful
         </span>
       </div>
-    </div>
+    </header>
 
     <div class="article-detail__divider"></div>
 
-    <!-- Content (HTML from mock — sanitised in production via DomSanitizer) -->
-    <div
-      class="article-detail__content"
-      [innerHTML]="article().contentHtml">
-    </div>
+    <div class="article-detail__content" [innerHTML]="article().contentHtml"></div>
 
-    <!-- Helpful CTA -->
     <div class="article-detail__feedback">
-      <p class="micro-label">Was this article helpful?</p>
-      <div class="article-detail__feedback-btns">
-        <button class="article-detail__feedback-btn article-detail__feedback-btn--yes" type="button">
+      <p class="micro-label mb-2">Was this article helpful?</p>
+      <div class="article-detail__feedback-actions">
+        <button type="button" class="article-detail__feedback-btn article-detail__feedback-btn--yes">
+          <i class="bi bi-hand-thumbs-up" aria-hidden="true"></i>
           Yes, it solved my issue
         </button>
-        <button class="article-detail__feedback-btn article-detail__feedback-btn--no" type="button">
+        <button type="button" class="article-detail__feedback-btn article-detail__feedback-btn--no">
+          <i class="bi bi-life-preserver" aria-hidden="true"></i>
           Not quite — open a ticket
         </button>
       </div>
     </div>
-
   </article>
-
 </div>

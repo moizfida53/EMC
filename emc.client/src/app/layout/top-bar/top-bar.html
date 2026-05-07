@@ -196,15 +196,15 @@
         (click)="toggleUser()"
         [attr.aria-expanded]="userOpen()"
         aria-haspopup="menu"
-        aria-label="User menu for {{ user.firstname }} {{ user.lastname }}"
+        aria-label="User menu for {{ user().firstname }} {{ user().lastname }}"
       >
         <div class="user-menu__avatar" aria-hidden="true">
-          {{ user.initials }}
+          {{ user().initials }}
         </div>
 
         <div class="user-menu__info">
-          <span class="user-menu__name"> {{ user.firstname }} {{ user.lastname }} </span>
-          <span class="user-menu__role">{{ user.jobtitle }}</span>
+          <span class="user-menu__name"> {{ user().firstname }} {{ user().lastname }} </span>
+          <span class="user-menu__role">{{ user().jobtitle }}</span>
         </div>
 
         <svg
@@ -225,8 +225,8 @@
       <div *ngIf="userOpen()" class="user-dropdown" role="menu" aria-label="User options">
         <!-- Header -->
         <div class="user-dropdown__header" role="none">
-          <div class="user-dropdown__header-name">{{ user.firstname }} {{ user.lastname }}</div>
-          <div class="user-dropdown__header-email">{{ user.email }}</div>
+          <div class="user-dropdown__header-name">{{ user().firstname }} {{ user().lastname }}</div>
+          <div class="user-dropdown__header-email">{{ user().email }}</div>
         </div>
 
         <div class="user-dropdown__list" role="none">

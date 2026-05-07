@@ -1,227 +1,298 @@
-// src/app/features/knowledge/knowledge.scss
-@use '../../../styles/abstracts/variables' as v;
-@use '../../../styles/abstracts/mixins' as m;
+// ============================================================================
+// knowledge.scss
+// Themed hero search, themed category sidebar (no Bootstrap list-group),
+// themed CTA card. All surfaces track --color-* tokens.
+// ============================================================================
 
 :host { display: block; }
 
 .knowledge {
-  display: flex;
-  flex-direction: column;
-  gap: v.$spacing-6;
-}
 
-// ── Hero ──────────────────────────────────────────────────────
+  // ────────────────────────────────────────────────────────────
+  //  HERO
+  // ────────────────────────────────────────────────────────────
+  &__hero {
+    padding: 1.75rem;
+    position: relative;
+    overflow: hidden;
 
-.knowledge__hero {
-  position: relative;
-  overflow: hidden;
-}
+    @media (min-width: 768px) { padding: 2.25rem 2rem; }
+    @media (max-width: 320px) { padding: 1rem; }
 
-.knowledge__hero-body {
-  position: relative;
-  z-index: 1;
-  padding: v.$spacing-8 v.$spacing-10;
-  display: flex;
-  flex-direction: column;
-  gap: v.$spacing-4;
-  max-width: 700px;
-}
+    // Decorative dashboard-banner pattern fading in from the right
+    &::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      background-image: url('/dashboard-banner.webp');
+      background-repeat: no-repeat;
+      background-position: right center;
+      background-size: auto 100%;
+      opacity: 0.85;
+      mask-image: linear-gradient(to right, transparent 0%, black 50%, black 100%);
+      -webkit-mask-image: linear-gradient(to right, transparent 0%, black 50%, black 100%);
+      z-index: 0;
+    }
 
-.knowledge__hero-title {
-  font-family: v.$font-display;
-  font-size: v.$text-5xl;
-  font-weight: v.$font-bold;
-  letter-spacing: v.$tracking-tight;
-  color: var(--color-text-primary);
-  line-height: v.$leading-tight;
-  margin: 0;
-
-  @include m.respond-to(md) { font-size: v.$text-6xl; }
-}
-
-.knowledge__hero-sub {
-  font-size: v.$text-sm;
-  color: var(--color-text-tertiary);
-  line-height: v.$leading-relaxed;
-  margin: 0;
-}
-
-// ── Search ────────────────────────────────────────────────────
-
-.knowledge__search-wrap {
-  position: relative;
-  max-width: 560px;
-}
-
-.knowledge__search-icon {
-  position: absolute;
-  left: v.$spacing-4;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 20px;
-  height: 20px;
-  color: var(--color-text-muted);
-  pointer-events: none;
-}
-
-.knowledge__search-input {
-  width: 100%;
-  height: 48px;
-  padding: 0 v.$spacing-4 0 v.$spacing-12;
-  border: 1px solid var(--color-input-border);
-  border-radius: v.$radius-md;
-  background: var(--color-surface);
-  color: var(--color-input-text);
-  font-size: v.$text-md;
-  font-family: v.$font-sans;
-  box-shadow: var(--shadow-sm);
-  @include m.transition-colors;
-
-  &::placeholder { color: var(--color-input-placeholder); }
-
-  &:focus {
-    outline: none;
-    border-color: var(--color-input-border-focus);
-    box-shadow: 0 0 0 3px rgba(37,99,235,0.15);
-  }
-}
-
-// ── Quick search pills ────────────────────────────────────────
-
-.knowledge__quick {
-  display: flex;
-  flex-wrap: wrap;
-  gap: v.$spacing-1-5;
-}
-
-.knowledge__quick-btn {
-  padding: v.$spacing-1 v.$spacing-2-5;
-  border-radius: v.$radius-full;
-  border: 1px solid var(--color-border);
-  background: rgba(255,255,255,0.8);
-  font-size: 11.5px;
-  font-weight: v.$font-medium;
-  color: var(--color-text-secondary);
-  cursor: pointer;
-  @include m.transition-colors;
-
-  &:hover {
-    background: var(--color-surface);
-    color: var(--color-brand-700);
-    border-color: var(--color-brand-200);
+    // Make sure the inner content sits above the pattern
+    > * { position: relative; z-index: 1; }
   }
 
-  @include m.focus-ring;
-}
-
-// ── Two-column layout ─────────────────────────────────────────
-
-.knowledge__layout {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: v.$spacing-6;
-
-  @include m.respond-to(lg) {
-    grid-template-columns: 260px 1fr;
-    align-items: start;
+  &__hero-eyebrow {
+    color: var(--color-brand-700) !important;
   }
-}
 
-.knowledge__content {
-  display: flex;
-  flex-direction: column;
-  gap: v.$spacing-4;
-}
+  &__hero-title {
+    font-size: 1.75rem;
+    font-weight: 800;
+    color: var(--color-text-primary);
+    line-height: 1.2;
+    letter-spacing: -0.025em;
 
-// ── Category sidebar ──────────────────────────────────────────
-
-.knowledge__sidebar {
-  padding: v.$spacing-4;
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-
-  @include m.respond-to(lg) {
-    position: sticky;
-    top: calc(#{v.$topbar-height} + #{v.$spacing-6});
+    @media (min-width: 768px) { font-size: 2.125rem; }
+    @media (max-width: 320px) { font-size: 1.25rem; }
   }
-}
 
-.knowledge__cat-btn {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: v.$spacing-2;
-  width: 100%;
-  padding: v.$spacing-2 v.$spacing-2-5;
-  border-radius: v.$radius-md;
-  border: none;
-  background: transparent;
-  font-size: 13px;
-  font-weight: v.$font-medium;
-  color: var(--color-text-secondary);
-  cursor: pointer;
-  text-align: left;
-  @include m.transition-colors;
-  @include m.focus-ring;
+  &__hero-sub {
+    font-size: 0.9375rem;
+    color: var(--color-text-secondary);
+    line-height: 1.55;
+    max-width: 56ch;
+  }
 
-  &:hover {
-    background: var(--color-surface-hover);
+  // ── Search input ─────────────────────────────────────────
+  &__hero-search {
+    position: relative;
+    max-width: 45%;
+  }
+
+  &__hero-search-icon {
+    position: absolute;
+    left: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--color-text-muted);
+    pointer-events: none;
+    font-size: 1rem;
+  }
+
+  &__hero-input.form-control {
+    height: 48px;
+    padding-left: 2.75rem;
+    background-color: var(--color-surface-elev);
+    border: 1px solid var(--color-border);
+    color: var(--color-text-primary);
+    font-size: 0.9375rem;
+    border-radius: 0.625rem;
+
+    &::placeholder { color: var(--color-text-muted); }
+
+    &:focus,
+    &:focus-visible {
+      border-color: var(--color-brand-500);
+      box-shadow: 0 0 0 3px var(--color-brand-100);
+    }
+  }
+
+  // ── Quick search chips ───────────────────────────────────
+  &__chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.375rem;
+    margin-top: 0.875rem;
+  }
+
+  &__chip {
+    background-color: var(--color-surface-hover);
+    border: 1px solid var(--color-border);
+    color: var(--color-text-secondary);
+    font-size: 0.75rem;
+    font-weight: 500;
+    padding: 0.3125rem 0.625rem;
+    border-radius: 999px;
+    cursor: pointer;
+    transition: background-color 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+
+    &:hover {
+      background-color: var(--color-brand-50);
+      color: var(--color-text-brand);
+      border-color: var(--color-brand-200);
+    }
+  }
+
+  // ────────────────────────────────────────────────────────────
+  //  SIDEBAR
+  // ────────────────────────────────────────────────────────────
+  &__sidebar {
+    padding: 1.25rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+
+    @media (min-width: 992px) {
+      position: sticky;
+      top: calc(var(--topbar-height) + 1rem);
+    }
+  }
+
+  &__sidebar-title {
+    color: var(--color-text-tertiary);
+  }
+
+  &__cat-list {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  &__cat-item {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 0.75rem;
+    width: 100%;
+    padding: 0.5rem 0.75rem;
+    background: transparent;
+    border: none;
+    border-radius: 0.5rem;
+    color: var(--color-text-secondary);
+    font-size: 0.875rem;
+    text-align: left;
+    cursor: pointer;
+    transition: background-color 0.12s ease, color 0.12s ease;
+
+    &:hover {
+      background-color: var(--color-surface-hover);
+      color: var(--color-text-primary);
+    }
+
+    &:focus-visible {
+      outline: 2px solid var(--color-brand-500);
+      outline-offset: -2px;
+    }
+
+    &--active,
+    &--active:hover {
+      background-color: var(--color-brand-50);
+      color: var(--color-text-brand);
+
+      .knowledge__cat-name { font-weight: 600; }
+
+      .knowledge__cat-count {
+        background-color: var(--color-brand-100);
+        color: var(--color-text-brand);
+      }
+    }
+  }
+
+  &__cat-text {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.125rem;
+  }
+
+  &__cat-name {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  &__cat-desc {
+    font-size: 0.6875rem;
+    color: var(--color-text-tertiary);
+    line-height: 1.4;
+    font-weight: 400;
+  }
+
+  &__cat-count {
+    flex-shrink: 0;
+    min-width: 22px;
+    height: 18px;
+    padding: 0 0.375rem;
+    background-color: var(--color-surface-hover);
+    color: var(--color-text-tertiary);
+    font-size: 0.6875rem;
+    font-weight: 700;
+    border-radius: 999px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  // ── Sidebar CTA ──────────────────────────────────────────
+  &__cta {
+    margin-top: 0.5rem;
+    padding: 1rem;
+    border-radius: 0.625rem;
+    background-color: var(--color-brand-50);
+    border: 1px solid var(--color-brand-100);
+  }
+
+  &__cta-title {
+    font-size: 0.875rem;
+    font-weight: 700;
     color: var(--color-text-primary);
   }
 
-  &--active {
-    background: var(--color-sidebar-item-active-bg);
-    color: var(--color-sidebar-item-active-text);
-    font-weight: v.$font-semibold;
+  &__cta-body {
+    font-size: 0.75rem;
+    color: var(--color-text-secondary);
+    line-height: 1.5;
+  }
+
+  &__cta-link {
+    display: inline-flex;
+    align-items: center;
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--color-text-brand);
+    text-decoration: none;
+
+    &:hover {
+      text-decoration: underline;
+      text-underline-offset: 3px;
+    }
+  }
+
+  // ────────────────────────────────────────────────────────────
+  //  RESULTS HEADER
+  // ────────────────────────────────────────────────────────────
+  &__results-header {
+    display: flex;
+    align-items: baseline;
+    gap: 0.625rem;
+    flex-wrap: wrap;
+  }
+
+  &__results-count {
+    font-size: 1.125rem;
+    font-weight: 700;
+    color: var(--color-text-primary);
+    letter-spacing: -0.01em;
+  }
+
+  &__results-sub {
+    font-size: 0.8125rem;
+    color: var(--color-text-tertiary);
+  }
+
+  // ── Narrow viewport ──────────────────────────────────────
+  @media (max-width: 320px) {
+    gap: 0.875rem !important;
+    &__cat-item { padding: 0.5rem; }
+    &__sidebar  { padding: 0.875rem; }
   }
 }
 
-.knowledge__cat-label {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-  min-width: 0;
-}
+[data-bs-theme="dark"] .knowledge {
+  &__hero-eyebrow { color: var(--color-brand-400) !important; }
 
-.knowledge__cat-desc {
-  font-size: v.$text-xs;
-  font-weight: v.$font-normal;
-  color: var(--color-text-tertiary);
-  line-height: v.$leading-snug;
-  @include m.line-clamp(2);
-}
-
-.knowledge__cat-count {
-  font-size: 11px;
-  font-weight: v.$font-semibold;
-  color: var(--color-text-muted);
-  flex-shrink: 0;
-  margin-top: 2px;
-}
-
-// ── CTA card at sidebar bottom ────────────────────────────────
-
-.knowledge__cta {
-  margin-top: v.$spacing-2;
-  padding: v.$spacing-3-5;
-  border-radius: v.$radius-md;
-  background: linear-gradient(135deg, var(--color-brand-700) 0%, var(--color-brand-900) 100%);
-  color: white;
-  display: flex;
-  flex-direction: column;
-  gap: v.$spacing-1;
-}
-
-.knowledge__cta-title {
-  font-size: 13px;
-  font-weight: v.$font-semibold;
-  margin: 0;
-}
-
-.knowledge__cta-sub {
-  font-size: v.$text-xs;
-  color: rgba(255,255,255,0.8);
-  line-height: v.$leading-snug;
-  margin: 0;
+  // Tone the bright pattern down on dark surfaces (same trick as welcome-banner)
+  &__hero::after {
+    opacity: 0.18;
+    filter: invert(1) hue-rotate(180deg) saturate(0.7);
+  }
 }

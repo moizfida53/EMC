@@ -1,84 +1,127 @@
 <!-- src/app/features/support/support.html -->
-<div class="support">
+<div class="support d-flex flex-column gap-4">
 
-  <!-- Dialog overlay -->
-  <app-create-ticket-dialog
-    *ngIf="creating()"
-    (created)="onCreated($event)"
-    (closed)="creating.set(false)" />
-
-  <!-- Section header -->
-  <app-section-header
-    eyebrow="Support center"
+  <!-- Page header -->
+  <app-page-header
+    eyebrow="Support Center"
     title="Tickets & conversations"
-    description="A real-time view of every support engagement. Open tickets, follow conversations and track SLA windows.">
-    <app-button variant="primary" (clicked)="creating.set(true)">
-      + Open new ticket
+    description="A real-time view of every support engagement with BlueLink. Open new tickets, follow conversations and track SLA windows.">
+    <app-button slot="actions" variant="primary" (clicked)="openNewTicket()">
+      <i class="bi bi-plus-lg me-1"></i>Open new ticket
     </app-button>
-  </app-section-header>
+  </app-page-header>
 
   <!-- KPI strip -->
-  <div class="kpi-grid">
-    <app-kpi-card
-      label="Active tickets"
-      [value]="store.activeCount()"
-      hint="All severities"
-      [active]="true" />
-    <app-kpi-card
-      label="On you"
-      [value]="store.onCustomer()"
-      hint="Awaiting your response"
-      [trend]="{ dir: 'flat', text: 'Action' }" />
-    <app-kpi-card
-      label="Breaching &lt; 12h"
-      [value]="store.breachingSoon()"
-      hint="SLA window closing soon"
-      [trend]="{ dir: 'down', text: '−1' }" />
-    <app-kpi-card
-      label="Resolved · last 14d"
-      [value]="store.resolvedRecent()"
-      hint="Avg time to resolve 1d 6h"
-      [trend]="{ dir: 'up', text: '+3' }" />
-  </div>
-
-  <!-- Toolbar: search + filters -->
-  <div class="support__toolbar surface-elev">
-    <div class="support__search-wrap">
-      <svg class="support__search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75">
-        <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
-      </svg>
-      <input
-        class="support__search-input"
-        type="search"
-        placeholder="Search by ticket #, title or keyword…"
-        [value]="store.search()"
-        (input)="store.setSearch($any($event.target).value)" />
+  <div class="row g-3">
+    <div class="col-12 col-sm-6 col-lg-3">
+      <app-kpi-card
+        label="Active tickets"
+        [value]="store.activeCount()"
+        hint="All severities"
+        [active]="true" />
     </div>
-
-    <div class="support__filters">
-      <select class="support__filter-select"
-        [value]="store.statusFilter()"
-        (change)="store.setStatusFilter($any($event.target).value)">
-        <option value="all">All statuses</option>
-        <option value="Active">Active</option>
-        <option value="Resolved">Resolved</option>
-        <option value="Closed">Closed</option>
-      </select>
-      <select class="support__filter-select"
-        [value]="store.priorityFilter()"
-        (change)="store.setPriorityFilter($any($event.target).value)">
-        <option value="all">All priorities</option>
-        <option value="High">High</option>
-        <option value="Medium">Medium</option>
-        <option value="Low">Low</option>
-      </select>
+    <div class="col-12 col-sm-6 col-lg-3">
+      <app-kpi-card
+        label="On you"
+        [value]="store.onCustomer()"
+        hint="Awaiting your response"
+        [trend]="{ dir: 'flat', text: 'Action' }" />
+    </div>
+    <div class="col-12 col-sm-6 col-lg-3">
+      <app-kpi-card
+        label="Breaching < 12h"
+        [value]="store.breachingSoon()"
+        hint="SLA window closing soon"
+        [trend]="{ dir: 'down', text: '−1' }" />
+    </div>
+    <div class="col-12 col-sm-6 col-lg-3">
+      <app-kpi-card
+        label="Resolved · last 14d"
+        [value]="store.resolvedRecent()"
+        hint="Avg time to resolve 1d 6h"
+        [trend]="{ dir: 'up', text: '+3' }" />
     </div>
   </div>
 
-  <!-- Ticket detail panel -->
+  <!-- Search + filters -->
+  <app-searchbar
+    placeholder="Search by ticket #, title, or keyword…"
+    [query]="store.search()"
+    (queryChange)="onSearch($event)"
+    [filters]="searchFilters"
+    (filtersChange)="onFiltersChange($event)" />
+
+  <!-- Ticket detail panel (when a ticket is selected) -->
   <app-ticket-detail *ngIf="store.openCase()" />
 
   <!-- Ticket table -->
   <app-ticket-table />
+
+  <!-- New ticket modal -->
+  <app-modal
+    #newTicketModal
+    title="Open a new ticket"
+    subtitle="Our duty team typically responds in under 2 hours during business hours."
+    size="lg">
+
+    <!-- body -->
+    <div *ngIf="nt_error()" class="alert alert-danger" role="alert">{{ nt_error() }}</div>
+
+    <div class="mb-3">
+      <label class="form-label micro-label" for="nt-title">Title</label>
+      <input
+        id="nt-title"
+        class="form-control"
+        type="text"
+        placeholder="e.g. Settlement run BL-04 stalled at 92%"
+        [ngModel]="nt_title()"
+        (ngModelChange)="nt_title.set($event)" />
+    </div>
+
+    <div class="row g-3 mb-3">
+      <div class="col-12 col-md-6">
+        <label class="form-label micro-label" for="nt-priority">Priority</label>
+        <select
+          id="nt-priority"
+          class="form-select"
+          [ngModel]="nt_priority()"
+          (ngModelChange)="nt_priority.set($event)">
+          <option *ngFor="let p of priorities" [value]="p">{{ p }}</option>
+        </select>
+      </div>
+      <div class="col-12 col-md-6">
+        <label class="form-label micro-label" for="nt-subject">Subject</label>
+        <select
+          id="nt-subject"
+          class="form-select"
+          [ngModel]="nt_subjectId()"
+          (ngModelChange)="nt_subjectId.set($event)">
+          <option *ngFor="let s of data.subjects" [value]="s.id">{{ s.title }}</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="mb-0">
+      <label class="form-label micro-label" for="nt-desc">Description</label>
+      <textarea
+        id="nt-desc"
+        class="form-control"
+        rows="5"
+        placeholder="Describe the issue, when it started, and anything you've already tried…"
+        [ngModel]="nt_description()"
+        (ngModelChange)="nt_description.set($event)"></textarea>
+    </div>
+
+    <!-- footer -->
+    <ng-container slot="footer">
+      <app-button variant="secondary" (clicked)="newTicketModal.close()">Cancel</app-button>
+      <app-button
+        variant="primary"
+        [loading]="nt_submitting()"
+        (clicked)="submitNewTicket()">
+        Submit ticket
+      </app-button>
+    </ng-container>
+  </app-modal>
 
 </div>

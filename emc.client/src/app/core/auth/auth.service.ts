@@ -14,7 +14,14 @@ import {
 } from '@azure/msal-browser';
 import { filter, take } from 'rxjs/operators';
 import { environment }  from 'src/environments/environment';
-import { AuthStore }    from './auth.store';
+import { AuthStore, AuthUser } from './auth.store';
+
+/** Shape passed to {@link AuthService.loginAsDemo}. Mirrors a row in the login page demo list. */
+export interface DemoAccountInput {
+  name:  string;
+  email: string;
+  role:  string;
+}
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
@@ -71,10 +78,36 @@ export class AuthService {
     this.msal.loginRedirect({ scopes: environment.azureAd.scopes });
   }
 
-  // ── Sign out — clears all MSAL cache entries ───────────────────────────
+  // ── Demo login (no MSAL — used by the login page's demo accounts list) ─
+  /**
+   * Sign in as one of the prototype demo accounts. Sets the AuthStore user
+   * and persists the session to localStorage so a refresh keeps them in.
+   */
+  loginAsDemo(account: DemoAccountInput): void {
+    const user: AuthUser = {
+      accountId:   `demo-${account.email}`,
+      displayName: account.name,
+      username:    account.email,
+      tenantId:    'demo',
+      jobTitle:    account.role,
+      source:      'demo',
+    };
+    this.store.clearError();
+    this.store.setManualUser(user);
+    this.router.navigate(['/']);
+  }
+
+  // ── Sign out — handles BOTH demo sessions and MSAL accounts ────────────
   logout(): void {
+    // Demo session — local-only sign out, no MSAL round-trip
+    if (this.store.user()?.source === 'demo') {
+      this.store.clear();
+      this.router.navigate(['/login']);
+      return;
+    }
+
     const account = this.msal.instance.getActiveAccount();
-    this.store.setUser(null);
+    this.store.clear();
     this.msal.logoutRedirect({
       account: account ?? undefined,
       postLogoutRedirectUri: environment.azureAd.redirectUri,

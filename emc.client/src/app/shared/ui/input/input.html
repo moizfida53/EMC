@@ -1,28 +1,29 @@
 <!-- emc.client/src/app/shared/ui/input/input.html -->
 
-<div class="input-field">
+<div>
 
   <!-- Label -->
   <label
     *ngIf="label()"
-    class="input-field__label"
+    class="form-label text-uppercase fw-semibold mb-1 input-field__label"
     [for]="id()"
-    [class.input-field__label--required]="required()">
+    [class.required]="required()">
     {{ label() }}
   </label>
 
-  <!-- Input wrapper (handles icons) -->
+  <!-- Input wrapper (handles absolute-positioned icons) -->
   <div [ngClass]="wrapperClasses()">
 
     <!-- Leading icon slot -->
-    <span *ngIf="leadingIcon()" class="input-wrapper__icon input-wrapper__icon--lead">
+    <span *ngIf="leadingIcon()" class="input-icon input-icon--lead">
       <ng-content select="[slot='leading']" />
     </span>
 
     <!-- Native input -->
     <input
       #inputRef
-      class="input-wrapper__control"
+      class="form-control"
+      [class.is-invalid]="hasError()"
       [id]="id()"
       [type]="type()"
       [placeholder]="placeholder()"
@@ -30,23 +31,24 @@
       [disabled]="_disabled()"
       [readonly]="readonly()"
       [required]="required()"
-      [attr.aria-invalid]="hasError() || null"
       [attr.aria-describedby]="(hint() || errorMessage()) ? id() + '-hint' : null"
       (input)="onInput($event)"
       (blur)="onBlur()"
       (focus)="onFocus()" />
 
     <!-- Trailing icon slot -->
-    <span *ngIf="trailingIcon()" class="input-wrapper__icon input-wrapper__icon--trail">
+    <span *ngIf="trailingIcon()" class="input-icon input-icon--trail">
       <ng-content select="[slot='trailing']" />
     </span>
+
   </div>
 
   <!-- Hint / error text -->
   <div
-    *ngIf="errorMessage() && _touched() || hint()"
-    class="input-field__hint"
-    [class.input-field__hint--error]="hasError()"
+    *ngIf="(errorMessage() && _touched()) || hint()"
+    class="form-text mt-1"
+    [class.text-danger]="hasError()"
+    [class.fw-medium]="hasError()"
     [id]="id() + '-hint'"
     role="alert"
     [attr.aria-live]="hasError() ? 'polite' : null">

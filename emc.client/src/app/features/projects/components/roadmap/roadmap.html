@@ -1,169 +1,143 @@
 <!-- src/app/features/projects/components/roadmap/roadmap.html -->
-<div class="roadmap" *ngIf="project && steps().length > 0">
 
-  <!-- Header with project dates -->
-  <div class="roadmap__header">
-    <div class="roadmap__project-dates">
-      <span class="roadmap__date-label">Project start:</span>
-      <span class="roadmap__date-value">{{ project.startDate | formatDate }}</span>
-      <span class="roadmap__separator">→</span>
-      <span class="roadmap__date-label">End:</span>
-      <span class="roadmap__date-value">{{ project.endDate | formatDate }}</span>
-    </div>
-    <div class="roadmap__project-duration">
-      <span class="micro-label">Duration</span>
-      <span class="roadmap__duration-days">{{ totalDays() }} days</span>
-    </div>
-  </div>
-
-  <!-- Timeline container -->
-  <div class="roadmap__timeline-container">
-
-    <!-- Timeline header with weeks -->
-    <div class="roadmap__timeline-header">
-      <div class="roadmap__header-labels">
-        <span class="roadmap__label-step">Phase</span>
-        <span class="roadmap__label-dates">Timeline</span>
-      </div>
-
-      <div class="roadmap__weeks">
-        <div
-          *ngFor="let week of weekNumbers"
-          class="roadmap__week"
-          [style.left.%]="week.percent"
-          role="presentation">
-          <span class="roadmap__week-number">W{{ week.week }}</span>
-        </div>
-      </div>
-    </div>
-
-    <!-- Steps (Gantt bars) -->
-    <div class="roadmap__steps" role="region" aria-label="Project timeline">
-
-      <div
-        *ngFor="let step of steps(); let i = index"
-        class="roadmap__step"
-        [attr.data-status]="step.status">
-
-        <!-- Step label (left side) -->
-        <div class="roadmap__step-label">
-          <div class="roadmap__step-title">{{ step.name }}</div>
-          <div class="roadmap__step-meta">
-            <span class="roadmap__step-date num-tabular">
-              {{ step.plannedStart| formatDate }}
-            </span>
-          </div>
-        </div>
-
-        <!-- Gantt bar container -->
-        <div class="roadmap__step-bar-container">
-
-          <!-- Gantt bar (positioned absolutely) -->
-          <div
-            class="roadmap__step-bar"
-            [class.roadmap__step-bar--active]="isActive(step)"
-            [class.roadmap__step-bar--overdue]="isOverdue(step)"
-            [class.roadmap__step-bar--upcoming]="isUpcoming(step)"
-            [style.left.%]="stepStartPercent(step)"
-            [style.width.%]="stepDurationPercent(step)"
-            [attr.aria-label]="step.name + ' from ' + (step.plannedStart| formatDate) + ' to ' + (step.plannedFinish| formatDate)"
-            role="progressbar"
-            [attr.aria-valuenow]="stepProgress(step)"
-            aria-valuemin="0"
-            aria-valuemax="100">
-
-            <!-- Progress fill (for in-progress steps) -->
-            <div
-              *ngIf="step.status === 'In Progress'"
-              class="roadmap__step-progress"
-              [style.width.%]="stepProgress(step)"
-              [attr.data-tone]="stepTone(step.status)">
-            </div>
-
-            <!-- Step bar content -->
-            <div class="roadmap__step-bar-content">
-              <span class="roadmap__step-bar-text">{{ step.name }}</span>
-              <span class="roadmap__step-bar-percent" *ngIf="step.status === 'In Progress'">
-                {{ stepProgress(step) }}%
-              </span>
-            </div>
-          </div>
-
-          <!-- Today indicator line (if within range) -->
-          <div
-            *ngIf="timelineStart() < now() && now() < timelineEnd()"
-            class="roadmap__today-line"
-            role="presentation">
-          </div>
-        </div>
-
-        <!-- Step status & info (right side) -->
-        <div class="roadmap__step-info">
-          <app-status-badge [value]="step.status" />
-
-          <div class="roadmap__step-dates">
-            <span class="micro-label">Duration</span>
-            <span class="roadmap__days-count num-tabular">
-              {{ daysElapsed(step.plannedStart) }}d
-              <span class="roadmap__days-separator">/</span>
-              {{ daysRemaining(step.plannedFinish) }}d
-            </span>
-          </div>
-          <!-- Overdue badge -->
-          <app-pill
-            *ngIf="isOverdue(step)"
-            tone="danger">
-            Overdue
-          </app-pill>
-
-          <!-- Upcoming badge -->
-          <app-pill
-            *ngIf="isUpcoming(step)"
-            tone="muted">
-            Upcoming
-          </app-pill>
-
-          <!-- Active badge -->
-          <app-pill
-            *ngIf="isActive(step)"
-            tone="brand"
-            [dot]="true">
-            Active
-          </app-pill>
-        </div>
-      </div>
-
-      <!-- Empty state -->
-      <div *ngIf="steps().length === 0" class="roadmap__empty">
-        <p>No milestones defined for this project.</p>
-      </div>
-
-    </div>
-  </div>
-
-  <!-- Legend -->
-  <div class="roadmap__legend">
-    <div class="roadmap__legend-item">
-      <div class="roadmap__legend-box roadmap__legend-box--active"></div>
-      <span>Active phase</span>
-    </div>
-    <div class="roadmap__legend-item">
-      <div class="roadmap__legend-box roadmap__legend-box--success"></div>
-      <span>Completed</span>
-    </div>
-    <div class="roadmap__legend-item">
-      <div class="roadmap__legend-box roadmap__legend-box--warning"></div>
-      <span>At risk</span>
-    </div>
-    <div class="roadmap__legend-item">
-      <div class="roadmap__legend-box roadmap__legend-box--upcoming"></div>
-      <span>Upcoming</span>
-    </div>
-  </div>
-
+<!-- Empty state when no project is bound -->
+<div *ngIf="!project" class="roadmap-empty surface-elev">
+  <i class="bi bi-folder2-open roadmap-empty__icon" aria-hidden="true"></i>
+  <p class="roadmap-empty__text mb-0">No project selected. Click a project card to view the roadmap.</p>
 </div>
 
-<!-- No project state -->
-<div *ngIf="!project" class="roadmap__no-project">
-  <p>No project selected. Click a project card to view the roadmap.</p>
+<div *ngIf="project as p" class="roadmap d-flex flex-column gap-3">
+
+  <!-- ─────────────────────────────────────────────────────────
+       PROJECT HEADER CARD (rich summary)
+       ───────────────────────────────────────────────────────── -->
+  <section class="roadmap-header surface-elev">
+    <div class="roadmap-header__top">
+      <div class="roadmap-header__main">
+        <div class="roadmap-header__pills">
+          <app-status-badge [value]="p.status" />
+          <app-status-badge [value]="p.health" />
+        </div>
+
+        <h2 class="roadmap-header__title font-display">{{ p.name }}</h2>
+        <p class="roadmap-header__desc">{{ p.description }}</p>
+      </div>
+
+      <div class="roadmap-header__stats">
+        <div class="roadmap-header__stat">
+          <div class="roadmap-header__stat-value num-tabular">{{ progressPct() }}%</div>
+          <div class="roadmap-header__stat-label">Complete</div>
+        </div>
+        <div class="roadmap-header__stat">
+          <div class="roadmap-header__stat-value num-tabular">{{ milestonesCount() }}</div>
+          <div class="roadmap-header__stat-label">Milestones</div>
+        </div>
+        <div class="roadmap-header__stat">
+          <div class="roadmap-header__stat-value num-tabular"
+               [class.roadmap-header__stat-value--warn]="delayedCount() > 0">
+            {{ delayedCount() }}
+          </div>
+          <div class="roadmap-header__stat-label">Delayed</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="roadmap-header__meta">
+      <div class="roadmap-header__meta-card">
+        <p class="micro-label mb-1">Window</p>
+        <div class="roadmap-header__meta-value num-tabular">
+          {{ p.startDate | formatDate }} → {{ p.endDate | formatDate }}
+        </div>
+        <div class="roadmap-header__meta-sub num-tabular">{{ durationDays() }} days</div>
+      </div>
+
+      <div class="roadmap-header__meta-card">
+        <p class="micro-label mb-1">Delivery owner</p>
+        <div class="roadmap-header__meta-value">
+          {{ ownerOrg(p.owner) }}<ng-container *ngIf="ownerPerson(p.owner)"> — {{ ownerPerson(p.owner) }}</ng-container>
+        </div>
+        <div class="roadmap-header__meta-sub">Available 09:00–18:00 GMT</div>
+      </div>
+
+      <div class="roadmap-header__meta-card">
+        <p class="micro-label mb-1">Milestones · status</p>
+        <div class="roadmap-header__meta-value">
+          <span class="num-tabular">{{ completedCount() }}</span>
+          <span class="roadmap-header__meta-faint">completed</span>
+          <span class="roadmap-header__meta-sep">·</span>
+          <span class="num-tabular">{{ inProgressCount() }}</span>
+          <span class="roadmap-header__meta-faint">in progress</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─────────────────────────────────────────────────────────
+       MILESTONE TIMELINE
+       ───────────────────────────────────────────────────────── -->
+  <section class="roadmap-timeline surface-elev">
+    <header class="roadmap-timeline__header">
+      <div>
+        <p class="micro-label mb-1">Project roadmap</p>
+        <h3 class="roadmap-timeline__title font-display mb-0">Milestone timeline</h3>
+      </div>
+      <app-pill tone="brand">Vertical view</app-pill>
+    </header>
+
+    <ol class="roadmap-timeline__list">
+      <li *ngFor="let s of steps(); let last = last" class="roadmap-step">
+        <!-- Left rail (icon + dashed line) -->
+        <div class="roadmap-step__rail">
+          <span class="roadmap-step__icon" [ngClass]="stepIconClass(s.status)" aria-hidden="true">
+            <i [ngClass]="stepIcon(s.status)"></i>
+          </span>
+          <span *ngIf="!last" class="roadmap-step__line process-line-v" aria-hidden="true"></span>
+        </div>
+
+        <!-- Right content -->
+        <div class="roadmap-step__content">
+          <div class="roadmap-step__head">
+            <h4 class="roadmap-step__name" [class.roadmap-step__name--muted]="s.status === 'Not Started'">
+              {{ s.name }}
+            </h4>
+            <app-status-badge [value]="s.status" />
+            <app-pill *ngIf="overrunDays(s) > 0" tone="warning">
+              {{ overrunDays(s) }}d overrun
+            </app-pill>
+          </div>
+
+          <p *ngIf="s.workDescription" class="roadmap-step__desc">
+            {{ s.workDescription }}
+          </p>
+
+          <div class="roadmap-step__dates">
+            <div class="roadmap-step__date-card">
+              <p class="micro-label mb-1">Planned</p>
+              <div class="roadmap-step__date num-tabular">
+                {{ s.plannedStart | formatDate }} → {{ s.plannedFinish | formatDate }}
+              </div>
+            </div>
+            <div class="roadmap-step__date-card"
+                 [class.roadmap-step__date-card--actual]="hasActual(s)">
+              <p class="micro-label mb-1">Actual</p>
+              <div class="roadmap-step__date num-tabular">
+                <ng-container *ngIf="s.actualStart; else noActual">
+                  {{ s.actualStart | formatDate }} →
+                  <ng-container *ngIf="s.actualFinish; else inFlight">
+                    {{ s.actualFinish | formatDate }}
+                  </ng-container>
+                  <ng-template #inFlight>—</ng-template>
+                </ng-container>
+                <ng-template #noActual>— · —</ng-template>
+              </div>
+            </div>
+          </div>
+        </div>
+      </li>
+    </ol>
+
+    <div *ngIf="steps().length === 0" class="roadmap-timeline__empty">
+      No milestones recorded for this project yet.
+    </div>
+  </section>
 </div>

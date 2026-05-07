@@ -37,13 +37,29 @@ export class Button {
   clicked = output<MouseEvent>();
 
   // ── Computed CSS classes ──────────────────────────────────
-  protected readonly classes = computed(() => ({
-    'btn': true,
-    [`btn--${this.variant()}`]: true,
-    [`btn--${this.size()}`]:    true,
-    'btn--loading':             this.loading(),
-    'btn--disabled':            this.disabled() || this.loading(),
-  }));
+  protected readonly classes = computed(() => {
+    const v = this.variant();
+    const s = this.size();
+    return {
+      'btn':                   true,
+      'd-inline-flex':         true,
+      'align-items-center':    true,
+      'justify-content-center':true,
+      'gap-1':                 true,
+      'fw-semibold':           true,
+      'text-nowrap':           true,
+      'btn-primary':           v === 'primary',
+      'btn-outline-secondary': v === 'secondary',
+      'btn-ghost':             v === 'ghost',
+      'btn-danger':            v === 'danger',
+      'btn-link':              v === 'link',
+      'btn-sm':                s === 'sm',
+      'btn-lg':                s === 'lg',
+      'btn-icon':              s === 'icon',
+      'btn--loading':          this.loading(),
+      'disabled':              this.disabled() || this.loading(),
+    };
+  });
 
   protected readonly isDisabled = computed(
     () => this.disabled() || this.loading()

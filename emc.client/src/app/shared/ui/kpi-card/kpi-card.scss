@@ -1,120 +1,84 @@
-// emc.client/src/app/shared/ui/kpi-card/kpi-card.scss
-@use '../../../../styles/abstracts/variables' as v;
-@use '../../../../styles/abstracts/mixins' as m;
+// ============================================================================
+// kpi-card.scss
+// Bootstrap-first. SCSS only handles: surface theming, the 4px accent bar,
+// the active-state ring, and the 5xl value typography. Spacing & layout
+// come from Bootstrap utility classes in the template.
+// ============================================================================
 
-:host {
-  display: block;
-  height: 100%;
-}
+:host { display: block; height: 100%; }
 
 .kpi-card {
   position: relative;
   height: 100%;
   overflow: hidden;
-  background: var(--color-surface);
-  border: v.$border-width solid var(--color-border);
-  border-radius: v.$radius-lg;
+  background-color: var(--color-surface-elev);
+  border: 1px solid var(--color-border);
+  border-radius: 0.75rem;
   box-shadow: var(--shadow-sm);
-  padding: v.$spacing-6;
-  transition: box-shadow v.$duration-base v.$ease-out;
-  display: flex;
-  flex-direction: column;
+  transition: box-shadow 150ms ease-out, border-color 150ms ease-out;
 
-  &:hover {
-    box-shadow: var(--shadow-md);
-  }
+  &:hover { box-shadow: var(--shadow-md); }
 
   &--active {
-    border-color: var(--color-brand-200);
+    border-color: var(--color-brand-300);
     box-shadow: inset 0 0 0 1px var(--color-brand-100), var(--shadow-sm);
   }
 
+  // Left accent bar (active state)
   &__bar {
     position: absolute;
-    left: 0;
-    top: 0;
-    bottom: 0;
+    left: 0; top: 0; bottom: 0;
     width: 4px;
-    background: var(--color-brand-500);
+    background-color: var(--color-brand-600);
   }
 
-  &__header {
-    display: flex;
-    align-items: flex-start;
-    justify-content: space-between;
-    margin-bottom: v.$spacing-4;
-  }
-
-  &__label-group {
-    display: flex;
-    flex-direction: column;
-    gap: v.$spacing-0-5;
-  }
-
+  // ── Header text ─────────────────────────────────────────────────────────
   &__label {
-    @include m.micro-label;
+    font-size: 0.6875rem;
+    font-weight: 700;
+    color: var(--color-text-tertiary);
+    letter-spacing: 0.08em;
+    line-height: 1.3;
+  }
+  &__sub-label {
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: var(--color-text-secondary);
+  }
+  &__meta-text {
+    font-size: 0.6875rem;
     color: var(--color-text-tertiary);
     text-transform: uppercase;
-    letter-spacing: 0.05em;
+    letter-spacing: 0.04em;
   }
 
-  &__sub-label {
-    font-size: v.$text-xs;
-    color: var(--color-text-secondary);
-    font-weight: v.$font-medium;
-  }
-
-  &__meta {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-end;
-    gap: v.$spacing-1;
-    text-align: right;
-  }
-
-  &__meta-text {
-    font-size: v.$text-xs;
-    color: var(--color-text-tertiary);
-  }
-
-  &__body {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-  }
-
-  &__value-row {
-    display: flex;
-    align-items: baseline;
-    justify-content: space-between;
-  }
-
+  // ── Big value ───────────────────────────────────────────────────────────
   &__value {
-    font-family: v.$font-display;
-    font-size: v.$text-5xl;
-    font-weight: v.$font-bold;
+    font-family: var(--font-display);
+    font-size: 2.75rem;
+    font-weight: 700;
     color: var(--color-text-primary);
-    line-height: 1.1;
-    @include m.num-tabular;
+    line-height: 1.05;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: -0.02em;
   }
-
   &__unit {
-    font-size: v.$text-xl;
-    font-weight: v.$font-medium;
+    font-size: 1rem;
+    font-weight: 500;
     color: var(--color-text-tertiary);
-    margin-left: v.$spacing-1;
+    margin-left: 0.25rem;
   }
 
   &__hint {
-    margin-top: v.$spacing-2;
-    font-size: v.$text-xs;
+    font-size: 0.75rem;
     color: var(--color-text-tertiary);
     line-height: 1.4;
   }
 
+  // ── Trend ───────────────────────────────────────────────────────────────
   &__trend {
-    font-size: v.$text-xs;
-    font-weight: v.$font-semibold;
+    font-size: 0.75rem;
+    font-weight: 600;
     white-space: nowrap;
 
     &--up   { color: var(--color-success-600); }
@@ -122,10 +86,16 @@
     &--flat { color: var(--color-text-tertiary); }
   }
 
-  &__content {
-    margin-top: auto;
-    &:not(:empty) {
-      padding-top: v.$spacing-4;
-    }
+  // ── Slot content (chart, list, breakdown, etc.) ─────────────────────────
+  &__content:not(:empty) { margin-top: 0.875rem; }
+
+  // Padding (overrides Bootstrap utility on the host since we're not using p-4 anymore here)
+  padding: 1.25rem;
+
+  @media (min-width: 768px) { padding: 1.5rem; }
+
+  @media (max-width: 320px) {
+    padding: 0.875rem;
+    &__value { font-size: 2rem; }
   }
 }

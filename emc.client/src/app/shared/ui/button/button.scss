@@ -1,173 +1,80 @@
-// emc.client/src/app/shared/ui/button/button.scss
-@use '../../../../styles/abstracts/variables' as v;
-@use '../../../../styles/abstracts/mixins' as m;
+// Bootstrap handles button structure. This file only:
+//  - Overrides Bootstrap's CSS variables with our design-token CSS vars
+//  - Adds variants Bootstrap doesn't have (ghost, icon)
+//  - Animates the loading spinner
 
-:host {
-  display: inline-flex; // so host doesn't break layout flow
+// ── Primary ──────────────────────────────────────────────────
+.btn-primary {
+  --bs-btn-bg:               var(--color-btn-primary-bg);
+  --bs-btn-border-color:     var(--color-btn-primary-bg);
+  --bs-btn-color:            var(--color-btn-primary-text);
+  --bs-btn-hover-bg:         var(--color-btn-primary-hover);
+  --bs-btn-hover-border-color: var(--color-btn-primary-hover);
+  --bs-btn-active-bg:        var(--color-btn-primary-hover);
+  box-shadow: var(--shadow-xs);
+  &:hover { box-shadow: var(--shadow-sm); }
+  &:active { transform: translateY(1px); box-shadow: none; }
 }
 
-// ─── BASE ────────────────────────────────────────────────────
+// ── Secondary (outline) ───────────────────────────────────────
+.btn-outline-secondary {
+  --bs-btn-color:              var(--color-btn-secondary-text);
+  --bs-btn-border-color:       var(--color-btn-secondary-border);
+  --bs-btn-hover-color:        var(--color-btn-secondary-text);
+  --bs-btn-hover-bg:           var(--color-surface-hover);
+  --bs-btn-hover-border-color: var(--color-border-brand);
+  box-shadow: var(--shadow-xs);
+}
 
-.btn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: v.$spacing-1-5;
-  padding: v.$spacing-2 v.$spacing-4;
-  font-family: v.$font-sans;
-  font-size: v.$text-sm;
-  font-weight: v.$font-semibold;
-  line-height: v.$leading-none;
-  letter-spacing: v.$tracking-normal;
-  white-space: nowrap;
-  border: v.$border-width solid transparent;
-  border-radius: v.$radius-md;
-  cursor: pointer;
-  text-decoration: none;
-  user-select: none;
-  position: relative;
-  overflow: hidden;
-  transition:
-    color             v.$duration-base v.$ease-out,
-    background-color  v.$duration-base v.$ease-out,
-    border-color      v.$duration-base v.$ease-out,
-    box-shadow        v.$duration-base v.$ease-out,
-    transform         v.$duration-fast v.$ease-out;
+// ── Danger ───────────────────────────────────────────────────
+.btn-danger {
+  --bs-btn-bg:               var(--color-danger-600);
+  --bs-btn-border-color:     var(--color-danger-600);
+  --bs-btn-hover-bg:         var(--color-danger-700);
+  --bs-btn-hover-border-color: var(--color-danger-700);
+}
 
-  @include m.focus-ring;
+// ── Link ─────────────────────────────────────────────────────
+.btn-link {
+  --bs-btn-color:       var(--color-text-brand);
+  --bs-btn-hover-color: var(--color-text-brand);
+}
 
-  svg {
-    width: 16px;
-    height: 16px;
-    flex-shrink: 0;
-  }
+// ── Ghost (no Bootstrap equivalent) ──────────────────────────
+.btn-ghost {
+  background:   transparent;
+  color:        var(--color-text-secondary);
+  border-color: transparent;
 
-  // ── Sizes ────────────────────────────────────────────────
-
-  &--sm {
-    height: 32px;
-    padding: 0 v.$spacing-3;
-    font-size: v.$text-xs;
-
-    svg { width: 14px; height: 14px; }
-  }
-
-  &--md {
-    height: 36px;
-    padding: 0 v.$spacing-4;
-  }
-
-  &--lg {
-    height: 44px;
-    padding: 0 v.$spacing-6;
-    font-size: v.$text-lg;
-    border-radius: v.$radius-lg;
-
-    svg { width: 18px; height: 18px; }
-  }
-
-  &--icon {
-    width: 36px;
-    height: 36px;
-    padding: 0;
-    flex-shrink: 0;
-
-    &.btn--sm { width: 32px; height: 32px; }
-    &.btn--lg { width: 44px; height: 44px; }
-  }
-
-  // ── States ───────────────────────────────────────────────
-
-  &--disabled,
-  &:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-    pointer-events: none;
-  }
-
-  &--loading {
-    cursor: wait;
-    pointer-events: none;
-  }
-
-  // ── Variants ─────────────────────────────────────────────
-
-  &--primary {
-    background: var(--color-btn-primary-bg);
-    color: var(--color-btn-primary-text);
-    border-color: var(--color-btn-primary-bg);
-    box-shadow: var(--shadow-xs);
-
-    &:hover:not(.btn--disabled):not(:disabled) {
-      background: var(--color-btn-primary-hover);
-      border-color: var(--color-btn-primary-hover);
-      box-shadow: var(--shadow-sm);
-    }
-    &:active:not(.btn--disabled):not(:disabled) {
-      transform: translateY(1px);
-      box-shadow: none;
-    }
-  }
-
-  &--secondary {
-    background: var(--color-btn-secondary-bg);
-    color: var(--color-btn-secondary-text);
-    border-color: var(--color-btn-secondary-border);
-    box-shadow: var(--shadow-xs);
-
-    &:hover:not(.btn--disabled):not(:disabled) {
-      border-color: var(--color-border-brand);
-      background: var(--color-surface-hover);
-    }
-  }
-
-  &--ghost {
-    background: transparent;
-    color: var(--color-text-secondary);
-    border-color: transparent;
-
-    &:hover:not(.btn--disabled):not(:disabled) {
-      background: var(--color-btn-ghost-hover);
-      color: var(--color-text-primary);
-    }
-  }
-
-  &--danger {
-    background: var(--color-danger-600);
-    color: #fff;
-    border-color: var(--color-danger-600);
-
-    &:hover:not(.btn--disabled):not(:disabled) {
-      background: var(--color-danger-700);
-      border-color: var(--color-danger-700);
-    }
-  }
-
-  &--link {
-    background: transparent;
-    color: var(--color-text-brand);
-    border-color: transparent;
-    padding-inline: 0;
-    height: auto;
-
-    &:hover:not(.btn--disabled):not(:disabled) {
-      text-decoration: underline;
-      text-underline-offset: 3px;
-    }
+  &:hover, &:focus-visible {
+    background: var(--color-btn-ghost-hover);
+    color:      var(--color-text-primary);
   }
 }
 
-// ─── SPINNER ─────────────────────────────────────────────────
-
-.btn__spinner {
-  display: inline-flex;
-  animation: btn-spin 0.75s linear infinite;
+// ── Icon-size modifier ────────────────────────────────────────
+.btn-icon {
+  width:      36px;
+  height:     36px;
+  padding:    0;
   flex-shrink: 0;
+}
+.btn-sm.btn-icon { width: 32px; height: 32px; }
+.btn-lg.btn-icon { width: 44px; height: 44px; }
 
-  svg {
-    width: 14px;
-    height: 14px;
-  }
+// ── Loading state ─────────────────────────────────────────────
+.btn--loading {
+  cursor:         wait;
+  pointer-events: none;
+}
+
+// ── Spinner ───────────────────────────────────────────────────
+.btn__spinner {
+  display:    inline-flex;
+  flex-shrink: 0;
+  animation:  btn-spin 0.75s linear infinite;
+
+  svg { width: 14px; height: 14px; }
 }
 
 @keyframes btn-spin {
