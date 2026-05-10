@@ -1,8 +1,60 @@
 <!-- src/app/features/dashboard/dashboard.html -->
 <div id="dashboard" class="dashboard">
-
   <!-- Welcome banner -->
   <app-welcome-banner />
+
+  <!-- ── EMC.Server connectivity smoke test ─────────────────────────────── -->
+  <section class="dashboard__section">
+    <div class="surface-elev p-3 p-md-4" style="border-radius: 12px;">
+      <header class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
+        <div>
+          <p class="micro-label mb-1">API connectivity check</p>
+          <h2 class="font-display mb-0" style="font-size: 1.1rem;">EMC.Server · Demo endpoint</h2>
+        </div>
+        <button
+          type="button"
+          class="btn btn-sm btn-outline-primary"
+          (click)="loadDemo()"
+          [disabled]="demoLoading()">
+          <i class="bi bi-arrow-clockwise me-1" aria-hidden="true"></i>
+          {{ demoLoading() ? 'Loading…' : 'Reload' }}
+        </button>
+      </header>
+
+      <div *ngIf="demoError() as err" class="alert alert-danger py-2 px-3 mb-3" role="alert">
+        <i class="bi bi-exclamation-triangle me-2" aria-hidden="true"></i>
+        <strong>API call failed:</strong> {{ err }}
+      </div>
+
+      <div *ngIf="demoPing() as ping" class="mb-3">
+        <p class="mb-1"><strong>Ping:</strong> {{ ping.message }}</p>
+        <p class="mb-1 num-tabular" style="font-size: 0.85rem; opacity: 0.75;">
+          Server time (UTC): {{ ping.serverTimeUtc }}
+        </p>
+        <p class="mb-0" style="font-size: 0.85rem; opacity: 0.75;">
+          Authenticated as: {{ ping.authenticatedUser ?? '(no name claim)' }}
+        </p>
+      </div>
+
+      <div *ngIf="demoItems().length > 0">
+        <p class="micro-label mb-2">Demo items ({{ demoItems().length }})</p>
+        <ul class="list-group">
+          <li *ngFor="let item of demoItems()" class="list-group-item d-flex justify-content-between align-items-start">
+            <div>
+              <div><strong>{{ item.title }}</strong></div>
+              <div style="font-size: 0.85rem; opacity: 0.75;">{{ item.description }}</div>
+            </div>
+            <span class="badge bg-secondary align-self-center">{{ item.status }}</span>
+          </li>
+        </ul>
+      </div>
+
+      <div *ngIf="!demoLoading() && !demoError() && demoItems().length === 0 && !demoPing()"
+           style="opacity: 0.65; font-style: italic;">
+        No data yet — click Reload.
+      </div>
+    </div>
+  </section>
 
   <!-- "At a glance" KPI strip -->
   <section class="dashboard__section">
