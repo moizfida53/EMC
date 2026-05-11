@@ -12,17 +12,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Models\**" />
-    <Content Remove="Models\**" />
-    <EmbeddedResource Remove="Models\**" />
-    <None Remove="Models\**" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Compile Remove="Controllers\WeatherForecastController.cs" />
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="10.0.7" />
     <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="10.0.6" />
     <PackageReference Include="Microsoft.AspNetCore.SpaProxy">
